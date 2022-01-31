@@ -3,9 +3,6 @@
 <br>
 This is the main repository for the project of Team 5 at BTH for the course PA1416.
 
-## Front end
-We are using react with MUI as a front end.
-
 ### Setup
 
 Start by cloning the repository:
@@ -29,6 +26,28 @@ yarn start
 ```
 
 and that would open a new window in your default browser. But if dosnt you can just open your browser and type in the following url `http://localhost:3000/`.
+
+### Docker
+To start the docker container you need docker and docker compose installed. You can read more about them with installing instructions [here](https://docs.docker.com/compose/install/).
+
+To run the project just go into the projects directory and run the following command:
+```bash
+docker-compose up -d
+```
+
+It can take some time for the database to run.
+included in the docker-compose.yml file:
+- nodejs
+- mysql
+- phpmyadmin
+
+You can access phpmyadmin to manpulate the database by going to the following url `http://localhost:8080/`.
+
+the username is `root` and the password is `12345678`.
+
+For the react application you can access it by going to the following url `http://localhost:3000/`.
+
+Thats it!
 
 # Docs
 [Front end](https://github.com/abodsakah/Team-5/blob/main/Documentation/frontend.md)
