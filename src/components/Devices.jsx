@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Devices = () => {
+const Devices = ({text}) => {
     return (
-      <h1>Devices</h1>
+      <h1>{text}</h1>
   );
 };
 

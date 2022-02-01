@@ -6,7 +6,7 @@ import {Route, BrowserRouter, Routes, Link} from 'react-router-dom';
 /* ------------------------------- Components ------------------------------- */
 import Index from './components/Index';
 import Devices from './components/Devices';
-
+import Users from './components/Users';
 /* ------------------------------- Components ------------------------------- */
 import Menu from './components/Menu';
 
@@ -80,10 +80,13 @@ function App() {
         }),
       }));
   
+  
+  let deviceText = "Hello Devices!";
   return (
 
     <BrowserRouter>
       <Box sx={{display: 'flex'}}>
+        {/* Navigation bar */}
         <AppBar position='fixed' open={open}>
             <Toolbar>
             <IconButton
@@ -134,7 +137,7 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary="Devices" />
             </ListItem>
-            <ListItem button>
+            <ListItem button component={Link} to="/users">
                 <ListItemIcon>
                 <SupervisedUserCircleIcon />
                 </ListItemIcon>
@@ -147,7 +150,8 @@ function App() {
             {/* The application router */}
             <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/devices" element={<Devices />} />
+                <Route path="/devices" element={<Devices text={deviceText}/>} />
+                <Route path="/users" element={<Users />} />
             </Routes>
         </Main>
         </Box>
