@@ -1,5 +1,5 @@
 # Team 5 project
-[![CircleCI](https://circleci.com/gh/abodsakah/Team-5/tree/main.svg?style=svg)](https://circleci.com/gh/abodsakah/Team-5/tree/main)
+[![CircleCI](https://circleci.com/gh/abodsakah/Tract/tree/main.svg?style=svg)](https://circleci.com/gh/abodsakah/Tract/tree/main)
 <br>
 This is the main repository for the project of Team 5 at BTH for the course PA1416.
 
