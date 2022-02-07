@@ -6,11 +6,13 @@ services:
     image: mysql:5.7
     volumes:
       - db_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 12345678
     networks:
       - website
+    command: --default-authentication-plugin=mysql_native_password
   # phpmyadmin
   phpmyadmin:
     depends_on:
@@ -43,3 +45,4 @@ networks:
 volumes:
   db_data:
   node_modules:
+  db:
