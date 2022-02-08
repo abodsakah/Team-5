@@ -19,6 +19,10 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import Login from './components/Login';
+
+/* --------------------------------- Cookies -------------------------------- */
+import Cookies from 'universal-cookie';
 
 
 
@@ -34,6 +38,7 @@ function App() {
         setOpen(!open);
     };
 
+    const cookies = new Cookies();
   
     const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
         ({ theme, open }) => ({
@@ -82,81 +87,85 @@ function App() {
   
   
   let deviceText = "Hello Devices!";
-  return (
-
-    <BrowserRouter>
-      <Box sx={{display: 'flex'}}>
-        {/* Navigation bar */}
-        <AppBar position='fixed' open={open}>
+  if (cookies.get('user') === undefined) {
+    return (<Login cookie={cookies}/>);
+  } else {
+    return (
+      <BrowserRouter>
+        <Box sx={{display: 'flex'}}>
+          {/* Navigation bar */}
+          <AppBar position='fixed' open={open}>
             <Toolbar>
-            <IconButton
+              <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="menu"
                 onClick={handleDrawerTrigger}
                 sx={{mr: 2}}
-            >
+              >
                 <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" sx={{flexGrow: 1}}>
+              </IconButton>
+              <Typography variant="h6" sx={{flexGrow: 1}}>
                 Team 5
-            </Typography>
+              </Typography>
             </Toolbar>
-        </AppBar>
-        <Drawer
+          </AppBar>
+          <Drawer
             sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
                 width: drawerWidth,
                 boxSizing: 'border-box',
-            },
+              },
             }}
             variant='persistent'
             anchor='left'
             open={open}
-        >
+          >
             <DrawerHeader>
-            <IconButton onClick={handleDrawerTrigger}>
+              <IconButton onClick={handleDrawerTrigger}>
 
                 <ChevronLeftIcon />
-            </IconButton>
+              </IconButton>
             </DrawerHeader>
             <Divider />
             <List>
-            <ListItem button component={Link} to="/">
+              <ListItem button component={Link} to="/">
                 <ListItemIcon>
-                <DashboardIcon />
+                  <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem button component={Link} to="/devices">
+              </ListItem>
+              <ListItem button component={Link} to="/devices">
                 <ListItemIcon>
-                <DeviceHubIcon />
+                  <DeviceHubIcon />
                 </ListItemIcon>
                 <ListItemText primary="Devices" />
-            </ListItem>
-            <ListItem button component={Link} to="/users">
+              </ListItem>
+              <ListItem button component={Link} to="/users">
                 <ListItemIcon>
-                <SupervisedUserCircleIcon />
+                  <SupervisedUserCircleIcon />
                 </ListItemIcon>
                 <ListItemText primary="Users" />
-            </ListItem>
+              </ListItem>
             </List>
-        </Drawer>
-        <Main open={open}>
+          </Drawer>
+          <Main open={open}>
             <DrawerHeader />
             {/* The application router */}
             <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/devices" element={<Devices text={deviceText}/>} />
-                <Route path="/users" element={<Users />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/devices" element={<Devices text={deviceText} />} />
+              <Route path="/users" element={<Users />} />
             </Routes>
-        </Main>
+          </Main>
         </Box>
-    </BrowserRouter>
-  );
+      </BrowserRouter>
+    );
+  }
 }
 
 export default App;
