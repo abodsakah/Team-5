@@ -1,6 +1,9 @@
 import React from 'react';
 import {styled} from '@mui/system'
 import {Button, Card, CardHeader, TextField, Typography, Alert, AlertTitle} from '@mui/material';
+import {useAuth0} from '@auth0/auth0-react';
+import axios from 'axios';
+
 
 const Login = ({cookie}) => {
 
@@ -19,6 +22,29 @@ const Login = ({cookie}) => {
     justify-content: center;
     align-items: center
   `;
+  const {loginWithRedirect} = useAuth0();
+
+  var options = {
+    method: 'POST',
+    url: 'https://dev-dg2ss3q4.us.auth0.com/oauth/token',
+    headers: {'content-type': 'application/x-www-form-urlencoded'},
+    data: {
+      grant_type: 'password',
+      username: 'user@example.com',
+      password: 'pwd',
+      audience: 'https://team5.abodsakka.xyz',
+      scope: 'read:sample',
+      client_id: 'v24Hc653f4fEPO3aqPREwzAfzN8SrXYP',
+      client_secret: '3PDhVJz4gL76PLqbMwo8WDlh8C0K-GDPV_0X9bioMfQ2rehgC3rqeUSu8UpUPJie'
+    }
+  };
+
+  
+  axios.request(options).then(function (response) {
+    console.log(response.data);
+  }).catch(function (error) {
+    console.log(error);
+  });
 
   const checkValid = () => {
     // gets the email and password from the form
