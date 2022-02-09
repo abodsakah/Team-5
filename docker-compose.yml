@@ -35,10 +35,10 @@ services:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     ports:
-      - '2000:3000'
+      - '4500:3000'
     networks:
       - website
-    command: bash -c "cd home/node/app && yarn && yarn start"
+    command: bash -c "cd home/node/app && yarn && yarn build && serve -s build -l 3000"
 
 networks:
   website:
