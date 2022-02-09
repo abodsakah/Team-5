@@ -38,7 +38,7 @@ services:
       - '4500:3000'
     networks:
       - website
-    command: bash -c "cd home/node/app && yarn && yarn build && serve -s build -l 3000"
+    command: bash -c "cd home/node/app && yarn && yarn global add serve && yarn build && serve -s build -l 3000"
 
 networks:
   website:
