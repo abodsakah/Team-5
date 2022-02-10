@@ -24,6 +24,7 @@ const Login = ({cookie}) => {
   `;
   const {loginWithRedirect} = useAuth0();
 
+
   var options = {
     method: 'POST',
     url: 'https://dev-dg2ss3q4.us.auth0.com/oauth/token',
@@ -35,7 +36,7 @@ const Login = ({cookie}) => {
       audience: 'YOUR_API_IDENTIFIER',
       scope: 'read:sample',
       client_id: 'v24Hc653f4fEPO3aqPREwzAfzN8SrXYP',
-      client_secret: 'WFCqglUmhnR39C27z1PHICogllnI3Pq2'
+      client_secret: process.env.REACT_APP_AUTH0_CLIENT_SECRET
     },
     overrides: {
       _jwks_uri: 'https://dev-dg2ss3q4.us.auth0.com/.well-known/jwks.json'
