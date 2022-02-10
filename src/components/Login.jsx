@@ -32,10 +32,13 @@ const Login = ({cookie}) => {
       grant_type: 'password',
       username: 'user@example.com',
       password: 'pwd',
-      audience: 'https://team5.abodsakka.xyz',
+      audience: 'YOUR_API_IDENTIFIER',
       scope: 'read:sample',
       client_id: 'v24Hc653f4fEPO3aqPREwzAfzN8SrXYP',
-      client_secret: '3PDhVJz4gL76PLqbMwo8WDlh8C0K-GDPV_0X9bioMfQ2rehgC3rqeUSu8UpUPJie'
+      client_secret: 'WFCqglUmhnR39C27z1PHICogllnI3Pq2'
+    },
+    overrides: {
+      _jwks_uri: 'https://dev-dg2ss3q4.us.auth0.com/.well-known/jwks.json'
     }
   };
 

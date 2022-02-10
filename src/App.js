@@ -88,8 +88,8 @@ function App() {
   
   let deviceText = "Hello Devices!";
 
-  cookies.set('user', 'test', { path: '/' });
-
+  // cookies.set('user', 'test', { path: '/' });
+    
   if (cookies.get('user') === undefined) {
     return (<Login cookie={cookies}/>);
   } else {
