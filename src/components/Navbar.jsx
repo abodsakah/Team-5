@@ -52,7 +52,6 @@ const Navbar = ({setOpen, open, userName, logout, image}) => {
 
 
     const handleMenu = (event) => {
-        console.log(event.currentTarget);
         setAnchorEl(event.currentTarget);
     };
 

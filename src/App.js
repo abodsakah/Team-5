@@ -1,6 +1,5 @@
 /* ---------------------------------- React --------------------------------- */
 import * as React from 'react';
-import {render} from 'react-dom';
 import {Route, BrowserRouter, Routes} from 'react-router-dom';
 
 /* ------------------------------- Components ------------------------------- */
@@ -9,7 +8,7 @@ import Devices from './components/Devices';
 import Users from './components/Users';
 
 /* ------------------------------- Material Ui ------------------------------ */
-import { styled, useTheme } from '@mui/material';
+import { styled, useTheme, Snackbar, Alert } from '@mui/material';
 import { Box } from '@mui/system';
 import Login from './components/Login';
 
@@ -21,6 +20,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Navbar from './components/Navbar';
 
 function App() {
+
+
 
   const drawerWidth = 240;
 
@@ -53,12 +54,25 @@ function App() {
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   }));
-
-  const {user, isAuthenticated, isLoading, logout } = useAuth0();
-
-  const [open, setOpen] = React.useState(false);
   
+  const {user, isAuthenticated, isLoading, logout } = useAuth0();
+  const [error, setError] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+  const [snackOpen, setSnackOpen] = React.useState(false);
   var userID;
+  
+  React.useEffect(() => {
+    setSnackOpen(!snackOpen);
+  }, [error]);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+  
   
   if (isLoading || !isAuthenticated) {
     return <Login loading={isLoading}/>
@@ -66,24 +80,33 @@ function App() {
   
   if (isAuthenticated) {
     userID = user.sub.split('|')[1];
-    // send api request to get user info
-    if (!cookies.get('userInfo')) {
-      fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
-        cookies.set('userInfo', data, {path: '/'});
-        // navigate to home page
-        window.location.href = '/';
-      });
+    if (cookies.get("userInfo") === undefined) {
+
+      try {
+        fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+          cookies.set('userInfo', data, {path: '/'});
+        });
+      } catch (error) {
+        setError(error);
+      }
     }
   }
 
+  
 
-  if (cookies.get('userInfo')) {
+
     return (
       <BrowserRouter>
+        {error && <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>}
         <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} />
         <Box sx={{display: 'flex', flexGrow: 1}}>
           <Main open={open}>
             <DrawerHeader />
+            <h1>{error}</h1>
             {/* The application router */}
             <Routes>
               <Route path="/" element={<Index />} />
@@ -95,7 +118,6 @@ function App() {
         </Box>
       </BrowserRouter>
     );
-  }
 }
 
 export default App;

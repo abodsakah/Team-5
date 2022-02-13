@@ -1,14 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv').config({'path': __dirname + '/../.env'});
 const dbConnection = require('./src/dbConnection');
-const auth0 = require('auth0-js');
 
 const app = express();
 
-var auth = new auth0.WebAuth({
-    domain: process.env.AUTH0_DOMAIN,
-    clientID: process.env.AUTH0_CLIENT_ID,
-});
 
 const port = process.env.PORT || 9000;
 
@@ -20,10 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-    auth.login({
-        username: "abodsakka2001@gmail.com",
-        password: "Nhy99011963",
-    })
+    res.send("Hello World");
 });
 
 app.get("/api/user", async (req, res) => {
@@ -33,8 +25,19 @@ app.get("/api/user", async (req, res) => {
     let user;
     if (keyValid) {
         user = await dbConnection.getUserById(userId);
+        if(user) {
+            res.send(user[0]);
+        } else {
+            res.status(404).send("User not found");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
     }
-    res.send(user[0]);
+    
+});
+
+app.get("*", (req, res) => {
+    res.status(404).send("Not found");
 });
 
 app.listen(port, () => {
