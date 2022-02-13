@@ -103,10 +103,15 @@ const Navbar = ({setOpen, open, userName, logout, image}) => {
                             }}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
-
+                            style={{
+                                top: '3rem',
+                                right: '0',
+                                padding: '5rem',
+                                left: 'auto',
+                            }}
                         >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={() => logout({returnTo: window.location.origin})}>Logout</MenuItem>
+                            <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem style={{paddingRight: '4rem'}} onClick={() => logout({returnTo: window.location.origin})}>Logout</MenuItem>
                                 
                         </Menu>
                     </div>
