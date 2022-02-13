@@ -61,7 +61,7 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
 
     const handleLogout = (() => {
         logout({returnTo: window.location.origin});
-        cookies.remove("userInfo");
+        cookies.remove("user");
     });
 
     return (

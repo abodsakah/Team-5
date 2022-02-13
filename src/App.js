@@ -1,6 +1,6 @@
 /* ---------------------------------- React --------------------------------- */
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import {Route, BrowserRouter, Routes} from 'react-router-dom';
 
 /* ------------------------------- Components ------------------------------- */
@@ -9,7 +9,7 @@ import Devices from './components/Devices';
 import Users from './components/Users';
 
 /* ------------------------------- Material Ui ------------------------------ */
-import { styled, useTheme, Snackbar, Alert } from '@mui/material';
+import { styled, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Login from './components/Login';
 
@@ -21,12 +21,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Navbar from './components/Navbar';
 
 function App() {
+  const drawerWidth = 240; // the width of the drawer
 
-
-
-  const drawerWidth = 240;
-
-  const cookies = new Cookies();
+  const cookies = new Cookies(); // create a new cookie instance
 
   const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
     ({ theme, open }) => ({
@@ -56,39 +53,63 @@ function App() {
     justifyContent: 'flex-end',
   }));
 
-  const {user, isAuthenticated, isLoading, logout } = useAuth0();
-  const [error, setError] = React.useState('');
-  const [open, setOpen] = React.useState(false);
-  const [userInfo, setUserInfo] = React.useState({});
+  const {user, isAuthenticated, isLoading, logout } = useAuth0(); // get user info
+  const [error, setError] = React.useState(''); // set error state
+  const [open, setOpen] = React.useState(false); // set drawer state
+  const [userData, setUserData] = useState(null);
 
+  // let userID;
+  // if (isAuthenticated) {
+  //   let userID;
+  //   userID = user.sub.split('|')[1];
+  //   let response = fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`);
+  //   let data = response.json();
+  //   cookies.set('user', data, { path: '/' });
+  // }
 
-  if (isLoading || !isAuthenticated || !cookies.get('userInfo')) {
+  
+  if (cookies.get('user') === undefined) {
+    let userID;
+    if (isAuthenticated) {
+      try {
+        userID = user.sub.split('|')[1];
+        fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+          cookies.set('user', data, {path: '/'});
+          setUserData(data);
+        
+          return data
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+  }
+
+  // if the application is loading or the user is not authenticated, render the login page
+  if (isLoading || !isAuthenticated) {
     return <Login loading={isLoading} cookies={cookies}/>
   }
-  let userID;
-  if (isAuthenticated) {
-    userID = user.sub.split('|')[1];
-  }
 
 
-    return (
-      <BrowserRouter>
-        <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies}/>
-        <Box sx={{display: 'flex', flexGrow: 1}}>
-          <Main open={open}>
-            <DrawerHeader />
-            <h1>{error}</h1>
-            {/* The application router */}
-            <Routes>
-              <Route path="/" element={<Index cookies={cookies}/>} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/devices" element={<Devices />} />
-              <Route path="/users" element={<Users />} />
-            </Routes>
-          </Main>
-        </Box>
-      </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} />
+      <Box sx={{display: 'flex', flexGrow: 1}}>
+        <Main open={open}>
+          <DrawerHeader />
+          <h1>{error}</h1>
+          {/* The application router */}
+          <Routes>
+            <Route path="/" element={<Index cookies={cookies} />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/devices" element={<Devices />} />
+            <Route path="/users" element={<Users />} />
+          </Routes>
+        </Main>
+      </Box>
+    </BrowserRouter>
+  );
 }
 
 export default App;

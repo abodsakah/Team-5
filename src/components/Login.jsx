@@ -15,22 +15,9 @@ const Login = ({loading, cookies}) => {
     align-items: center;'
   `;
 
-  const {loginWithRedirect, loginWithPopup, isAuthenticated, user} = useAuth0();  
-
-  let userID;
+  const {loginWithPopup, isAuthenticated, user} = useAuth0();  
 
 
-  if (isAuthenticated && !cookies.get('userInfo')) {
-    userID = user.sub.split('|')[1];
-    loading = true;
-    fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
-      console.log(data);
-      cookies.set("userInfo", data, {path: '/'});
-      window.location.reload();
-    });
-  }
-
-  
   return (
     <LoginContainer style={{height: '100vh'}}>
       <Card style={{padding: '5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
