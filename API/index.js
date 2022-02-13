@@ -1,6 +1,6 @@
 const express = require('express');
-const axios = require('axios');
 const dotenv = require('dotenv').config({'path': __dirname + '/../.env'});
+const dbConnection = require('./src/dbConnection');
 const auth0 = require('auth0-js');
 
 const app = express();
@@ -24,6 +24,17 @@ app.get("/", (req, res) => {
         username: "abodsakka2001@gmail.com",
         password: "Nhy99011963",
     })
+});
+
+app.get("/api/user", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let userId = req.query.id;
+    let user;
+    if (keyValid) {
+        user = await dbConnection.getUserById(userId);
+    }
+    res.send(user[0]);
 });
 
 app.listen(port, () => {

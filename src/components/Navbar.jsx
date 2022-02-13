@@ -2,15 +2,16 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import { styled, useTheme } from '@mui/material';
-import {Toolbar, IconButton, Drawer, Typography, Divider, List, ListItemIcon, ListItem, ListItemText} from '@mui/material';
+import {Toolbar, IconButton, Drawer, Typography, Divider, List, ListItemIcon, ListItem, ListItemText, Menu, MenuItem, Avatar} from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
-const Navbar = ({setOpen, open}) => {
+const Navbar = ({setOpen, open, userName, logout, image}) => {
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -47,25 +48,71 @@ const Navbar = ({setOpen, open}) => {
         setOpen(!open);
     };
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+
+    const handleMenu = (event) => {
+        console.log(event.currentTarget);
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <>
             {/* Navigation bar */}
             <AppBar position='fixed' open={open}>
-            <Toolbar>
-                <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                onClick={handleDrawerTrigger}
-                sx={{mr: 2}}
-                >
-                <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" sx={{flexGrow: 1}}>
-                Team 5
-                </Typography>
-            </Toolbar>
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={handleDrawerTrigger}
+                        sx={{mr: 2}}
+                    >
+                    <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" sx={{flexGrow: 1}}>Tract</Typography>
+                    
+                    {/* User button */}
+                    <div>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                            id="user-button"  
+                        >
+                            <Avatar alt="User" src={image} />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+
+                        >
+                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={() => logout({returnTo: window.location.origin})}>Logout</MenuItem>
+                                
+                        </Menu>
+                    </div>
+                    {/* End User Button */}
+                </Toolbar>
             </AppBar>
             <Drawer
             sx={{

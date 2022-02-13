@@ -15,9 +15,8 @@ const Login = ({loading}) => {
     align-items: center;'
   `;
 
-  const {loginWithRedirect, loginWithPopup} = useAuth0();
-
-  console.log(loading);
+  const {loginWithRedirect, loginWithPopup} = useAuth0();  
+  // http://localhost:9000/api/user?key=377307b0-fdf6-4762-8403-00084d164de5&id=620523493dbc5d0068b2f2a9
   return (
     <LoginContainer style={{height: '100vh'}}>
       <Card style={{padding: '5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
