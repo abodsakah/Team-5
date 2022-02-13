@@ -25,15 +25,15 @@ app.get("/api/user", async (req, res) => {
     let user;
     if (keyValid) {
         user = await dbConnection.getUserById(userId);
-        if(user) {
-            res.send(user[0]);
-        } else {
-            res.status(404).send("User not found");
-        }
+        
     } else {
         res.status(401).send("Invalid API key");
     }
-    
+    if(user) {
+        res.send(user[0]);
+    } else {
+        res.status(404).send("User not found");
+    }
 });
 
 app.get("*", (req, res) => {

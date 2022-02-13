@@ -11,7 +11,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
-const Navbar = ({setOpen, open, userName, logout, image}) => {
+const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -58,6 +58,11 @@ const Navbar = ({setOpen, open, userName, logout, image}) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = (() => {
+        logout({returnTo: window.location.origin});
+        cookies.remove("userInfo");
+    });
 
     return (
         <>
@@ -111,7 +116,7 @@ const Navbar = ({setOpen, open, userName, logout, image}) => {
                             }}
                         >
                             <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem style={{paddingRight: '4rem'}} onClick={() => logout({returnTo: window.location.origin})}>Logout</MenuItem>
+                            <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>Logout</MenuItem>
                                 
                         </Menu>
                     </div>

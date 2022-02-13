@@ -1,5 +1,6 @@
 /* ---------------------------------- React --------------------------------- */
 import * as React from 'react';
+import { useEffect } from 'react';
 import {Route, BrowserRouter, Routes} from 'react-router-dom';
 
 /* ------------------------------- Components ------------------------------- */
@@ -45,7 +46,7 @@ function App() {
     }),
   );
 
-  
+
   const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -54,55 +55,25 @@ function App() {
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   }));
-  
+
   const {user, isAuthenticated, isLoading, logout } = useAuth0();
   const [error, setError] = React.useState('');
   const [open, setOpen] = React.useState(false);
-  const [snackOpen, setSnackOpen] = React.useState(false);
-  var userID;
-  
-  React.useEffect(() => {
-    setSnackOpen(!snackOpen);
-  }, [error]);
+  const [userInfo, setUserInfo] = React.useState({});
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
 
-    setSnackOpen(false);
-  };
-  
-  
-  if (isLoading || !isAuthenticated) {
-    return <Login loading={isLoading}/>
+  if (isLoading || !isAuthenticated || !cookies.get('userInfo')) {
+    return <Login loading={isLoading} cookies={cookies}/>
   }
-  
+  let userID;
   if (isAuthenticated) {
     userID = user.sub.split('|')[1];
-    if (cookies.get("userInfo") === undefined) {
-
-      try {
-        fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
-          cookies.set('userInfo', data, {path: '/'});
-        });
-      } catch (error) {
-        setError(error);
-      }
-    }
   }
-
-  
 
 
     return (
       <BrowserRouter>
-        {error && <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            {error}
-          </Alert>
-        </Snackbar>}
-        <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} />
+        <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies}/>
         <Box sx={{display: 'flex', flexGrow: 1}}>
           <Main open={open}>
             <DrawerHeader />
@@ -122,4 +93,3 @@ function App() {
 
 export default App;
 
-    

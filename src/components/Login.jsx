@@ -4,7 +4,7 @@ import {Button, Card, CircularProgress} from '@mui/material';
 import {useAuth0} from '@auth0/auth0-react';
 
 
-const Login = ({loading}) => {
+const Login = ({loading, cookies}) => {
 
 
   const LoginContainer = styled('div')`
@@ -15,16 +15,29 @@ const Login = ({loading}) => {
     align-items: center;'
   `;
 
-  const {loginWithRedirect, loginWithPopup} = useAuth0();  
-  // http://localhost:9000/api/user?key=377307b0-fdf6-4762-8403-00084d164de5&id=620523493dbc5d0068b2f2a9
+  const {loginWithRedirect, loginWithPopup, isAuthenticated, user} = useAuth0();  
+
+  let userID;
+
+
+  if (isAuthenticated && !cookies.get('userInfo')) {
+    userID = user.sub.split('|')[1];
+    loading = true;
+    fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+      console.log(data);
+      cookies.set("userInfo", data, {path: '/'});
+      window.location.reload();
+    });
+  }
+
+  
   return (
     <LoginContainer style={{height: '100vh'}}>
       <Card style={{padding: '5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
         <img src={require('./static/images/Asset 1.png')} style={{height: '8%', marginBottom: '1rem'}} />
         {loading ? (<><h3>Loading</h3><CircularProgress /></>) :
-          <Button onClick={() => loginWithPopup()} variant="contained" style={{padding: '1rem', width: '100%'}}>Login</Button>
+          (<Button onClick={() => loginWithPopup()} variant="contained" style={{padding: '1rem', width: '100%'}}>Login</Button>)
         }
-        
       </Card>
     </LoginContainer>
   );
