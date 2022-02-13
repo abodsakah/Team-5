@@ -8,8 +8,9 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Cookies from 'universal-cookie';
 
-export default function Index() {
+export default function Index({cookies}) {
 
     let text = 'Hello World';
     return (
@@ -24,6 +25,13 @@ export default function Index() {
             }}
             
             >{text}</h1>
+
+            <h2 style={{
+                color: 'white',
+                textAlign: 'center',
+            }}>
+                Your user id is: <span style={{textDecoration: 'underline'}}>{cookies.get("userInfo").user_id}</span>
+            </h2>
         </div>
     )
 }

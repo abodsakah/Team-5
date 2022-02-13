@@ -109,7 +109,7 @@ function App() {
             <h1>{error}</h1>
             {/* The application router */}
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Index cookies={cookies}/>} />
               <Route path="/login" element={<Login />} />
               <Route path="/devices" element={<Devices />} />
               <Route path="/users" element={<Users />} />
