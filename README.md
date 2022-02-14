@@ -34,6 +34,10 @@ To run the project just go into the projects directory and run the following com
 ```bash
 docker-compose up -d
 ```
+To close all the containers run
+```bash
+docker-compose down -v
+```
 
 It can take some time for the database to run.
 included in the docker-compose.yml file:
