@@ -47,6 +47,8 @@ the username is `root` and the password is `12345678`.
 
 For the react application you can access it by going to the following url `http://localhost:3000/`.
 
+To be able to run the application or the docker container you need to setup the backend and the environment variables you can do that by following the instructions in [here](https://github.com/abodsakah/Tract/blob/main/Documentation/backend.md).
+
 Thats it!
 
 # Docs

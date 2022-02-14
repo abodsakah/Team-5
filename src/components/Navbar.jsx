@@ -9,7 +9,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 
 const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
 
@@ -45,7 +44,7 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
 
 
     const handleDrawerTrigger = () => {
-        setOpen(!open);
+        setOpen(!open); // sets the state of the drawer to the opposite of what it is
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -59,7 +58,9 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
         setAnchorEl(null);
     };
 
+
     const handleLogout = (() => {
+        // when the function is called it logs out the user and redirects them to the login page then removes the cookies called "user"
         logout({returnTo: window.location.origin});
         cookies.remove("user");
     });
@@ -115,6 +116,7 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
                                 left: 'auto',
                             }}
                         >
+                            {/* Items in the user menu */}
                             <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>Profile</MenuItem>
                             <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>Logout</MenuItem>
                                 
@@ -123,6 +125,7 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
                     {/* End User Button */}
                 </Toolbar>
             </AppBar>
+            {/* The drawer that showes up when the menu button is pressed */}
             <Drawer
             sx={{
                 width: drawerWidth,
@@ -143,27 +146,29 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
                 </IconButton>
             </DrawerHeader>
             <Divider />
-            <List>
-                <ListItem button component={Link} to="/">
-                <ListItemIcon>
-                    <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-                </ListItem>
-                <ListItem button component={Link} to="/devices">
-                <ListItemIcon>
-                    <DeviceHubIcon />
-                </ListItemIcon>
-                <ListItemText primary="Devices" />
-                </ListItem>
-                <ListItem button component={Link} to="/users">
-                <ListItemIcon>
-                    <SupervisedUserCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
-                </ListItem>
-            </List>
+                <List>
+                    {/* The item list that is showen in the drawer */}
+                    <ListItem button component={Link} to="/"> {/* Link to where the item leads */}
+                    <ListItemIcon>
+                        <DashboardIcon /> {/* Icon of the item */}
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard" /> {/* Text of the item */}
+                    </ListItem>
+                    <ListItem button component={Link} to="/devices">
+                    <ListItemIcon>
+                        <DeviceHubIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Devices" />
+                    </ListItem>
+                    <ListItem button component={Link} to="/users">
+                    <ListItemIcon>
+                        <SupervisedUserCircleIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Users" />
+                    </ListItem>
+                </List>
             </Drawer>
+            {/* End Drawer */}
         </>
     )
 }
