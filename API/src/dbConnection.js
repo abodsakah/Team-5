@@ -3,7 +3,7 @@
 const {Sequelize, QueryTypes} = require('sequelize');
 const dotenv = require('dotenv').config({ path:  __dirname + '/../../.env' });
 
-    
+
 // init db
 const db = new Sequelize(dotenv.parsed.DB_NAME, dotenv.parsed.DB_LOGIN, dotenv.parsed.DB_PASSWORD, {
     host: dotenv.parsed.DB_HOST,
@@ -11,9 +11,9 @@ const db = new Sequelize(dotenv.parsed.DB_NAME, dotenv.parsed.DB_LOGIN, dotenv.p
 });
 
 /**
- * 
+ *
  * @param {*} key The API key to be used to get the users information
- * @returns 
+ * @returns
  */
 async function getApiKeys(key) {
     const result = await db.query("SELECT * FROM `api_keys` WHERE `key` = ?", {type: QueryTypes.SELECT, replacements: [key]})
@@ -38,3 +38,4 @@ module.exports = {
     validateAPIKey,
     getUserById,
 }
+
