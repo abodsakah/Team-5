@@ -13,13 +13,18 @@ const db = new Sequelize(dotenv.parsed.DB_NAME, dotenv.parsed.DB_LOGIN, dotenv.p
 /**
  *
  * @param {*} key The API key to be used to get the users information
- * @returns
+ * @returns Gets the API key that matches the specified key
  */
 async function getApiKeys(key) {
     const result = await db.query("SELECT * FROM `api_keys` WHERE `key` = ?", {type: QueryTypes.SELECT, replacements: [key]})
     return result;
 }
 
+/**
+ *
+ * @param {*} key The API key to be used to get the users information
+ * @returns Returns true if the key is valid, false otherwise
+ */
 async function validateAPIKey(key) {
     let keys = await getApiKeys(key);
     if (keys.length > 0) {
@@ -28,6 +33,11 @@ async function validateAPIKey(key) {
     return false;
 }
 
+/**
+ *
+ * @param {*} id The user id that is to be used to get the users information
+ * @returns The user that matches the specified id
+ */
 async function getUserById(id) {
     const result = await db.query("SELECT * FROM `users` WHERE `user_id` = ?", {type: QueryTypes.SELECT, replacements: [id]});
     return result;

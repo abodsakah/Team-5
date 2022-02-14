@@ -4,18 +4,6 @@ import { useEffect, useState } from 'react';
 
 export default function Index({cookies}) {
 
-    // const [userId, setUserId] = useState('');
-
-    // const fetchUserId = async () => {
-    //     console.log('fetchUserId');
-    //     setUserId(cookies.get('user').user_id);
-    // };
-
-    // useEffect(() => {
-    //     fetchUserId();
-    // }, []);
-    
-
     let text = 'Hello World';
     return (
         <div style={{
