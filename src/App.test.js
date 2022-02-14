@@ -15,7 +15,7 @@ test("Login screen: When 'loading' is true circular progress should show", () =>
 });
 
 
-test('Dashboard: When the index screens apperes Hello World is expected', () => { 
-  render(<Index />);
-  expect(screen.getByText('Hello World')).toBeInTheDocument();
-});
+// test('Dashboard: When the index screens apperes Hello World is expected', () => { 
+//   render(<Index />);
+//   expect(screen.getByText('Hello World')).toBeInTheDocument();
+// });
