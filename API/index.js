@@ -6,7 +6,7 @@ const app = express();
 
 const port = process.env.PORT || 9000;
 
-app.use((req, res, next) => { 
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     console.log(`${req.method} request for '${req.url}'`);
@@ -24,7 +24,7 @@ app.get("/api/user", async (req, res) => {
     let user;
     if (keyValid) {
         user = await dbConnection.getUserById(userId);
-        
+
     } else {
         res.status(401).send("Invalid API key");
     }
