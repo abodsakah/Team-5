@@ -81,7 +81,7 @@ function App() {
 
   // }
 
-  
+
   /* -------------------------------------------------------------------------- */
   /*                  COOMENT OUT BEFORE YOU PUSH TO PRODUCTION                 */
   /* -------------------------------------------------------------------------- */
@@ -93,10 +93,8 @@ function App() {
         fetch(`https://api.abodsakka.xyz/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
           cookies.set('user', data, {path: '/'}); // set the cookie
           setUserData(data); // set the user data
-          return data // return the user data to update the DOM
-        }), (error) => {
-          console.log(`Error: ${error}`);
-        }
+          return data; // return the user data to update the DOM
+        });
       } catch (error) {
         console.log(`Error: ${error}`);
       }
