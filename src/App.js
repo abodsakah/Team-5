@@ -58,22 +58,54 @@ function App() {
   const [open, setOpen] = useState(false); // set drawer state
   const [userData, setUserData] = useState({}); // set drawer state
   
+  /* -------------------------------------------------------------------------- */
+  /*                   ENABLE WHEN DEBUGING OR WORKING LOCALY                   */
+  /* -------------------------------------------------------------------------- */
+  // if (cookies.get('user') === undefined) { // if there is no "user" cookie
+  //   let userID;
+  //   if (isAuthenticated) { // only when the user is authenticated we set the cookie
+  //     try {
+  //       userID = user.sub.split('|')[1]; // get the user id from the user object
+  //       fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+  //         cookies.set('user', data, {path: '/'}); // set the cookie
+  //         setUserData(data); // set the user data
+  //         return data // return the user data to update the DOM
+  //       }), (error) => {
+  //         console.log(`Error: ${error}`);
+  //       }
+  //     } catch (error) {
+  //       console.log(`Error: ${error}`);
+  //     }
+
+  //   }
+
+  // }
+
+  
+  /* -------------------------------------------------------------------------- */
+  /*                  COOMENT OUT BEFORE YOU PUSH TO PRODUCTION                 */
+  /* -------------------------------------------------------------------------- */
   if (cookies.get('user') === undefined) { // if there is no "user" cookie
     let userID;
     if (isAuthenticated) { // only when the user is authenticated we set the cookie
       try {
         userID = user.sub.split('|')[1]; // get the user id from the user object
-        fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+        fetch(`https://api.abodsakka.xyz/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
           cookies.set('user', data, {path: '/'}); // set the cookie
           setUserData(data); // set the user data
           return data // return the user data to update the DOM
-        })
+        }), (error) => {
+          console.log(`Error: ${error}`);
+        }
       } catch (error) {
-        console.log(error);
+        console.log(`Error: ${error}`);
       }
+
     }
 
   }
+
+
 
   // if the application is loading or the user is not authenticated, render the login page
   if (isLoading || !isAuthenticated) {
