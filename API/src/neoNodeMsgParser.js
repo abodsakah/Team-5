@@ -43,6 +43,18 @@ async function parseResponseData(data) {
       // "payload":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
       // }
       break;
+    case 'nodeInfoReply':
+      console.log('Incoming: nodeInfoReply');
+      // call function for handling incoming message from some node.
+      // JSON format:
+      // {
+      // "objectType":"nodeInfoReply",
+      // "gwTimestamp":"2016-11-09T16:00:00.000Z",
+      // “nodeId”:50,
+      // “uidHex”:”ffffffffff”,
+      // “nodeType”:1
+      // }
+      break;
     case 'wesStatus':
       console.log('Incoming: wesStatus');
       // call function for handling/returning WES server status
@@ -64,6 +76,41 @@ async function parseResponseData(data) {
       // "gwTimestamp":"2016-11-09T16:00:00.000Z",
       // "uidHex":"ffffffffff",
       // "appFunctionType":0
+      // }
+      break;
+    case 'networkCommandReply':
+      console.log('Incoming: networkCommandReply');
+      // call function to handle the WES setup request
+      // should display data of requesting node in front-end somewhere.
+      // JSON format:
+      // {
+      // "objectType":"networkCommandReply",
+      // "gwTimestamp":"2016-11-09T16:00:00.000Z",
+      // “nodeId”:50,
+      // “command”:0,
+      // "payload":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+      // }
+      break;
+    case 'ack':
+      console.log('Incoming: ack');
+      // call function to handle the WES setup request
+      // should display data of requesting node in front-end somewhere.
+      // JSON format:
+      // {
+      // "objectType":"ack",
+      // "gwTimestamp":"2016-11-09T16:00:00.000Z",
+      // "nodeId":32
+      // }
+      break;
+    case 'nack':
+      console.log('Incoming: nack');
+      // call function to handle the WES setup request
+      // should display data of requesting node in front-end somewhere.
+      // JSON format:
+      // {
+      // "objectType":"nack",
+      // "gwTimestamp":"2016-11-09T16:00:00.000Z",
+      // "nodeId":32
       // }
       break;
     default:
