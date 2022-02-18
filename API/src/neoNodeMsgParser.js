@@ -4,16 +4,17 @@
 // NeoCortec gateway
 
 module.exports = {
-  parseResponseData,
+  parseResponseData:parseResponseData,
 };
 
 /**
  * Function for parsing the turning the data
  * into a JSON object and deciding what to do next.
+ * Calls function to take action depending on message type.
  * @param data JSONstring the JSON string from the gateway node.
- * @returns
+ * @returns *TODO*
  */
-async function parseResponseData(data) {
+function parseResponseData(data) {
   var dataObj = JSON.parse(data);
 
   console.log('DATA: ' + data + '\n');
