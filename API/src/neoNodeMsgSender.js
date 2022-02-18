@@ -20,6 +20,7 @@ module.exports = {
   sendWesServerStop: sendWesServerStop,
   sendWesServerStatus: sendWesServerStatus,
   sendForceWesMode: sendForceWesMode,
+  sendWesSetupResponse:sendWesSetupResponse,
 };
 
 /**
@@ -126,7 +127,7 @@ function sendWesServerStatus() {
  * Aka setting its nodeId to 0xFFFF temporarily. So it starts sending
  * wesSetupRequests. (changes back if it loses power, or to much time passes
  * before it recives a wesSetupResponse)
- * Makes a JSON string and sends it to the
+ * Makes a JSON string and sends it to the gateway.
  * @param nodeId INT: Id of the node to force into WES mode.
  * @returns BOOLEAN
  */
@@ -134,6 +135,33 @@ function sendForceWesMode(nodeId) {
   // Create message
   var message = '{"objectType": "networkCommand","nodeId": ' + nodeId +
       ',"cmd": 5,"payload":[2]}';
+
+  // Send message
+  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Message type: wesResponse
+ * Function for setting up a node with {uniqueId}.
+ * To have the node id {nodeId} aswell as the app settings {appSettings}
+ * Makes a JSON string and sends it to the gateway.
+ * @param nodeId INT: Id of the node to setup.
+ * @param uniqueId String: uniqueId(HEX) of the node to setup.
+ * @param nodeId String: appSettings(HEX) of the node to setup.
+ * @returns BOOLEAN
+ */
+function sendWesSetupResponse(nodeId, uniqueId, appSettings) {
+  // Create message
+  var jsonObject = {};
+  jsonObject.objectType = "wesResponse";
+  jsonObject.nodeId = nodeId;
+  jsonObject.uidHex = uniqueId;
+  jsonObject.appSettings = appSettings;
+  var message = JSON.stringify(jsonObject);
 
   // Send message
   if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
