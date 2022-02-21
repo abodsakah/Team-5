@@ -1,4 +1,12 @@
--- Database dump to be loaded into docker
+-- phpMyAdmin SQL Dump
+-- version 4.6.6deb4+deb9u2
+-- https://www.phpmyadmin.net/
+--
+-- Värd: localhost:3306
+-- Tid vid skapande: 21 feb 2022 kl 10:53
+-- Serverversion: 10.1.48-MariaDB-0+deb9u2
+-- PHP-version: 7.0.33-0+deb9u11
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -11,9 +19,6 @@ SET time_zone = "+00:00";
 --
 -- Databas: `tract`
 --
-DROP DATABASE IF EXISTS `tract`;
-CREATE DATABASE IF NOT EXISTS `tract` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `tract`;
 
 -- --------------------------------------------------------
 
@@ -140,21 +145,6 @@ CREATE TABLE `spaces` (
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur `user_log`
---
-
-CREATE TABLE `user_log` (
-  `id` int(11) NOT NULL,
-  `in_space` int(11) NOT NULL,
-  `from_device` int(11) DEFAULT NULL,
-  `report_date` varchar(255) NOT NULL,
-  `msg` varchar(255) NOT NULL,
-  `priority` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Tabellstruktur `users`
 --
 
@@ -172,6 +162,47 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `user_id`, `role`, `company_id`) VALUES
 (2, '620523493dbc5d0068b2f2a9', 0, 1),
 (3, '62069b4fcd0cab00711b040d', 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `user_log`
+--
+
+CREATE TABLE `user_log` (
+  `id` int(11) NOT NULL,
+  `in_space` int(11) NOT NULL,
+  `from_device` int(11) DEFAULT NULL,
+  `report_date` varchar(255) NOT NULL,
+  `msg` varchar(255) NOT NULL,
+  `priority` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `user_login`
+--
+
+CREATE TABLE `user_login` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `nickname` varchar(255) NOT NULL,
+  `email_Verified` tinyint(1) NOT NULL,
+  `role` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumpning av Data i tabell `user_login`
+--
+
+INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, `nickname`, `email_Verified`, `role`, `company_id`) VALUES
+(1, 'abodsakka2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 0),
+(3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -245,6 +276,13 @@ ALTER TABLE `spaces`
   ADD KEY `is_part_of` (`is_part_of`);
 
 --
+-- Index för tabell `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `company_id` (`company_id`);
+
+--
 -- Index för tabell `user_log`
 --
 ALTER TABLE `user_log`
@@ -253,11 +291,10 @@ ALTER TABLE `user_log`
   ADD KEY `from_device` (`from_device`);
 
 --
--- Index för tabell `users`
+-- Index för tabell `user_login`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `company_id` (`company_id`);
+ALTER TABLE `user_login`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index för tabell `website_settings`
@@ -300,15 +337,20 @@ ALTER TABLE `node_thresholds`
 ALTER TABLE `spaces`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT för tabell `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
 -- AUTO_INCREMENT för tabell `user_log`
 --
 ALTER TABLE `user_log`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT för tabell `users`
+-- AUTO_INCREMENT för tabell `user_login`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `user_login`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- Restriktioner för dumpade tabeller
 --
@@ -342,17 +384,17 @@ ALTER TABLE `spaces`
   ADD CONSTRAINT `spaces_ibfk_2` FOREIGN KEY (`is_part_of`) REFERENCES `spaces` (`id`);
 
 --
+-- Restriktioner för tabell `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`);
+
+--
 -- Restriktioner för tabell `user_log`
 --
 ALTER TABLE `user_log`
   ADD CONSTRAINT `user_log_ibfk_1` FOREIGN KEY (`in_space`) REFERENCES `spaces` (`id`),
   ADD CONSTRAINT `user_log_ibfk_2` FOREIGN KEY (`from_device`) REFERENCES `logical_devices` (`id`);
-
---
--- Restriktioner för tabell `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`);
 
 --
 -- Restriktioner för tabell `website_settings`

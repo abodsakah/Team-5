@@ -20,7 +20,7 @@ import UserID from './UserID';
 
 
 
-const Index = ({text, cookies}) => {
+const Index = ({text, cookies, t}) => {
 
     const [value, setValue] = React.useState(0);
   
@@ -95,68 +95,68 @@ const Index = ({text, cookies}) => {
     }
     
     return (
-    <main>
-        <UserID cookies={cookies} />
-    {/* ADD-BUTTONS */}
-    <div style={{ backgroundColor: 'white', padding: '2em', }} >
-    <Box style={{ textAlign: 'justify' }} sx={{ '& > :not(style)': { m: 1 } }}>
-        <Fab style={{ backgroundColor: '#32CECF', '&:hover': { backgroundColor: '#E81A76' } }} aria-label="add">
-        <AddIcon />
-        </Fab>
-        <h2>Lägg till sensorn </h2>
-        </Box>
-    </div>
+        <main>
+            <UserID cookies={cookies} t={t}/>
+                {/* ADD-BUTTONS */}
+                <div style={{ backgroundColor: 'white', padding: '2em', }} >
+                <Box style={{ textAlign: 'justify' }} sx={{ '& > :not(style)': { m: 1 } }}>
+                    <Fab style={{ backgroundColor: '#32CECF', '&:hover': { backgroundColor: '#E81A76' } }} aria-label="add">
+                    <AddIcon />
+                    </Fab>
+                    <h2>{t("addSensor")}</h2>
+                    </Box>
+                </div>
 
     
-        {/* List */}
-        <div style={{
-            backgroundColor: '#32CECF',
-            padding: '2em',
-            borderRadius: '3rem',
-            textAlign: 'center',
-        }}>
-        <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-            <Tab label="Flest felsökta" {...a11yProps(0)} />
-        {/*    <Tab label="Ofta rapporterade" {...a11yProps(1)} />
-            <Tab label="Nyligen installerade" {...a11yProps(2)} />*/}
-            </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-            {/* TABLE */}
-            <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 150 }} aria-label="customized table">
-                <TableHead>
-                <TableRow>
-                    <StyledTableCell>Sensor</StyledTableCell>
-                    <StyledTableCell align="right">Artikelnummer</StyledTableCell>
-                    <StyledTableCell align="right">Datum</StyledTableCell>
-                    <StyledTableCell align="right">Antal Sönder</StyledTableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {rows.map((row) => (
-                    <StyledTableRow key={row.name}>
-                    <StyledTableCell component="th" scope="row"> {row.name}</StyledTableCell>
-                    <StyledTableCell align="right">{row.ID}</StyledTableCell>
-                    <StyledTableCell align="right">{row.datum}</StyledTableCell>
-                    <StyledTableCell align="right">{row.Antal}</StyledTableCell>
-                    </StyledTableRow>
-                ))}
-                </TableBody>
-            </Table>
-            </TableContainer>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-            Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-            Item Three
-        </TabPanel>
-        </Box>
-    
-        </div>
+            {/* List */}
+            <div style={{
+                backgroundColor: '#32CECF',
+                padding: '2em',
+                borderRadius: '3rem',
+                textAlign: 'center',
+            }}>
+            <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label={t("mostRecent")} {...a11yProps(0)} />
+            {/*    <Tab label="Ofta rapporterade" {...a11yProps(1)} />
+                <Tab label="Nyligen installerade" {...a11yProps(2)} />*/}
+                </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+                {/* TABLE */}
+                <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 150 }} aria-label="customized table">
+                    <TableHead>
+                    <TableRow>
+                        <StyledTableCell>{t("sensor")}</StyledTableCell>
+                        <StyledTableCell align="right">{t("articleNumber")}</StyledTableCell>
+                        <StyledTableCell align="right">{t("date")}</StyledTableCell>
+                        <StyledTableCell align="right">{t("amount")}</StyledTableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {rows.map((row) => (
+                        <StyledTableRow key={row.name}>
+                        <StyledTableCell component="th" scope="row"> {row.name}</StyledTableCell>
+                        <StyledTableCell align="right">{row.ID}</StyledTableCell>
+                        <StyledTableCell align="right">{row.datum}</StyledTableCell>
+                        <StyledTableCell align="right">{row.Antal}</StyledTableCell>
+                        </StyledTableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+                </TableContainer>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                Item Two
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                Item Three
+            </TabPanel>
+            </Box>
+        
+            </div>
     </main>
     );
 

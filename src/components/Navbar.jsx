@@ -9,8 +9,9 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import RuleIcon from '@mui/icons-material/Rule';
 
-const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
+const Navbar = ({setOpen, open, userName, logout, image, cookies, t}) => {
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -117,9 +118,14 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
                             }}
                         >
                             {/* Items in the user menu */}
-                            <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>Logout</MenuItem>
-                                
+                            <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>{t("profile")}</MenuItem>
+                            <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>{t("logout")}</MenuItem>
+                            {/* Check if there is a "user" cookie and if there is see if the user role is 0 */}
+                            {cookies.get("user") && cookies.get("user").role === 0 &&
+                                <MenuItem style={{paddingRight: '4rem'}} component={Link} to="/admin">
+                                    {t("admin")}
+                                </MenuItem>
+                            }
                         </Menu>
                     </div>
                     {/* End User Button */}
@@ -152,20 +158,28 @@ const Navbar = ({setOpen, open, userName, logout, image, cookies}) => {
                     <ListItemIcon>
                         <DashboardIcon /> {/* Icon of the item */}
                     </ListItemIcon>
-                    <ListItemText primary="Dashboard" /> {/* Text of the item */}
+                    <ListItemText primary={t("dashboard")} /> {/* Text of the item */}
                     </ListItem>
                     <ListItem button component={Link} to="/devices">
                     <ListItemIcon>
                         <DeviceHubIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Devices" />
+                    <ListItemText primary={t("devices")} />
                     </ListItem>
                     <ListItem button component={Link} to="/users">
                     <ListItemIcon>
                         <SupervisedUserCircleIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Users" />
+                    <ListItemText primary={t("users")} />
                     </ListItem>
+                    {cookies.get("user") && cookies.get("user").role === 0 &&
+                    <ListItem button component={Link} to="/rules">
+                        <ListItemIcon>
+                            <RuleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("rules")} />
+                    </ListItem>
+                    }
                 </List>
             </Drawer>
             {/* End Drawer */}

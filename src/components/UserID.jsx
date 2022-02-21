@@ -4,8 +4,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 
-export default function Användare({cookies}) {
-    let text = 'Välkommen';
+export default function Användare({cookies, t}) {
 
     return (
         <div style={{
@@ -18,13 +17,13 @@ export default function Användare({cookies}) {
                 textAlign: 'center',
             }}
             
-            >{text}</h1>
+            >{t("welcome")}</h1>
 
             <h2 style={{
                 color: 'black',
                 textAlign: 'center',
             }}>
-                ID Användare:   <AccountCircleIcon /> <span style={{textDecoration: 'underline'}}>{cookies.get("user") ? cookies.get("user").user_id : <CircularProgress/>}</span>
+                {t("userId")}: <span style={{textDecoration: 'underline'}}>{cookies.get("user") ? cookies.get("user").id : <CircularProgress/>}</span>
             </h2>
         </div>
     )

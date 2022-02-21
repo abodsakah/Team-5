@@ -1,5 +1,6 @@
 const express = require('express');
 const dbConnection = require('./src/dbConnection');
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -32,6 +33,33 @@ app.get("/api/user", async (req, res) => {
         res.send(user[0]);
     } else {
         res.status(404).send("User not found");
+    }
+});
+
+app.get("/api/createUser", async (req, res) => {
+    let apiKey = req.query.key;
+    let email = req.query.email;
+    let password = req.query.password;
+    let firstName = req.query.firstname;
+    let lastName = req.query.lastname;
+    let nickname = req.query.nickname;
+    let role = req.query.role;
+    let companyId = req.query.companyid;
+
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        let passHash = await bcrypt.hash(password, 12);
+        try {
+            let user = await dbConnection.createUser(email, passHash, firstName, lastName, nickname, role, companyId);
+            res.send(user);
+        } catch (e) {
+            res.status(500).send("Error creating user");
+        }
+        // handle error
+
+    } else {
+        res.status(401).send("Invalid API key");
     }
 });
 

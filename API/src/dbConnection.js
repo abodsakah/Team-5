@@ -39,7 +39,12 @@ async function validateAPIKey(key) {
  * @returns The user that matches the specified id
  */
 async function getUserById(id) {
-    const result = await db.query("SELECT * FROM `users` WHERE `user_id` = ?", {type: QueryTypes.SELECT, replacements: [id]});
+    const result = await db.query("SELECT * FROM `user_login` WHERE `id` = ?", {type: QueryTypes.SELECT, replacements: [id]});
+    return result;
+}
+
+async function createUser(email, password, first_name, last_name, nickname, role, company_id) {
+    const result = await db.query("INSERT INTO `user_login` (`email`, `password`, `first_name`, `last_name`, `nickname`, `role`, `company_id`) VALUES (?, ?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [email, password, first_name, last_name, nickname, role, company_id]});
     return result;
 }
 
@@ -47,5 +52,6 @@ module.exports = {
     getApiKeys,
     validateAPIKey,
     getUserById,
+    createUser
 }
 

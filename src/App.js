@@ -7,11 +7,13 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom';
 import Index from './components/Index';
 import Devices from './components/Devices';
 import Users from './components/Users';
+import Admin from './components/Admin';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Login from './components/Login';
+import Rules from './components/Rules';
 
 /* --------------------------------- Cookies -------------------------------- */
 import Cookies from 'universal-cookie';
@@ -20,7 +22,11 @@ import Cookies from 'universal-cookie';
 import { useAuth0 } from '@auth0/auth0-react';
 import Navbar from './components/Navbar';
 
+/* ------------------------------- Translation file ------------------------------- */
+import {t} from './translator'
+
 function App() {
+  
   const drawerWidth = 240; // the width of the drawer
 
   const cookies = new Cookies(); // create a new cookie instance
@@ -69,10 +75,8 @@ function App() {
   //       fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
   //         cookies.set('user', data, {path: '/'}); // set the cookie
   //         setUserData(data); // set the user data
-  //         return data // return the user data to update the DOM
-  //       }), (error) => {
-  //         console.log(`Error: ${error}`);
-  //       }
+  //         return data; // return the user data to update the DOM
+  //       });
   //     } catch (error) {
   //       console.log(`Error: ${error}`);
   //     }
@@ -113,17 +117,26 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} />
+      <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
       <Box sx={{display: 'flex', flexGrow: 1}}>
         <Main open={open}>
           <DrawerHeader />
           <h1>{error}</h1>
           {/* The application router */}
           <Routes>
-            <Route path="/" element={<Index cookies={cookies} />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/devices" element={<Devices />} />
-            <Route path="/users" element={<Users />} />
+            <Route path="/" element={<Index cookies={cookies} t={t} />} />
+            <Route path="/login" element={<Login t={t}/>} />
+            <Route path="/devices" element={<Devices t={t}/>} />
+            <Route path="/users" element={<Users t={t}/>} />
+            {cookies.get("user") && cookies.get("user").role === 0 &&
+              <>
+                <Route path="/admin" element={<Admin t={t} />} />
+                <Route path="/rules" element={<Rules />} />
+              </>
+            } {/* If there is a "user" cookie and if the user is admin */}
+            {/* 404 Page */}
+            <Route path="/rules" element={<Rules/>} />
+            <Route path="*" element={<Typography variant="h1">404</Typography>} />
           </Routes>
         </Main>
       </Box>

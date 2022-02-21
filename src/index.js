@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Auth0Provider } from '@auth0/auth0-react';
-
 ReactDOM.render(
   <Auth0Provider
     domain="dev-dg2ss3q4.us.auth0.com"
