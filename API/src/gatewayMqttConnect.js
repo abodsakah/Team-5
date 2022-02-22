@@ -1,10 +1,11 @@
 'use strict'
 
 const MQTT = require('async-mqtt');
+const msgParser = require('./neoNodeMsgParser');
 
 // connection option
 const options = {
-  clean: true,           // retain session
+  clean: true,  // retain session
   // Authentication information
   clientId: 'NodeJs-test-client',
   username: 'flex',
@@ -16,18 +17,13 @@ const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
 // When passing async functions as event listeners, make sure to have a try
 // catch block
 
-const doStuff =
+const setupSubs =
     async () => {
-  console.log('Starting');
+  console.log('Connecting to MQTT topic...');
   try {
-    // subscribe to topic test
-    await client.subscribe('test');
-    // send message to topic test
-    await client.publish('test', 'It works!');
-    // This line doesn't run until the server responds to the publish
-    await client.end();
-    // This line doesn't run until the client has disconnected without error
-    console.log('Done');
+    // Subscribe to the Out/# wildcard topic
+    await client.subscribe('Out/#');
+    console.log('Connection made to MQTT topic sucessfully!');
   } catch (e) {
     // Do something about it!
     console.log(e.stack);
@@ -35,12 +31,30 @@ const doStuff =
   }
 }
 
-                client.on('connect', doStuff);
+                client.on('connect', setupSubs);
 
 // event will trigger when a message comes in on a topic we are subscribed too.
 client.on('message', function(topic, message) {
-  // message is Buffer
-  console.log(message.toString());
-  client.end();
+  // call parser function.
+  msgParser.parseMsgData(message, topic);
 })
+
+// Termination handler.
+const handleExit =
+    async () => {
+  console.log('Starting process termination');
+  try {
+    await client.end();
+    // This line doesn't run until the client has disconnected without error
+    console.log('Process termination done');
+  } catch (e) {
+    // Do something about it!
+    console.log(e.stack);
+    process.exit();
+  }
+}
+
+process.on('SIGINT', handleExit);
+process.on('SIGQUIT', handleExit);
+process.on('SIGTERM', handleExit);
 
