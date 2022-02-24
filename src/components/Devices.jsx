@@ -55,7 +55,7 @@ const Devices = ({text}) => {
                     {/* Category and installed text */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%'}}>
                       <CardContent sx={{ flex: '1 0 auto', padding: '1em 0' }}>
-                        <Typography component="div" variant="h5" sx={{ textTransform: 'capitalize', color: '#020e33'   }} >
+                        <Typography component="div" variant="h5" sx={{ textTransform: 'capitalize' }} >
                         { row.category }
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div" sx={{ color: 'black'  }}>

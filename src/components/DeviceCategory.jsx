@@ -19,13 +19,19 @@ import IconButton from '@mui/material/IconButton'
 import { Popover } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
  
 const DeviceCategory = () => {
-
   let { category } = useParams()
-  
+
 
   // Tablecontent
   function createData(name, calories, status, carbs, protein) {
@@ -68,21 +74,31 @@ const DeviceCategory = () => {
     ]
   )
 
+   // Dialog 
+   const [openDialog, setOpenDialog] = React.useState(false);
+   const [titleDialog, setTitleDialog] = React.useState(null);
+   const handleOpenDialog = (event) => {
+     setTitleDialog(event.currentTarget.title)
+     setOpenDialog(true);
+     setAnchorEl(null);
+   };
+   const handleCloseDialog = () => {
+     setOpenDialog(false);
+   };
 
-  // Popover settings
+
+  // Popover
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [title, setTitle] = React.useState(null);
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setTitle(event.currentTarget.title)
+
   };
-  
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  
-  const open = Boolean(anchorEl);
+  const handleClose = () => setAnchorEl(null);
+  const openPopover = Boolean(anchorEl);
+
+
 
   return ( 
     <main>
@@ -101,7 +117,7 @@ const DeviceCategory = () => {
               <TableRow>
                 <TableCell component="th" scope="row" style={{ border: 'none', padding: "7px" }} >
                   {/* Card */}
-                  <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', padding: "1em", boxShadow:"5px 5px 5px #F0F0F0" }} >
+                  <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', padding: "0.5em 1em", boxShadow:"5px 5px 5px #F0F0F0" }} >
                     {/* Sensor title */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%'}}>
                       <CardContent sx={{ flex: '1 0 auto', padding: '1em 0' }}>
@@ -118,10 +134,12 @@ const DeviceCategory = () => {
                       <IconButton title={ row.name } variant="contained" onClick={handleClick} sx={{ width: "fit-content", alignSelf: 'flex-end' }}>
                         <MoreVertRoundedIcon />
                       </IconButton>
-                      <div style={{ display: 'flex', flexDirection: 'row', margin: '0 auto', textTransform: 'capitalize', alignSelf: 'flex-end'}} >
-                        <p>{ row.status }</p>
+                      <Box style={{ display: 'flex', flexDirection: 'row', margin: '0 auto', textTransform: 'capitalize', alignSelf: 'flex-end'}} >
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          { row.status }
+                        </Typography>
                         <CircleRoundedIcon sx={{ fontSize: 20, margin: 'auto', color: 'orange', padding:"0 0.45em" }}>sensorIcon</CircleRoundedIcon>
-                      </div>
+                      </Box>
                     </Box>
                   </Card>
                 </TableCell>
@@ -131,18 +149,57 @@ const DeviceCategory = () => {
         </Table>
       </TableContainer>
       {/* Popover */}
-      <div>
-        <Popover open={open} title={title} anchorEl={anchorEl} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', margin: '0 auto', padding: "0.5em", alignItems:"flex-start"}}>
-            <Button startIcon={<EditIcon />} sx={{ textTransform: 'none' }}>
-              Redigera { title }
-            </Button>
-            <Button startIcon={<DeleteIcon />} sx={{ textTransform: 'none', color: '#EB4440' }}>
-              Radera { title }
-            </Button>
+      <Popover open={openPopover} title={ title } anchorEl={anchorEl} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', margin: '0 auto', padding: "0.5em", alignItems:"flex-start"}}>
+          <Button onClick={handleOpenDialog} title={ title } startIcon={<EditIcon />} sx={{ textTransform: 'none' }}>
+            Redigera { title }
+          </Button>
+          <Button startIcon={<DeleteIcon />} sx={{ textTransform: 'none', color: '#EB4440' }}>
+            Radera { title }
+          </Button>
+        </Box>
+      </Popover>
+      {/* Dialog */}
+      <Dialog
+        open={openDialog}
+        title={titleDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth
+      >
+        <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center', paddingTop: '1em', textTransform: 'capitalize'}}>
+          { title }
+          <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', padding: '0.6em 0 1em'}} >
+            <CircleRoundedIcon sx={{ fontSize: 20, color: 'orange', padding: '0 0.3em'}}>sensorIcon</CircleRoundedIcon>
+            <Typography variant="subtitle2" color="text.secondary" component="div">
+              Status
+            </Typography>
           </Box>
-        </Popover>
-      </div> 
+        </DialogTitle>
+        <DialogContent>
+          {/* Form */}
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Ändra namn på sensor"
+            type="name"
+            variant="outlined"
+            placeholder={ title }
+            fullWidth
+            autoComplete="off"
+          />
+        </DialogContent>
+        <DialogActions style={{ marginTop: "2em" }}>
+          <Button onClick={handleCloseDialog} variant="outlined" startIcon={<CloseIcon />}>
+            Avbryt
+          </Button>
+          <Button onClick={handleCloseDialog} variant="contained" startIcon={<CheckIcon />} sx={{ bgcolor: "#0C3B69", fontWeight:"bold", marginLeft: "1em" }}>
+            Spara
+          </Button>
+        </DialogActions>
+      </Dialog>
     </main>
     );
 };
