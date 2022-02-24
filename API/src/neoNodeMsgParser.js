@@ -4,7 +4,7 @@
 // NeoCortec gateway
 
 module.exports = {
-  parseResponseData:parseResponseData,
+  parseMsgData:parseMsgData,
 };
 
 /**
@@ -12,25 +12,28 @@ module.exports = {
  * into a JSON object and deciding what to do next.
  * Calls function to take action depending on message type.
  * @param data JSONstring the JSON string from the gateway node.
- * @returns *TODO*
+ * @param topic String the MQTT topic of the message.
+ * @returns *TODO* Will call appropriate function and *maybe* return anything.
  */
-function parseResponseData(data) {
+function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
 
-  console.log('DATA: ' + data + '\n');
+  console.log('--------------------------------');
+  console.log('Incoming Data:\n' + data + '\n');
+  console.log('From topic: ' + topic + '\n');
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
   switch (dataObj.objectType) {
     case 'neighborListReply':
       // mostly for testing purposes,
       // should maybe call something for a debug front-end.
-      console.log('Incoming: neighborListReply');
+      console.log('Incoming message type: neighborListReply');
       for (var node of dataObj.neighbors) {
         console.log('NodeId: ' + node.nodeId + '\n');
       }
       break;
     case 'receivedPayload':
-      console.log('Incoming: receivedPayload');
+      console.log('Incoming message type: receivedPayload');
       // call function for handling incoming message from some node.
       // JSON format:
       // {
@@ -45,7 +48,7 @@ function parseResponseData(data) {
       // }
       break;
     case 'nodeInfoReply':
-      console.log('Incoming: nodeInfoReply');
+      console.log('Incoming message type: nodeInfoReply');
       // call function for handling incoming message from some node.
       // JSON format:
       // {
@@ -57,7 +60,7 @@ function parseResponseData(data) {
       // }
       break;
     case 'wesStatus':
-      console.log('Incoming: wesStatus');
+      console.log('Incoming message type: wesStatus');
       // call function for handling/returning WES server status
       // can be ON = 1, or OFF = 0
       // JSON format:
@@ -68,7 +71,7 @@ function parseResponseData(data) {
       // }
       break;
     case 'wesSetupRequest':
-      console.log('Incoming: wesSetupRequest');
+      console.log('Incoming message type: wesSetupRequest');
       // call function to handle the WES setup request
       // should display data of requesting node in front-end somewhere.
       // JSON format:
@@ -80,7 +83,7 @@ function parseResponseData(data) {
       // }
       break;
     case 'networkCommandReply':
-      console.log('Incoming: networkCommandReply');
+      console.log('Incoming message type: networkCommandReply');
       // call function to handle the WES setup request
       // should display data of requesting node in front-end somewhere.
       // JSON format:
@@ -93,7 +96,7 @@ function parseResponseData(data) {
       // }
       break;
     case 'ack':
-      console.log('Incoming: ack');
+      console.log('Incoming message type: ack');
       // call function to handle the WES setup request
       // should display data of requesting node in front-end somewhere.
       // JSON format:
@@ -104,7 +107,7 @@ function parseResponseData(data) {
       // }
       break;
     case 'nack':
-      console.log('Incoming: nack');
+      console.log('Incoming message type: nack');
       // call function to handle the WES setup request
       // should display data of requesting node in front-end somewhere.
       // JSON format:

@@ -1,5 +1,6 @@
 const express = require('express');
 const dbConnection = require('./src/dbConnection');
+const gatewayMqtt = require('./src/gatewayMqttConnect');
 const bcrypt = require('bcrypt');
 
 const app = express();

@@ -3,15 +3,7 @@
 // JSON string data to the
 // NeoCortec gateway
 
-/*
- * * Socket write function:
- * * The return value is true if the internal buffer
- * * is less than the highWaterMark configured when the stream was created
- * * after admitting chunk. If false is returned, further attempts to
- * * write data to the stream should stop until the 'drain' event is emitted.
- * * TODO: make nothing send when some value is set on full buffer,
- * * and allow sends again when 'drain' event triggers value to be changed.
- */
+const mqttGateway = require('./gatewayMqttConnect');
 
 module.exports = {
   sendNodeInfoRequest: sendNodeInfoRequest,
@@ -23,13 +15,15 @@ module.exports = {
   sendWesSetupResponse:sendWesSetupResponse,
 };
 
+
 /**
  * Message type: nodeInfoRequest
  * Function for sending a nodeInfoRequest.
  * Makes a JSON string and sends it to the gateway.
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendNodeInfoRequest() {
+function sendNodeInfoRequest(topic) {
   // Create message
   var objectType = 'nodeInfoRequest';
   var jsonObject = {};
@@ -37,7 +31,7 @@ function sendNodeInfoRequest() {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(message, topic)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
@@ -48,9 +42,10 @@ function sendNodeInfoRequest() {
  * Message type: neighborListRequest
  * Function for sending a neighborListRequest.
  * Makes a JSON string and sends it to the gateway.
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendNeighborListRequest() {
+function sendNeighborListRequest(topic) {
   // Create message
   var objectType = 'neighborListRequest';
   var jsonObject = {};
@@ -58,7 +53,7 @@ function sendNeighborListRequest() {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(message, topic)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
@@ -69,14 +64,15 @@ function sendNeighborListRequest() {
  * Message type: wesCmd
  * Function for starting the gateway WES server.
  * Makes a JSON string and sends it to the gateway.
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesServerStart() {
+function sendWesServerStart(topic) {
   // Create message
   var message = '{"objectType": "wesCmd","cmd": 1}';
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(message, topic)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
@@ -87,14 +83,15 @@ function sendWesServerStart() {
  * Message type: wesCmd
  * Function for stopping the gateway WES server.
  * Makes a JSON string and sends it to the gateway.
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesServerStop() {
+function sendWesServerStop(topic) {
   // Create message
   var message = '{"objectType": "wesCmd","cmd": 0}';
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(message, topic)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
@@ -107,14 +104,15 @@ function sendWesServerStop() {
  * Makes a JSON string and sends it to the gateway.
  * Status: 0 for OFF, 1 for ON (will be returned as a outgoing packet from the
  * gateway and handled by the message reciever and parser).
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesServerStatus() {
+function sendWesServerStatus(topic) {
   // Create message
   var message = '{"objectType": "wesCmd","cmd": 2}';
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(message, topic)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
@@ -129,15 +127,16 @@ function sendWesServerStatus() {
  * before it recives a wesSetupResponse)
  * Makes a JSON string and sends it to the gateway.
  * @param nodeId INT: Id of the node to force into WES mode.
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendForceWesMode(nodeId) {
+function sendForceWesMode(nodeId, topic) {
   // Create message
   var message = '{"objectType": "networkCommand","nodeId": ' + nodeId +
       ',"cmd": 5,"payload":[2]}';
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(topic, message)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
@@ -152,9 +151,10 @@ function sendForceWesMode(nodeId) {
  * @param nodeId INT: Id of the node to setup.
  * @param uniqueId String: uniqueId(HEX) of the node to setup.
  * @param nodeId String: appSettings(HEX) of the node to setup.
+ * @param topic String the MQTT topic the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesSetupResponse(nodeId, uniqueId, appSettings) {
+function sendWesSetupResponse(nodeId, uniqueId, appSettings, topic) {
   // Create message
   var jsonObject = {};
   jsonObject.objectType = "wesResponse";
@@ -164,7 +164,7 @@ function sendWesSetupResponse(nodeId, uniqueId, appSettings) {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (writeToGateWaysocket(message)) {  // <-- TODO: this function.
+  if (mqttGateway.publishMsg(message, topic)) {  // <-- TODO: this function.
     return true;
   } else {
     return false;
