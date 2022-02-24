@@ -1,7 +1,15 @@
 'use strict'
+//
+// Module for connecting to the MQTT broker tp receive and send messages.
+//
 
 const MQTT = require('async-mqtt');
 const msgParser = require('./neoNodeMsgParser');
+
+module.exports = {
+  publishMsg:publishMsg,
+};
+
 
 // connection option
 const options = {
@@ -32,6 +40,24 @@ const setupSubs =
 }
 
                 client.on('connect', setupSubs);
+
+/**
+ * Async Function for sending a JSONstring {message} to the MQTT topic {topic}.
+ * Makes a JSON string and sends it to the gateway.
+ * @param topic String the MQTT topic the message should be sent too.
+ * @param message JSONstring the JSON string message to publish.
+ * @returns BOOLEAN
+ */
+async function publishMsg(topic, message) {
+  try {
+    await client.publish(topic, message);
+    return true;
+  } catch (e) {
+    /* handle error */
+    console.error(e.stack);
+    return false;
+  }
+}
 
 // event will trigger when a message comes in on a topic we are subscribed too.
 client.on('message', function(topic, message) {
