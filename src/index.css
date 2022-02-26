@@ -11,3 +11,34 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.footer-bottom {
+  padding: 10px;
+  margin-top: 1rem;
+  background: #fff;
+  color: #00121b;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* for tablet mode view */
+
+@media screen and (max-width: 1275px) {
+  .main{
+    width: 50%
+  }
+  .footer-bottom {
+      width: 50%;
+  }
+}
+
+/* for mobile screen view */
+
+@media screen and (max-width: 660px) {
+  .main{
+    width: 50%
+  }
+  .footer-bottom {
+      width: 100%;
+  }
+}

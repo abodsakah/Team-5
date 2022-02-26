@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import UserID from './UserID';
-
+import Footer from './Footer';
 
 
 
@@ -96,6 +96,10 @@ const Index = ({text, cookies, t}) => {
     
     return (
         <main>
+            {/* logo */}
+        <div style={{ textAlign: 'right' }}>
+         <img src={require('./static/images/logo_tract.png')} />
+       </div>
             <UserID cookies={cookies} t={t}/>
                 {/* ADD-BUTTONS */}
                 <div style={{ backgroundColor: 'white', padding: '2em', }} >
@@ -157,6 +161,7 @@ const Index = ({text, cookies, t}) => {
             </Box>
         
             </div>
+            <Footer />
     </main>
     );
 
