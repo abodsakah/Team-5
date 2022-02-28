@@ -31,11 +31,14 @@ const Index = ({text, cookies, t}) => {
     
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
-        backgroundColor: 'black',
-        color: 'yellow',
+        backgroundColor: '#D3D3D3',
+        fontFamily: 'Bungee Inline',
+        fontSize: 20,
+        color: 'black',
         },
         [`&.${tableCellClasses.body}`]: {
-        fontSize: 15,
+        fontSize: 17,
+        font: 'bold',
         },
     }));
     
@@ -97,13 +100,13 @@ const Index = ({text, cookies, t}) => {
     return (
         <main>
             {/* logo */}
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ position: 'relative', textAlign: 'center' }}>
          <img src={require('./static/images/logo_tract.png')} />
        </div>
             <UserID cookies={cookies} t={t}/>
                 {/* ADD-BUTTONS */}
-                <div style={{ backgroundColor: 'white', padding: '2em', }} >
-                <Box style={{ textAlign: 'justify' }} sx={{ '& > :not(style)': { m: 1 } }}>
+                <div style={{ textAlign: 'right', backgroundColor: 'white', padding: '1rem', }} >
+                <Box style={{ textAlign: '' }} sx={{ '& > :not(style)': { m: 1 } }}>
                     <Fab style={{ backgroundColor: '#32CECF', '&:hover': { backgroundColor: '#E81A76' } }} aria-label="add">
                     <AddIcon />
                     </Fab>
@@ -113,13 +116,8 @@ const Index = ({text, cookies, t}) => {
 
     
             {/* List */}
-            <div style={{
-                backgroundColor: '#32CECF',
-                padding: '2em',
-                borderRadius: '3rem',
-                textAlign: 'center',
-            }}>
-            <Box sx={{ width: '100%' }}>
+            <div style={{ borderCollapse:'separate', borderRadius: '3rem', boxShadow: '5px 3px 5px 5px #d3d3d3' }}>
+            <Box sx={{ width: '100%' }}> 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label={t("mostRecent")} {...a11yProps(0)} />
