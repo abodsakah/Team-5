@@ -7,7 +7,7 @@ const MQTT = require('async-mqtt');
 const msgParser = require('./neoNodeMsgParser');
 
 module.exports = {
-  publishMsg:publishMsg,
+  publishMsg: publishMsg,
 };
 
 
@@ -22,16 +22,15 @@ const options = {
 
 const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
 
-// When passing async functions as event listeners, make sure to have a try
-// catch block
-
+// Called on sucessfull connection to setup subscriptions.
 const setupSubs =
     async () => {
   console.log('Connecting to MQTT topic...');
+  console.log('Connected = ' + client.connected);
   try {
     // Subscribe to the Out/# wildcard topic
     await client.subscribe('Out/#');
-    console.log('Connection made to MQTT topic sucessfully!');
+    console.log('Connected = ' + client.connected);
   } catch (e) {
     // Do something about it!
     console.log(e.stack);
@@ -49,12 +48,18 @@ const setupSubs =
  * @returns BOOLEAN
  */
 async function publishMsg(topic, message) {
-  try {
-    await client.publish(topic, message);
-    return true;
-  } catch (e) {
-    /* handle error */
-    console.error(e.stack);
+  // send message if client is connected.
+  if (client.connected == true) {
+    try {
+      await client.publish(topic, message);
+      return true;
+    } catch (e) {
+      /* handle error */
+      console.error(e.stack);
+      return false;
+    }
+  } else {
+    console.log('Message not published, Client not connected!');
     return false;
   }
 }

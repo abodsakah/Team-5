@@ -6,6 +6,7 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom';
 /* ------------------------------- Components ------------------------------- */
 import Index from './components/Index';
 import Devices from './components/Devices';
+import DeviceCategory from './components/DeviceCategory';
 import Users from './components/Users';
 import Admin from './components/Admin';
 
@@ -85,7 +86,6 @@ function App() {
 
   // }
 
-
   /* -------------------------------------------------------------------------- */
   /*                  COOMENT OUT BEFORE YOU PUSH TO PRODUCTION                 */
   /* -------------------------------------------------------------------------- */
@@ -127,6 +127,7 @@ function App() {
             <Route path="/" element={<Index cookies={cookies} t={t} />} />
             <Route path="/login" element={<Login t={t}/>} />
             <Route path="/devices" element={<Devices t={t}/>} />
+            <Route path="/devices/:category" element={<DeviceCategory t={t}/>} />
             <Route path="/users" element={<Users t={t}/>} />
             {cookies.get("user") && cookies.get("user").role === 0 &&
               <>

@@ -11,7 +11,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import RuleIcon from '@mui/icons-material/Rule';
 
-const Navbar = ({setOpen, open, userName, logout, image, cookies, t}) => {
+const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',

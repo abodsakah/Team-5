@@ -75,7 +75,7 @@ const se = {
     rules: "Regler",
 }
 
-let language = en;
+let language = se;
 
 function setLang(lang) { // gets the language code and sets the language
     switch (lang) {
