@@ -15,10 +15,13 @@ module.exports = {
 const options = {
   clean: true,  // retain session
   // Authentication information
-  clientId: 'NodeJs-test-client',
+  clientId: 'NodeJS-Server',
   username: 'flex',
   password: 'mqtt-flex',
 }
+
+const IN_TOPIC = 'In/';
+const OUT_TOPIC = 'Out/#';
 
 const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
 
@@ -29,7 +32,7 @@ const setupSubs =
   console.log('Connected = ' + client.connected);
   try {
     // Subscribe to the Out/# wildcard topic
-    await client.subscribe('Out/#');
+    await client.subscribe(OUT_TOPIC);
     console.log('Connected = ' + client.connected);
   } catch (e) {
     // Do something about it!
@@ -41,13 +44,15 @@ const setupSubs =
                 client.on('connect', setupSubs);
 
 /**
- * Async Function for sending a JSONstring {message} to the MQTT topic {topic}.
- * Makes a JSON string and sends it to the gateway.
- * @param topic String the MQTT topic the message should be sent too.
+ * Async Function for sending a JSONstring {message} to the MQTT
+ * companyId {companyId}. Makes a JSON string and sends it to the gateway.
+ * @param companyId String the companyId the message should be sent too.
  * @param message JSONstring the JSON string message to publish.
  * @returns BOOLEAN
  */
-async function publishMsg(topic, message) {
+async function publishMsg(companyId, message) {
+  // Create topic
+  var topic = IN_TOPIC+companyId
   // send message if client is connected.
   if (client.connected == true) {
     try {
@@ -85,7 +90,7 @@ const handleExit =
   }
 }
 
-process.on('SIGINT', handleExit);
+                process.on('SIGINT', handleExit);
 process.on('SIGQUIT', handleExit);
 process.on('SIGTERM', handleExit);
 
