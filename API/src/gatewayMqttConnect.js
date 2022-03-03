@@ -10,12 +10,12 @@ module.exports = {
   publishMsg: publishMsg,
 };
 
-
+const clientId = 'NodeJS-server'+Math.floor(Math.random()*100);
 // connection option
 const options = {
   clean: true,  // retain session
   // Authentication information
-  clientId: 'NodeJS-Server',
+  clientId: clientId,
   username: 'flex',
   password: 'mqtt-flex',
 }
