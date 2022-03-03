@@ -1,3 +1,4 @@
+'use strict'
 const express = require('express');
 const dbConnection = require('./src/dbConnection');
 const gatewayMqtt = require('./src/gatewayMqttConnect');
@@ -14,7 +15,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     console.log(`${req.method} request for '${req.url}'`);
-    
+
     next();
 });
 

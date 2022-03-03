@@ -29,7 +29,6 @@ const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
 const setupSubs =
     async () => {
   console.log('Connecting to MQTT topic...');
-  console.log('Connected = ' + client.connected);
   try {
     // Subscribe to the Out/# wildcard topic
     await client.subscribe(OUT_TOPIC);
