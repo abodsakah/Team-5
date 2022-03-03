@@ -10,12 +10,12 @@ module.exports = {
   publishMsg: publishMsg,
 };
 
-
+const clientId = 'NodeJS-server'+Math.floor(Math.random()*1000);
 // connection option
 const options = {
   clean: true,  // retain session
   // Authentication information
-  clientId: 'NodeJS-Server',
+  clientId: clientId,
   username: 'flex',
   password: 'mqtt-flex',
 }
@@ -28,6 +28,7 @@ const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
 // Called on sucessfull connection to setup subscriptions.
 const setupSubs =
     async () => {
+  console.log('Client ID: '+clientId);
   console.log('Connecting to MQTT topic...');
   try {
     // Subscribe to the Out/# wildcard topic
