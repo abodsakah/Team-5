@@ -40,7 +40,7 @@ const Admin = ({cookies, t, apiURL}) => {
           <LoadingOverlay loading={isLoading} />
           <Grid container spacing={10}>
             {companies.map(company => (
-              <Grid item xs={4} key={company.id}>
+              <Grid item xs={12} md={4} key={company.id}>
                 <Card>
                   <CardMedia
                     component="img"
