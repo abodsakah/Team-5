@@ -14,6 +14,7 @@ module.exports = {
   sendWesServerStatus: sendWesServerStatus,
   sendForceWesMode: sendForceWesMode,
   sendWesSetupResponse: sendWesSetupResponse,
+  deleteNode: deleteNode,
 };
 
 /* Base helper functions */

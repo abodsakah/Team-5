@@ -20,6 +20,7 @@ function parseMsgData(data, topic) {
 
   console.log('--------------------------------');
   console.log('Incoming Data:\n' + data + '\n');
+  console.log('Payload: ' +'['+ dataObj.payload +']'+ '\n');
   console.log('From topic: ' + topic + '\n');
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
