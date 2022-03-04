@@ -8,7 +8,8 @@ import Index from './components/Index';
 import Devices from './components/Devices';
 import DeviceCategory from './components/DeviceCategory';
 import Users from './components/Users';
-import Admin from './components/Admin';
+import Admin from './components/AdminPanel/Admin';
+import AddCompany from './components/AdminPanel/AddCompany';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography } from '@mui/material';
@@ -28,6 +29,8 @@ import {t} from './translator'
 
 function App() {
   
+  let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called
+
   const drawerWidth = 240; // the width of the drawer
 
   const cookies = new Cookies(); // create a new cookie instance
@@ -68,33 +71,12 @@ function App() {
   /* -------------------------------------------------------------------------- */
   /*                   ENABLE WHEN DEBUGING OR WORKING LOCALY                   */
   /* -------------------------------------------------------------------------- */
-  // if (cookies.get('user') === undefined) { // if there is no "user" cookie
-  //   let userID;
-  //   if (isAuthenticated) { // only when the user is authenticated we set the cookie
-  //     try {
-  //       userID = user.sub.split('|')[1]; // get the user id from the user object
-  //       fetch(`http://localhost:9000/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
-  //         cookies.set('user', data, {path: '/'}); // set the cookie
-  //         setUserData(data); // set the user data
-  //         return data; // return the user data to update the DOM
-  //       });
-  //     } catch (error) {
-  //       console.log(`Error: ${error}`);
-  //     }
-
-  //   }
-
-  // }
-
-  /* -------------------------------------------------------------------------- */
-  /*                  COOMENT OUT BEFORE YOU PUSH TO PRODUCTION                 */
-  /* -------------------------------------------------------------------------- */
   if (cookies.get('user') === undefined) { // if there is no "user" cookie
     let userID;
     if (isAuthenticated) { // only when the user is authenticated we set the cookie
       try {
         userID = user.sub.split('|')[1]; // get the user id from the user object
-        fetch(`https://api.abodsakka.xyz/api/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+        fetch(`${apiURL}/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
           cookies.set('user', data, {path: '/'}); // set the cookie
           setUserData(data); // set the user data
           return data; // return the user data to update the DOM
@@ -108,7 +90,6 @@ function App() {
   }
 
 
-
   // if the application is loading or the user is not authenticated, render the login page
   if (isLoading || !isAuthenticated) {
     return <Login loading={isLoading} cookies={cookies}/>
@@ -118,7 +99,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
-      <Box sx={{display: 'flex', flexGrow: 1}}>
+      <Box sx={{display: 'flex', flexGrow: 1}} style={{height: '100vh'}}>
         <Main open={open}>
           <DrawerHeader />
           <h1>{error}</h1>
@@ -131,7 +112,8 @@ function App() {
             <Route path="/users" element={<Users t={t}/>} />
             {cookies.get("user") && cookies.get("user").role === 0 &&
               <>
-                <Route path="/admin" element={<Admin t={t} />} />
+              <Route path="/admin" element={<Admin t={t} apiURL={apiURL}/>} />
+              <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL}/>} />
                 <Route path="/rules" element={<Rules />} />
               </>
             } {/* If there is a "user" cookie and if the user is admin */}

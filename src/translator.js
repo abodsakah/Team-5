@@ -49,6 +49,21 @@ const en = {
     logout: "Logout",
     admin: "Admin",
     rules: "Rules",
+    companyName: "Company Name",
+    supportEmail: "Support Email",
+    supportPhone: "Support Phone",
+    adminMail: "Admin Mail",
+    adminFirstName: "Admin First Name",
+    adminLastName: "Admin Last Name",
+    adminUsername: "Admin Username",
+    addCompany: "Add Company",
+    companies: "Companies",
+    tractAdminPanel: "Tract Admin Panel",
+    companiesInformation: "Companies Information",
+    companyAdminInformation: "Company Admin Information",
+    failing: "Failing",
+    errMessage: "Error message",
+    errMessages: "Error messages",
 }
 
 const se = {
@@ -73,9 +88,24 @@ const se = {
     logout: "Logga ut",
     admin: "Admin",
     rules: "Regler",
+    companyName: "Företagsnamn",
+    supportEmail: "Support Email",
+    supportPhone: "Support Telefon",
+    adminMail: "Admin Mail",
+    adminFirstName: "Admin Förnamn",
+    adminLastName: "Admin Efternamn",
+    adminUsername: "Admin Användarnamn",
+    addCompany: "Lägg till Företag",
+    companies: "Företag",
+    tractAdminPanel: "Tract Admin Panel",
+    companiesInformation: "Företagsinformation",
+    companyAdminInformation: "Företagsadmininformation",
+    failing: "Misslyckande",
+    errMessage: "Felmeddelande",
+    errMessages: "Felmeddelanden",
 }
 
-let language = se;
+let language = en;
 
 function setLang(lang) { // gets the language code and sets the language
     switch (lang) {

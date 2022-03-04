@@ -60,7 +60,63 @@ app.get("/api/createUser", async (req, res) => {
         } catch (e) {
             res.status(500).send("Error creating user");
         }
-        // handle error
+
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.get("/api/createCompany", async (req, res) => {
+    let apiKey = req.query.key;
+    let name = req.query.name;
+    let phone = req.query.phone;
+    let email = req.query.email;
+    let adminMail = req.query.adminmail;
+    let adminFirstName = req.query.adminfirstname;
+    let adminLastName = req.query.adminlastname;
+    let adminNickname = req.query.adminusername;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        try {
+            let company = await dbConnection.createCompany(name,email, phone);
+            let companyJson = {
+                companyId: company[0]
+            }
+
+            let companyId = company[0];
+            // generate random password
+            let password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            let passHash = await bcrypt.hash(password, 12);
+            let user = await dbConnection.createUser(adminMail, passHash, adminFirstName, adminLastName, adminNickname, 1, companyId);
+            console.log(req);
+            // send success message
+            let status = {
+                status: "success",
+                message: "Company created",
+            }
+            res.status(200).send(JSON.stringify(status));
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Error creating company");
+        }
+
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.get("/api/getCompnies", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        try {
+            let companies = await dbConnection.getCompanies();
+            res.send(companies);
+        } catch (e) {
+            res.status(500).send("Error getting companies");
+        }
 
     } else {
         res.status(401).send("Invalid API key");
