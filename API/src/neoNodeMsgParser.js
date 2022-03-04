@@ -4,8 +4,38 @@
 // NeoCortec gateway
 
 module.exports = {
-  parseMsgData:parseMsgData,
+  parseMsgData: parseMsgData,
+  parseMsgQueue:queue
 };
+
+/*
+ * Variables
+ */
+class Queue {
+  constructor() {
+    this.data = [];
+  }
+  enqueue(element) {
+    return this.data.push(element);
+  }
+  dequeue() {
+    return this.data.shift();
+  }
+  peek() {
+    return this.data[0];
+  }
+  length(){
+    return this.data.length;
+  }
+}
+
+const queue = new Queue;
+
+
+
+/*
+ * Functions
+ */
 
 /**
  * Function for parsing the turning the data
@@ -17,10 +47,18 @@ module.exports = {
  */
 function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
+  // add JSON object to queue
+  queue.enqueue(dataObj);
+  if (queue.length() > 50) {
+    queue.dequeue();
+  }
 
   console.log('--------------------------------');
   console.log('Incoming Data:\n' + data + '\n');
-  console.log('Payload: ' +'['+ dataObj.payload +']'+ '\n');
+  console.log(
+      'Payload: ' +
+      '[' + dataObj.payload + ']' +
+      '\n');
   console.log('From topic: ' + topic + '\n');
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
