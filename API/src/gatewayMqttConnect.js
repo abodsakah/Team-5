@@ -50,7 +50,7 @@ const setupSubs =
  * @param message JSONstring the JSON string message to publish.
  * @returns BOOLEAN
  */
-async function publishMsg(companyId, message) {
+async function publishMsg(message, companyId) {
   // Create topic
   var topic = IN_TOPIC+companyId
   // send message if client is connected.
