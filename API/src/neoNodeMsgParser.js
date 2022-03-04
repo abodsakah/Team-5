@@ -7,6 +7,8 @@ module.exports = {
   parseMsgData:parseMsgData,
 };
 
+const SWITCH_CLOSED = 32764
+
 /**
  * Function for parsing the turning the data
  * into a JSON object and deciding what to do next.
@@ -47,6 +49,47 @@ function parseMsgData(data, topic) {
       // "packageAgeType":"normal",
       // "payload":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
       // }
+
+      console.log('Incoming message: ' + '\n');
+      var preId = dataObj.payload[0];
+      switch (preId) {
+        case 1:
+          // temperature sensor
+          var tempData = dataObj.payload[1].toString(16) + dataObj.payload[2].toString(16);
+          tempData = parseInt(tempData, 16);
+          var humidityData = dataObj.payload[3].toString(16) + dataObj.payload[4].toString(16);
+          humidityData = parseInt(humidityData, 16);
+
+          console.log('Temperature: ' + convertToCelsius(tempData) + 'C');
+          console.log('Humidity: ' + getHumidity(humidityData) + '%');
+
+          break;
+        case 2:
+          // switch sensor
+          var switchData = dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
+          switchData = parseInt(switchData, 16);
+          
+          if (switchData == SWITCH_CLOSED) {
+            console.log('Switch closed!');
+          } else {
+            console.log('Switch open!');
+          }
+
+          break;
+        case 3:
+          // potentiometer
+          var analogData = dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
+          analogData = parseInt(analogData, 16);
+
+          console.log('Analog value: ' + analogData);
+
+          break;
+        default:
+          console.log('Invalid sensor type');
+          break;
+      }
+
+
       break;
     case 'nodeInfoReply':
       console.log('Incoming message type: nodeInfoReply');
@@ -123,3 +166,15 @@ function parseMsgData(data, topic) {
   }
 }
 
+
+// Private Help Functions
+
+// Returns the correct temperature in celsius from recieved payload
+function convertToCelsius(data) {
+	return data / (2 ** 16) * 175.72 - 46.85;
+}
+
+// Returns the correct humidity level from recieved payload
+function getHumidity(data) {
+	return data / (2 ** 16) * 125 - 6;
+}
