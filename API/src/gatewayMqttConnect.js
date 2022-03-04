@@ -8,6 +8,7 @@ const msgParser = require('./neoNodeMsgParser');
 
 module.exports = {
   publishMsg: publishMsg,
+  isConnected: isConnected,
 };
 
 const clientId = 'NodeJS-server'+Math.floor(Math.random()*1000);
@@ -42,6 +43,13 @@ const setupSubs =
 }
 
                 client.on('connect', setupSubs);
+
+ /**
+  * get mqtt connection status
+  */
+function isConnected(){
+  return client.connected;
+}
 
 /**
  * Async Function for sending a JSONstring {message} to the MQTT

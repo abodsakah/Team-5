@@ -5,7 +5,7 @@
 
 module.exports = {
   parseMsgData: parseMsgData,
-  parseMsgQueue: queue
+  getMsgQueue:getMsgQueue,
 };
 
 /*
@@ -36,6 +36,9 @@ const queue = new Queue;
 /*
  * Functions
  */
+function getMsgQueue(){
+  return queue;
+}
 
 /**
  * Function for parsing the turning the data

@@ -56,8 +56,8 @@ function sendNeighborListRequest(companyId) {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (mqttGateway.publishMsg(message, companyId)) {
-    return true;
+  if (mqttGateway.isConnected()) {
+    return mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
