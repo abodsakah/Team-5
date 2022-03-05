@@ -63,12 +63,24 @@ function parseMsgData(data, topic) {
       '[' + dataObj.payload + ']' +
       '\n');
   console.log('From topic: ' + topic + '\n');
+
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
   switch (dataObj.objectType) {
     case 'neighborListReply':
-      // mostly for testing purposes,
-      // should maybe call something for a debug front-end.
+      // call function for handling incoming message from some node.
+      // JSON format:
+      //{
+      //"objectType":"neighborListReply",
+      //"gwTimestamp":"2016-11-09T16:00:00.000Z",
+      //“nodeId”:1, “RSSI”:1
+      //“nodeId”:2, “RSSI”:2
+      //“nodeId”:4, “RSSI”:4
+      //“nodeId”:8, “RSSI”:8
+      //“nodeId”:9, “RSSI”:9
+      //“nodeId”:10, “RSSI”:10
+      //}
+
       console.log('Incoming message type: neighborListReply');
       for (var node of dataObj.neighbors) {
         console.log('NodeId: ' + node.nodeId + '\n');
