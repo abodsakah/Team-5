@@ -98,6 +98,10 @@ const handleExit =
   }
 }
 
+<<<<<<< HEAD
+=======
+process.on('exit', handleExit);
+>>>>>>> refs/remotes/origin/main
 process.on('SIGINT', handleExit);
 process.on('SIGQUIT', handleExit);
 process.on('SIGTERM', handleExit);
