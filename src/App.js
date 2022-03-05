@@ -33,7 +33,6 @@ function App() {
 
   const drawerWidth = 240; // the width of the drawer
 
-  console.log(language)
 
   const cookies = new Cookies(); // create a new cookie instance
 

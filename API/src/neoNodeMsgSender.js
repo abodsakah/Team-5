@@ -48,16 +48,15 @@ function sendNodeInfoRequest(companyId) {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendNeighborListRequest(companyId) {
+async function sendNeighborListRequest(companyId) {
   // Create message
   var objectType = 'neighborListRequest';
   var jsonObject = {};
   jsonObject.objectType = objectType;
   var message = JSON.stringify(jsonObject);
-
   // Send message
-  if (mqttGateway.isConnected()) {
-    return mqttGateway.publishMsg(message, companyId);
+  if (await mqttGateway.isConnected()) {
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }

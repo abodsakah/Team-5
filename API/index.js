@@ -130,8 +130,8 @@ app.get("/api/getCompnies", async (req, res) => {
 
 app.get("/api/chips/nighborreq", async (req, res) => {
     let companyId = req.query.companyid;
-    let data = neoNodeMsgSender.sendNeighborListRequest(companyId);
-
+    let data = await  neoNodeMsgSender.sendNeighborListRequest(companyId);
+    console.log(data);
     res.send(data);
 });
 
