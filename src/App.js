@@ -33,6 +33,8 @@ function App() {
 
   const drawerWidth = 240; // the width of the drawer
 
+  console.log(language)
+
   const cookies = new Cookies(); // create a new cookie instance
 
   const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
@@ -76,7 +78,7 @@ function App() {
     if (isAuthenticated) { // only when the user is authenticated we set the cookie
       try {
         userID = user.sub.split('|')[1]; // get the user id from the user object
-        fetch(`${apiURL}/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+        fetch(`${apiURL}user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
           cookies.set('user', data, {path: '/'}); // set the cookie
           setUserData(data); // set the user data
           return data; // return the user data to update the DOM

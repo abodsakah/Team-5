@@ -1,122 +1,30 @@
+
+
+let language = getLanguageFile("en"); // the language json
+
 /**
- * SAMPLE
  * 
-     const [lang] = {
-        loading: "",
-        login: "",
-        welcome: "",
-        userId: "",
-        addSensor: "",
-        add: "",
-        mostRecent: "",
-        sensor: "",
-        articleNumber: "",
-        date: "",
-        time: "",
-        amount: "",
-        dashboard: "",
-        device: "",
-        devices: "",
-        user: "",
-        users: "",
-        profile: "",
-        logout: "",
-        admin: ""
-     }
- * 
- * 
+ * @param {*} language The code of the language to be loaded
+ * @returns the language json from the file
  */
-
-const en = {
-    loading: "Loading",
-    login: "Login",
-    welcome: "Welcome",
-    userId: "User id",
-    addSensor: "Add sensor",
-    add: "Add",
-    mostRecent: "Most recent",
-    sensor: "Sensor",
-    articleNumber: "Article number",
-    date: "Date",
-    time: "Time",
-    amount: "Amount",
-    dashboard: "Dashboard",
-    device: "Device",
-    devices: "Devices",
-    user: "User",
-    users: "Users",
-    profile: "Profile",
-    logout: "Logout",
-    admin: "Admin",
-    rules: "Rules",
-    companyName: "Company Name",
-    supportEmail: "Support Email",
-    supportPhone: "Support Phone",
-    adminMail: "Admin Mail",
-    adminFirstName: "Admin First Name",
-    adminLastName: "Admin Last Name",
-    adminUsername: "Admin Username",
-    addCompany: "Add Company",
-    companies: "Companies",
-    tractAdminPanel: "Tract Admin Panel",
-    companiesInformation: "Companies Information",
-    companyAdminInformation: "Company Admin Information",
-    failing: "Failing",
-    errMessage: "Error message",
-    errMessages: "Error messages",
+function getLanguageFile(language) {
+    return require(`./locales/${language}.json`);
 }
 
-const se = {
-    loading: "Laddar",
-    login: "Logga in",
-    welcome: "Välkommen",
-    userId: "Användar-ID",
-    addSensor: "Lägg till",
-    add: "Lägg till",
-    mostRecent: "Senaste",
-    sensor: "Sensor",
-    articleNumber: "Artikelnummer",
-    date: "Datum",
-    time: "Tid",
-    amount: "Antal",
-    dashboard: "Dashboard",
-    device: "Enhet",
-    devices: "Enheter",
-    user: "Användare",
-    users: "Användare",
-    profile: "Profil",
-    logout: "Logga ut",
-    admin: "Admin",
-    rules: "Regler",
-    companyName: "Företagsnamn",
-    supportEmail: "Support Email",
-    supportPhone: "Support Telefon",
-    adminMail: "Admin Mail",
-    adminFirstName: "Admin Förnamn",
-    adminLastName: "Admin Efternamn",
-    adminUsername: "Admin Användarnamn",
-    addCompany: "Lägg till Företag",
-    companies: "Företag",
-    tractAdminPanel: "Tract Admin Panel",
-    companiesInformation: "Företagsinformation",
-    companyAdminInformation: "Företagsadmininformation",
-    failing: "Misslyckande",
-    errMessage: "Felmeddelande",
-    errMessages: "Felmeddelanden",
-}
-
-let language = en;
-
+/**
+ * 
+ * @param {*} lang the language code
+ */
 function setLang(lang) { // gets the language code and sets the language
     switch (lang) {
         case "en":
-            language = en;
+            language = getLanguageFile("en");
             break;
-        case "se":
-            language = se;
+        case "sv":
+            language = getLanguageFile("sv");
             break;
         default:
-            language = en;
+            language = getLanguageFile("en");
             break;
     }
 }
@@ -133,5 +41,6 @@ function t(string) {
 
 module.exports = {
     setLang,
+    getLanguageFile,
     t
 }

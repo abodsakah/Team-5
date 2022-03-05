@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-import { styled, useTheme } from '@mui/material';
+import { styled, SwipeableDrawer, useTheme } from '@mui/material';
 import {Toolbar, IconButton, Drawer, Typography, Divider, List, ListItemIcon, ListItem, ListItemText, Menu, MenuItem, Avatar} from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -10,6 +10,7 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import RuleIcon from '@mui/icons-material/Rule';
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 
 const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
 
@@ -120,19 +121,13 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
                             {/* Items in the user menu */}
                             <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>{t("profile")}</MenuItem>
                             <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>{t("logout")}</MenuItem>
-                            {/* Check if there is a "user" cookie and if there is see if the user role is 0 */}
-                            {cookies.get("user") && cookies.get("user").role === 0 &&
-                                <MenuItem style={{paddingRight: '4rem'}} component={Link} to="/admin">
-                                    {t("admin")}
-                                </MenuItem>
-                            }
                         </Menu>
                     </div>
                     {/* End User Button */}
                 </Toolbar>
             </AppBar>
             {/* The drawer that showes up when the menu button is pressed */}
-            <Drawer
+            <SwipeableDrawer
             sx={{
                 width: drawerWidth,
                 flexShrink: 0,
@@ -143,7 +138,9 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
             }}
             variant='persistent'
             anchor='left'
-            open={open}
+                open={open}
+                onClose={handleDrawerTrigger}
+                onOpen={handleDrawerTrigger}
             >
             <DrawerHeader>
                 <IconButton onClick={handleDrawerTrigger}>
@@ -172,16 +169,40 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
                     </ListItemIcon>
                     <ListItemText primary={t("users")} />
                     </ListItem>
-                    {cookies.get("user") && cookies.get("user").role === 0 &&
-                    <ListItem button component={Link} to="/rules">
-                        <ListItemIcon>
-                            <RuleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={t("rules")} />
-                    </ListItem>
-                    }
                 </List>
-            </Drawer>
+                {cookies.get("user") && Number(cookies.get("user").role) < 2 &&
+                    <>
+                        <Divider />
+                        <br />
+                        <Typography variant="h6" sx={{textAlign: 'center'}}>{t("admin")}</Typography>
+                        <List>
+                            {cookies.get("user").role === 0 &&
+                                <ListItem button component={Link} to="/admin/">
+                                    <ListItemIcon>
+                                        <FeaturedPlayListIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={t("companies")} />
+                                </ListItem>
+                            }
+                        </List>
+                        {cookies.get("user").role === 0 &&
+                        <>
+                        <br/>
+                        <Typography variant="h6" sx={{textAlign: 'center'}}>{t("rules")}</Typography>
+                        <List>
+                            <ListItem button component={Link} to="/rules">
+                                <ListItemIcon>
+                                    <RuleIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={t("rules")} />
+                            </ListItem>
+                        </List>
+                    </>
+                    }
+                    </>
+                }
+                
+            </SwipeableDrawer>
             {/* End Drawer */}
         </>
     )

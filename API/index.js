@@ -1,9 +1,10 @@
 'use strict'
 const express = require('express');
-const dbConnection = require('./src/dbConnection');
-const gatewayMqtt = require('./src/gatewayMqttConnect');
-const neoNodeMsgSender = require('./src/neoNodeMsgSender');
-const bcrypt = require('bcrypt');
+const dbConnection = require('./src/dbConnection'); // gets information from the database
+const gatewayMqtt = require('./src/gatewayMqttConnect'); // 
+const neoNodeMsgSender = require('./src/neoNodeMsgSender'); // Sends messages to the gateway
+const bcrypt = require('bcrypt'); // for hashing passwords
+
 
 const app = express();
 
@@ -96,6 +97,8 @@ app.get("/api/createCompany", async (req, res) => {
             let status = {
                 status: "success",
                 message: "Company created",
+                email: adminMail,
+                password: passwords
             }
             res.status(200).send(JSON.stringify(status));
         } catch (e) {
