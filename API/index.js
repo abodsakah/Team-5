@@ -2,6 +2,7 @@
 const express = require('express');
 const dbConnection = require('./src/dbConnection');
 const gatewayMqtt = require('./src/gatewayMqttConnect');
+const neoNodeMsgSender = require('./src/neoNodeMsgSender');
 const bcrypt = require('bcrypt');
 
 const app = express();
@@ -122,6 +123,13 @@ app.get("/api/getCompnies", async (req, res) => {
     } else {
         res.status(401).send("Invalid API key");
     }
+});
+
+app.get("/api/chips/nighborreq", async (req, res) => {
+    let companyId = req.query.companyid;
+    let data = neoNodeMsgSender.sendNeighborListRequest(companyId);
+
+    res.send(data);
 });
 
 app.get("*", (req, res) => {

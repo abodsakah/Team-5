@@ -90,7 +90,7 @@ const handleExit =
   }
 }
 
-                process.on('SIGINT', handleExit);
+process.on('SIGINT', handleExit);
 process.on('SIGQUIT', handleExit);
 process.on('SIGTERM', handleExit);
 

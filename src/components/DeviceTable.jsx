@@ -25,7 +25,7 @@ function DeviceTable({devices}) {
                         <TableRow>
                             <TableCell component="th" scope="row" style={{ border: 'none', padding: "7px" }} >
                             {/* Card */}
-                            <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', padding: "0 1em", boxShadow:"5px 5px 5px #F0F0F0" }} >
+                            <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', padding: "0 1em", boxShadow:"none" }} >
                                 {/* Sensor title */}
                                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%'}}>
                                 <CardContent sx={{ flex: '1 0 auto', padding: '1em 0' }}>
