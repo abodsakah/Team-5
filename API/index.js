@@ -3,6 +3,7 @@ const express = require('express');
 const dbConnection = require('./src/dbConnection'); // gets information from the database
 const gatewayMqtt = require('./src/gatewayMqttConnect'); // 
 const neoNodeMsgSender = require('./src/neoNodeMsgSender'); // Sends messages to the gateway
+const neoNodeMsgParser = require('./src/neoNodeMsgParser'); // Parses messages from the gateway
 const bcrypt = require('bcrypt'); // for hashing passwords
 
 
@@ -129,11 +130,22 @@ app.get("/api/getCompnies", async (req, res) => {
 });
 
 app.get("/api/chips/nighborreq", async (req, res) => {
-    let companyId = req.query.companyid;
+    let companyId = req.query.companyId;
+    console.log(companyId);
     let data = await  neoNodeMsgSender.sendNeighborListRequest(companyId);
-    console.log(data);
-    res.send(data);
+    let nodes = await neoNodeMsgParser.getNodes();
+    console.log(await neoNodeMsgParser.nodes);
+    res.send(await neoNodeMsgParser.nodes);
 });
+
+app.get("/api/chips/nodeinfo", async (req, res) => {
+    let companyId = req.query.companyId;
+    let nodeId = req.query.nodeId;
+
+    let data = await neoNodeMsgSender.sendNodeInfoRequest(companyId, nodeId);
+    let nodeInfo = await neoNodeMsgParser.getNodesInfo();
+    res.send(nodeInfo);
+})
 
 app.get("*", (req, res) => {
     res.status(404).send("Not found");

@@ -3,11 +3,9 @@
 // JSON string data coming from the
 // NeoCortec gateway
 
-module.exports = {
-  parseMsgData: parseMsgData,
-  getMsgQueue:getMsgQueue,
-};
 
+let nodes = [];
+let nodeInfo = [];
 /*
  * Variables
  */
@@ -48,7 +46,7 @@ function getMsgQueue(){
  * @param topic String the MQTT topic of the message.
  * @returns *TODO* Will call appropriate function and *maybe* return anything.
  */
-function parseMsgData(data, topic) {
+async function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
   // add JSON object to queue
   queue.enqueue(dataObj);
@@ -61,7 +59,7 @@ function parseMsgData(data, topic) {
   console.log(
       'Payload: ' +
       '[' + dataObj.payload + ']' +
-      '\n');
+    '\n');
   console.log('From topic: ' + topic + '\n');
 
   // If the data is a neighborCall
@@ -84,6 +82,17 @@ function parseMsgData(data, topic) {
       console.log('Incoming message type: neighborListReply');
       for (var node of dataObj.neighbors) {
         console.log('NodeId: ' + node.nodeId + '\n');
+        console.log(nodes)
+        if (nodes.length > 0) {
+          nodes = []
+        }
+
+        for (var node of dataObj.neighbors) {
+          nodes.push({
+            nodeId: node.nodeId,
+            RSSI: node.RSSI
+          });
+        }
       }
       break;
     case 'receivedPayload':
@@ -159,6 +168,18 @@ function parseMsgData(data, topic) {
       // “uidHex”:”ffffffffff”,
       // “nodeType”:1
       // }
+      console.log(dataObj);
+      if (nodeInfo.length > 0) {
+        // find the node with the same nodeId
+        for (var node of nodeInfo) {
+          if (node.nodeId == dataObj.nodeId) {
+            nodeInfo.splice(nodeInfo.indexOf(node), 1);
+            break;
+          }
+        }
+
+      }
+      nodeInfo.push(dataObj);
       break;
     case 'wesStatus':
       console.log('Incoming message type: wesStatus');
@@ -235,3 +256,22 @@ function convertToCelsius(data) {
 function getHumidity(data) {
   return data / (2 ** 16) * 125 - 6;
 }
+/**
+ * 
+ * @returns The nighbor list of the node
+ */
+function getNodes() {
+  return nodes;
+}  
+
+function getNodesInfo() {
+  return nodeInfo;
+}
+
+module.exports = {
+  parseMsgData: parseMsgData,
+  getMsgQueue: getMsgQueue,
+  getNodes: getNodes,
+  getNodesInfo,
+  nodes: nodes,
+};

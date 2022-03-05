@@ -55,7 +55,9 @@ async function sendNeighborListRequest(companyId) {
   jsonObject.objectType = objectType;
   var message = JSON.stringify(jsonObject);
   // Send message
+
   if (await mqttGateway.isConnected()) {
+    console.log(message)
     return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
