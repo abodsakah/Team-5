@@ -1,7 +1,7 @@
 'use strict'
 const express = require('express');
 const dbConnection = require('./src/dbConnection'); // gets information from the database
-const gatewayMqtt = require('./src/gatewayMqttConnect'); // 
+const gatewayMqtt = require('./src/gatewayMqttConnect'); //
 const neoNodeMsgSender = require('./src/neoNodeMsgSender'); // Sends messages to the gateway
 const neoNodeMsgParser = require('./src/neoNodeMsgParser'); // Parses messages from the gateway
 const bcrypt = require('bcrypt'); // for hashing passwords
@@ -129,7 +129,7 @@ app.get("/api/getCompnies", async (req, res) => {
     }
 });
 
-app.get("/api/chips/nighborreq", async (req, res) => {
+app.get("/api/nodes/neighborreq", async (req, res) => {
     let companyId = req.query.companyId;
     console.log(companyId);
     let data = await  neoNodeMsgSender.sendNeighborListRequest(companyId);
@@ -138,7 +138,7 @@ app.get("/api/chips/nighborreq", async (req, res) => {
     res.send(await neoNodeMsgParser.nodes);
 });
 
-app.get("/api/chips/nodeinfo", async (req, res) => {
+app.get("/api/nodes/nodeinfo", async (req, res) => {
     let companyId = req.query.companyId;
     let nodeId = req.query.nodeId;
 
