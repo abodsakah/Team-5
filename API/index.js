@@ -168,6 +168,9 @@ server.on('connection', connection => {
     });
 });
 
+/**
+ * Shut down server by closing all connections
+ */
 function shutDown() {
     console.log('Received kill signal, shutting down gracefully');
     server.close(() => {
@@ -175,16 +178,19 @@ function shutDown() {
         process.exit(0);
     });
 
+    // force close connections
     setTimeout(() => {
         console.error('Could not close connections in time, forcefully shutting down');
         process.exit(1);
     }, 10000);
 
+    // force close connections after 10 seconds
     setTimeout(() => {
         console.error('Could not close connections in time, forcefully shutting down');
         process.exit(1);
     }, 30000);
     
+    // close all connections
     connections.forEach(curr => curr.end());
     setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 }
