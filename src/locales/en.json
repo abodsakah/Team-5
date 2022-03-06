@@ -34,5 +34,14 @@
     "companyAdminInformation": "Company Admin Information",
     "failing": "Failing",
     "errMessage": "Error message",
-    "errMessages": "Error messages"
+    "errMessages": "Error messages",
+    "node": "Node",
+    "nodes": "Nodes",
+    "nodeInformation": "Node Information",
+    "addNode": "Add Node",
+    "nodeId": "Node id",
+    "nodeType": "Node type",
+    "nodeCompany": "Node company",
+    "noNodes": "No nodes"
+
 }

@@ -34,5 +34,13 @@
     "companyAdminInformation": "Företagsadmininformation",
     "failing": "Misslyckande",
     "errMessage": "Felmeddelande",
-    "errMessages": "Felmeddelanden"
+    "errMessages": "Felmeddelanden",
+    "node": "Nod",
+    "nodes": "Noder",
+    "nodeInformation": "Node information",
+    "addNode": "Lägg till en Node",
+    "nodeId": "Nod id",
+    "nodeType": "Nod typ",
+    "nodeCompany": "Nod företag",
+    "noNodes": "Inga noder"
 }

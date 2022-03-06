@@ -10,6 +10,8 @@ import DeviceCategory from './components/DeviceCategory';
 import Users from './components/Users';
 import Admin from './components/AdminPanel/Admin';
 import AddCompany from './components/AdminPanel/AddCompany';
+import AddNode from './components/AdminPanel/AddNode';
+import Nodes from './components/AdminPanel/Nodes';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography } from '@mui/material';
@@ -29,7 +31,7 @@ import {t} from './translator'
 
 function App() {
   
-  let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called
+  let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called
 
   const drawerWidth = 240; // the width of the drawer
 
@@ -97,7 +99,7 @@ function App() {
   }
 
 
-  return (
+    return (
     <BrowserRouter>
       <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
       <Box sx={{display: 'flex', flexGrow: 1}} style={{height: '100vh'}}>
@@ -113,8 +115,10 @@ function App() {
             <Route path="/users" element={<Users t={t}/>} />
             {cookies.get("user") && cookies.get("user").role === 0 &&
               <>
-              <Route path="/admin" element={<Admin t={t} apiURL={apiURL}/>} />
-              <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL}/>} />
+                <Route path="/admin" element={<Admin t={t} apiURL={apiURL}/>} />
+                <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL} />} />  
+                <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />            
+                <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL}/>} />
                 <Route path="/rules" element={<Rules />} />
               </>
             } {/* If there is a "user" cookie and if the user is admin */}
@@ -125,7 +129,7 @@ function App() {
         </Main>
       </Box>
     </BrowserRouter>
-  );
+    );
 }
 
 export default App;

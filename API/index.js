@@ -119,11 +119,23 @@ app.get("/api/getCompnies", async (req, res) => {
     if (keyValid) {
         try {
             let companies = await dbConnection.getCompanies();
-            res.send(companies);
+            res.status(200).send(companies);
         } catch (e) {
             res.status(500).send("Error getting companies");
         }
 
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.get("/api/getNodes", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        let nodes = await dbConnection.getPreloadedNodes();
+        res.status(200).send(nodes);
     } else {
         res.status(401).send("Invalid API key");
     }

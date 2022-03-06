@@ -70,6 +70,16 @@ async function createCompany(name, email, phone) {
     const result = await db.query("INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (?, ?, ?)", {type: QueryTypes.INSERT, replacements: [name, email, phone]});
     return result;
 }
+
+/**
+ * 
+ * @returns All the nodes in the preloaded databases
+ */
+async function getPreloadedNodes() {
+    const result = await db.query("SELECT * FROM `node_preloaded`", {type: QueryTypes.SELECT});
+    return result;
+}
+
 /**
  * 
  * @returns All companies
@@ -85,6 +95,7 @@ module.exports = {
     getUserById,
     createUser,
     createCompany,
-    getCompanies
+    getCompanies,
+    getPreloadedNodes
 }
 

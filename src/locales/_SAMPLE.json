@@ -34,5 +34,9 @@
     "companyAdminInformation": "",
     "failing": "",
     "errMessage": "",
-    "errMessages": ""
+    "errMessages": "",
+    "node": "",
+    "nodes": "",
+    "nodeInformation": "",
+    "addNode": ""
  }
