@@ -80,6 +80,11 @@ async function getPreloadedNodes() {
     return result;
 }
 
+async function addPreloadedNode(deviceId, deviceType, companyId) {
+    const result = await db.query("INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES (?, ?, ?)", {type: QueryTypes.INSERT, replacements: [deviceId, deviceType, companyId]});
+    return result;
+}
+
 /**
  * 
  * @returns All companies
@@ -96,6 +101,7 @@ module.exports = {
     createUser,
     createCompany,
     getCompanies,
-    getPreloadedNodes
+    getPreloadedNodes,
+    addPreloadedNode
 }
 

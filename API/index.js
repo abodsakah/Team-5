@@ -141,6 +141,29 @@ app.get("/api/getNodes", async (req, res) => {
     }
 });
 
+app.get("/api/addNode", async (req, res) => { 
+    let apiKey = req.query.key;
+    let deviceId = req.query.deviceid;
+    let deviceType = req.query.devicetype;
+    let companyId = req.query.companyid;
+
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    
+    if (keyValid) {
+        try {
+            let device = await dbConnection.addPreloadedNode(deviceId, deviceType, companyId);
+            console.log(device);
+            res.status(200).send(device);
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Error creating device");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+
 app.get("/api/nodes/neighborreq", async (req, res) => {
     let companyId = req.query.companyId;
     console.log(companyId);

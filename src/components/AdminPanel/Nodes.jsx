@@ -9,12 +9,17 @@ import {Link} from 'react-router-dom'
 
 function Nodes({t, apiURL}) {
     const [nodes, setNodes] = React.useState([])
-    
-    fetch(`${apiURL}getNodes?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(
-        (result) => {
-            setNodes(result)
-        }
-    )
+    const [fetched, setFetched] = React.useState(false)
+
+    if (!fetched) {
+        fetch(`${apiURL}getNodes?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(
+            (result) => {
+                setNodes(result)
+                console.log(result)
+                setFetched(true)
+            }
+        )
+    }
 
     return (
         <Box sx={{
@@ -38,12 +43,12 @@ function Nodes({t, apiURL}) {
                         </TableHead>
                         <TableBody>
                             {nodes.map((node) => (
-                                <TableRow key={node.id}>
+                                <TableRow key={node.uid}>
                                     <TableCell component="th" scope="row">
-                                        {node.id}
+                                        {node.uid}
                                     </TableCell>
                                     <TableCell>{node.type}</TableCell>
-                                    <TableCell>{node.company}</TableCell>
+                                    <TableCell>{node.company_id}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

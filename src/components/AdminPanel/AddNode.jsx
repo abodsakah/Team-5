@@ -9,6 +9,7 @@ class Scanner extends React.Component {
             delay: 500,
             result: 'No result',
         };
+        this.getDeviceId = props.getDeviceId;
         this.handleScan = this.handleScan.bind(this);
         this.handleError = this.handleError.bind(this);
     }
@@ -18,6 +19,7 @@ class Scanner extends React.Component {
             this.setState({
                 result: data
             });
+            this.getDeviceId(data.text);
         }
     }
 
@@ -33,7 +35,12 @@ class Scanner extends React.Component {
         }
 
         return (
-            <Box>
+            <Box style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
                 {/* The Qr reader component */}
                 <QrReader
                     delay={this.state.delay}
@@ -42,7 +49,9 @@ class Scanner extends React.Component {
                     style={previewStyle}
                     facingMode="rear"
                 />
-                <p>{this.state.result !== null && this.state.result.text}</p>
+                <p>{this.state.result !== null && 
+                    <Typography variant="h6">Device Id: {this.state.result.text}</Typography>
+                }</p>
             </Box>
         )
     }
@@ -67,6 +76,13 @@ function AddNode({t, apiURL}) {
     const [company, setcompany] = React.useState(''); // the company that is choosen
     const [companies, setCompanies] = React.useState([]); // the companies that are available
 
+    // get data from qr code
+    const [deviceId, setDeviceId] = React.useState('');
+
+    const getDeviceId = (deviceId) => {
+        setDeviceId(deviceId);
+    }
+
     const handleNodeTypeChange = (event) => { // when the node type is changed
         setNodeType(event.target.value);
     }
@@ -87,6 +103,19 @@ function AddNode({t, apiURL}) {
                 }
             )
     }
+    
+    const sendDevice = () => {
+        fetch(`${apiURL}addNode?key=${process.env.REACT_APP_TRACT_API_KEY}&deviceid=${deviceId}&devicetype=${nodeType}&companyid=${company}`)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log(result);
+                },
+                (error) => {
+                    console.log(error);
+                }
+        )
+    }
 
     return (
         <Box sx={{
@@ -96,8 +125,10 @@ function AddNode({t, apiURL}) {
             justifyContent: 'center',
         }}>
             <QrContainer>
-                <Typography variant="h4" gutterBottom>Scan Qr to add node</Typography>
-                <Scanner/>
+                <Typography variant="h5" style={{
+                    textAlign: 'center',
+                }} gutterBottom>Scan Qr to add node</Typography>
+                <Scanner getDeviceId={getDeviceId}/>
             </QrContainer>
             <div>
             <Typography variant="h5" gutterBottom>Node sensor type</Typography>
@@ -137,6 +168,9 @@ function AddNode({t, apiURL}) {
                         <CircularProgress/>
                     }
                 </FormControl>
+                <Button variant="outlined" color="primary" style={{width: '100%', marginTop: '1rem'}} onClick={sendDevice}>
+                    {t('addNode')}
+                </Button>
             </div>
         </Box>
     )
