@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography} from '@mui/material';
-import QrReader from 'react-qr-scanner'
+import { QrReader } from 'react-qr-reader'
 
 class Scanner extends React.Component {
     constructor(props) {
@@ -43,11 +43,12 @@ class Scanner extends React.Component {
             }}>
                 {/* The Qr reader component */}
                 <QrReader
-                    delay={this.state.delay}
-                    onError={this.handleError}
-                    onScan={this.handleScan}
+                    onResult={() => this.handleScan}
+                    onError={() => this.handleError}
                     style={previewStyle}
+                    delay={this.state.delay}
                     constraints={{
+                        aspectRatio: 1,
                         facingMode: 'environment',
                     }}
                 />
