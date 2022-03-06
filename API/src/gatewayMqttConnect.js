@@ -86,11 +86,11 @@ client.on('message', function(topic, message) {
 // Termination handler.
 const handleExit =
     async () => {
-  console.log('Starting process termination');
+  console.log('Starting MQTT client termination');
   try {
     await client.end();
     // This line doesn't run until the client has disconnected without error
-    console.log('Process termination done');
+    console.log('MQTT client termination done');
   } catch (e) {
     // Do something about it!
     console.log(e.stack);
