@@ -47,7 +47,7 @@ class Scanner extends React.Component {
                     onError={this.handleError}
                     onScan={this.handleScan}
                     style={previewStyle}
-                    facingMode="rear"
+                    facingMode="front"
                 />
                 <p>{this.state.result !== null && 
                     <Typography variant="h6">Device Id: {this.state.result.text}</Typography>
