@@ -1,77 +1,45 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography} from '@mui/material';
 import { QrReader } from 'react-qr-reader'
 
-class Scanner extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            delay: 500,
-            result: 'No result',
-        };
-        this.getDeviceId = props.getDeviceId;
-        this.handleScan = this.handleScan.bind(this);
-        this.handleError = this.handleError.bind(this);
-    }
+const Scanner = ({getDeviceId}) => {
+    const [data, setData] = useState('No result');
 
-    handleScan(data) {
-        if (data) {
-            this.setState({
-                result: data
-            });
-            this.getDeviceId(data.text);
-        }
-    }
-
-    handleError(err) {
-        console.error(err);
-    }
-
-    render() {
-        const previewStyle = {
-            height: '100%',
-            width: '100%',
-            borderRadius: '1rem',
-        }
-
-        return (
-            <Box style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}>
-                {/* The Qr reader component */}
-                <QrReader
-                    onResult={() => this.handleScan}
-                    onError={() => this.handleError}
-                    style={previewStyle}
-                    delay={this.state.delay}
-                    constraints={{
-                        aspectRatio: 1,
-                        facingMode: 'environment',
-                    }}
-                />
-                <p>{this.state.result !== null && 
-                    <Typography variant="h6">Device Id: {this.state.result.text}</Typography>
-                }</p>
-            </Box>
-        )
-    }
+    return (
+      <>
+        <QrReader
+          onResult={(result, error) => {
+            if (!!result) {
+              setData(result?.text);
+            }
+  
+            if (!!error) {
+              console.info(error);
+            }
+                
+                }}
+                
+                facingMode="user"
+                
+          style={{ width: '100%' }}
+        />
+        <p>{data}</p>
+      </>
+    );
 }
 
-    const QrContainer = styled("div")`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 30%;
-        width: 30%;
-        @media (max-width: 600px) {
-            height: 100%;
-            width: 100%;
-        }
-        `
+const QrContainer = styled("div")`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 30%;
+    width: 30%;
+    @media (max-width: 600px) {
+        height: 100%;
+        width: 100%;
+    }
+    `
 
 function AddNode({t, apiURL}) {
 
