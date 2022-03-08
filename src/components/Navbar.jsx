@@ -57,6 +57,13 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
         setOpen(!open); // sets the state of the drawer to the opposite of what it is
     };
 
+    const toggleDrawer = (anchor, open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpen(open);
+    };
+
     const [anchorEl, setAnchorEl] = React.useState(null);
 
 
@@ -78,8 +85,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
     return (
     <>
         {/* Navigation bar */}
-        
-            <AppBar position='fixed' open={open}>
+        <AppBar position='fixed' open={open}>
             <Toolbar>
                 <IconButton
                     size="large"
@@ -136,7 +142,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
             </Toolbar>
         </AppBar>
         {/* The drawer that showes up when the menu button is pressed */}
-        <SwipeableDrawer
+        <Drawer
         sx={{
             width: drawerWidth,
             flexShrink: 0,
@@ -148,7 +154,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
         variant='persistent'
         anchor='left'
             open={open}
-            onClose={handleDrawerTrigger}
+            onClose={toggleDrawer(anchorEl, false)}
             onOpen={handleDrawerTrigger}
         >
         <DrawerHeader>
@@ -219,7 +225,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
                 </>
             }
             
-        </SwipeableDrawer>
+        </Drawer>
         {/* End Drawer */}
     </>
     )
