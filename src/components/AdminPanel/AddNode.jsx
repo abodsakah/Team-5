@@ -4,9 +4,18 @@ import { QrReader } from 'react-qr-reader'
 
 const Scanner = ({getDeviceId}) => {
     const [data, setData] = useState('No result');
-
+    const [error, setError] = useState('');
     return (
-      <>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+            }}
+        >
         <QrReader
           onResult={(result, error) => {
             if (!!result) {
@@ -14,17 +23,28 @@ const Scanner = ({getDeviceId}) => {
             }
   
             if (!!error) {
-              console.info(error);
+                console.log(error);
             }
-                
                 }}
-                
-                facingMode="user"
-                
+                containerStyle={{width: '100%', height: '100%', borderRadius: '1rem'}}
+                cameraStyle={{width: '100%', height: '100%', borderRadius: '1rem'}}
+                constraints={{
+                    // use back camera
+                    facingMode: 'environment',
+                    // show camera preview
+                    audio: false,
+                    // show camera rectangle
+                    video: {
+                        facingMode: 'environment',
+                        width: '100%',
+                        height: '100%',
+                    },
+                }}
           style={{ width: '100%' }}
-        />
+            />
+            <p>{error != '' && error}</p>
         <p>{data}</p>
-      </>
+      </div>
     );
 }
 
