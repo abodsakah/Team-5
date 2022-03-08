@@ -78,7 +78,8 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
     return (
     <>
         {/* Navigation bar */}
-        <AppBar position='fixed' open={open}>
+        
+            <AppBar position='fixed' open={open}>
             <Toolbar>
                 <IconButton
                     size="large"

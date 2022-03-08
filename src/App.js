@@ -31,7 +31,8 @@ import {t} from './translator'
 
 function App() {
   
-  let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called
+  // let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called (server)
+  let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called (local)
 
   const drawerWidth = 240; // the width of the drawer
 

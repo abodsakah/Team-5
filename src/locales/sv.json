@@ -42,5 +42,6 @@
     "nodeId": "Nod id",
     "nodeType": "Nod typ",
     "nodeCompany": "Nod företag",
-    "noNodes": "Inga noder"
+    "noNodes": "Inga noder",
+    "addNodeSuccess": "Noden har lagts till"
 }

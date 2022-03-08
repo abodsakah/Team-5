@@ -42,6 +42,7 @@
     "nodeId": "Node id",
     "nodeType": "Node type",
     "nodeCompany": "Node company",
-    "noNodes": "No nodes"
+    "noNodes": "No nodes",
+    "addNodeSuccess": "Node added successfully"
 
 }
