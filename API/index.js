@@ -39,7 +39,7 @@ app.get("/api/user", async (req, res) => {
         res.status(401).send("Invalid API key");
     }
     if(user) {
-        res.send(user[0]);
+        res.status(200).send(user[0]);
     } else {
         res.status(404).send("User not found");
     }
