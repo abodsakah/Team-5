@@ -94,6 +94,22 @@ async function getCompanies() {
     return result;
 }
 
+/**
+ *  Used to add a new logical device to the database
+ * @param {*} uid The unique id of the device
+ * @param {*} id  The id of the logical device
+ * @param {*} name The display name of the logical device
+ * @param {*} trigger_action The action that triggers a warning from the devices data
+ * @param {*} install_date The install date of the device
+ * @param {*} is_part_of What asset the device is part of
+ * @param {*} status The status of the device
+ * @returns 
+ */
+async function addLogicalDevice(uid, id, name, trigger_action, install_date, is_part_of, status) {
+    const result = await db.query("CALL add_node(?, ?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, id, name, trigger_action, install_date, is_part_of, status]});
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -102,6 +118,7 @@ module.exports = {
     createCompany,
     getCompanies,
     getPreloadedNodes,
-    addPreloadedNode
+    addPreloadedNode,
+    addLogicalDevice
 }
 
