@@ -103,10 +103,10 @@ async function getCompanies() {
  * @param {*} install_date The install date of the device
  * @param {*} is_part_of What asset the device is part of
  * @param {*} status The status of the device
- * @returns 
+ * @returns the id of the logical device that was created
  */
-async function addLogicalDevice(uid, id, name, trigger_action, install_date, is_part_of, status) {
-    const result = await db.query("CALL add_node(?, ?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, id, name, trigger_action, install_date, is_part_of, status]});
+async function addLogicalDevice(uid, name, trigger_action, install_date, is_part_of, status) {
+    const result = await db.query("CALL add_node(?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid name, trigger_action, install_date, is_part_of, status]});
     return result;
 }
 
