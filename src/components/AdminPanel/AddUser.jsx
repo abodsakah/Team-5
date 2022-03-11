@@ -7,7 +7,7 @@ function AddUser() {
   const [firstName, setfirstName] = React.useState('');
   const [lastName, setlastN] = React.useState('');
   const [newUser, setnewUser] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [setLoading] = React.useState(false);
 
 
   let ValidateAndSubmit = () => {
@@ -58,7 +58,7 @@ function AddUser() {
         <Grid item xs={12} md={6}>
           <TextField
             id="outlined-basic"
-            label={'Mob'}
+            label={'nickname'}
             variant="outlined"
             style={{width: '100%'}}
             onChange={(e) => setnewUser(e.target.value)}
