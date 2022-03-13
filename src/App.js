@@ -14,7 +14,7 @@ import AddNode from './components/AdminPanel/AddNode';
 import Nodes from './components/AdminPanel/Nodes';
 
 /* ------------------------------- Material Ui ------------------------------ */
-import { styled, Typography } from '@mui/material';
+import { styled, Typography, createTheme, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
 import Login from './components/Login';
 import Rules from './components/Rules';
@@ -36,22 +36,22 @@ function App() {
 
   const drawerWidth = 240; // the width of the drawer
 
-
+  
   const cookies = new Cookies(); // create a new cookie instance
-
+  
   const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
     ({ theme, open }) => ({
-        flexGrow: 1,
-        padding: theme.spacing(3),
-        transition: theme.transitions.create('margin', {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
-        }),
+      }),
         ...(open && {
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
-        }),
+          }),
         marginLeft: `${drawerWidth}px`,
         }),
     }),
@@ -71,7 +71,22 @@ function App() {
   const [error, setError] = useState(''); // set error state
   const [open, setOpen] = useState(false); // set drawer state
   const [userData, setUserData] = useState({}); // set drawer state
-  
+  const [company, setCompany] = useState({}); // set drawer state
+  const [companyStyling, setCompanyStyling] = useState({}); // set drawer state
+  const [getStyling, setGetStyling] = useState(true); // set drawer state
+  const [MainColor, setMainColor] = useState('#4287f5'); // set drawer state
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: MainColor,
+      }
+    },
+    '*': {
+      transition: 'all 0.3s ease-in-out',
+    },
+  });
+
   /* -------------------------------------------------------------------------- */
   /*                   ENABLE WHEN DEBUGING OR WORKING LOCALY                   */
   /* -------------------------------------------------------------------------- */
@@ -90,8 +105,22 @@ function App() {
       }
 
     }
-
   }
+
+  if (getStyling && isAuthenticated) { // if there is no "companyStyling" cookie
+    if (cookies.get('user') !== undefined) {
+      fetch(`${apiURL}getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
+        setCompanyStyling(data[0][0]);
+        if(companyStyling.color !== undefined) {
+          setMainColor(companyStyling.color);
+          setGetStyling(false);
+        }
+        return data; // return the user data to update the DOM
+      });
+    }
+  }
+
+
 
 
   // if the application is loading or the user is not authenticated, render the login page
@@ -100,36 +129,38 @@ function App() {
   }
 
 
-    return (
-    <BrowserRouter>
-      <Navbar setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
-      <Box sx={{display: 'flex', flexGrow: 1}} style={{height: '100vh'}}>
-        <Main open={open}>
-          <DrawerHeader />
-          <h1>{error}</h1>
-          {/* The application router */}
-          <Routes>
-            <Route path="/" element={<Index cookies={cookies} t={t} />} />
-            <Route path="/login" element={<Login t={t}/>} />
-            <Route path="/devices" element={<Devices t={t}/>} />
-            <Route path="/devices/:category" element={<DeviceCategory t={t}/>} />
-            <Route path="/users" element={<Users t={t}/>} />
-            {cookies.get("user") && cookies.get("user").role === 0 &&
-              <>
-                <Route path="/admin" element={<Admin t={t} apiURL={apiURL}/>} />
-                <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL} />} />  
-                <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />            
-                <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL}/>} />
-                <Route path="/rules" element={<Rules />} />
-              </>
-            } {/* If there is a "user" cookie and if the user is admin */}
-            {/* 404 Page */}
-            <Route path="/rules" element={<Rules/>} />
-            <Route path="*" element={<Typography variant="h1">404</Typography>} />
-          </Routes>
-        </Main>
-      </Box>
-    </BrowserRouter>
+  return (
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Navbar  setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
+        <Box sx={{display: 'flex', flexGrow: 1}} style={{height: '100vh'}}>
+          <Main open={open}>
+            <DrawerHeader />
+            <h1>{error}</h1>
+            {/* The application router */}
+            <Routes>
+              <Route path="/" element={<Index cookies={cookies} t={t}  />} />
+              <Route path="/login" element={<Login t={t} />} />
+              <Route path="/devices" element={<Devices t={t} />} />
+              <Route path="/devices/:category" element={<DeviceCategory t={t} />} />
+              <Route path="/users" element={<Users t={t} />} />
+              {cookies.get("user") && cookies.get("user").role === 0 &&
+                <>
+                  <Route path="/admin" element={<Admin t={t} apiURL={apiURL} />} />
+                  <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL}  />} />  
+                  <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL}  />} />            
+                  <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
+                  <Route path="/rules" element={<Rules />} />
+                </>
+              } {/* If there is a "user" cookie and if the user is admin */}
+              {/* 404 Page */}
+              <Route path="/rules" element={<Rules/>} />
+              <Route path="*" element={<Typography variant="h1">404</Typography>} />
+            </Routes>
+          </Main>
+        </Box>
+      </BrowserRouter>
+    </ThemeProvider>
     );
 }
 

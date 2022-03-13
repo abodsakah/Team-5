@@ -109,6 +109,16 @@ async function addLogicalDevice(uid, name, trigger_action, install_date, is_part
     return result;
 }
 
+/**
+ * 
+ * @param {*} companyId The id of the company
+ * @returns A JSON object with the companies color, logo, id and company name
+ */
+async function getCompanySetting(companyId) {
+    const result = await db.query("CALL get_company_settings(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -118,6 +128,7 @@ module.exports = {
     getCompanies,
     getPreloadedNodes,
     addPreloadedNode,
-    addLogicalDevice
+    addLogicalDevice,
+    getCompanySetting
 }
 

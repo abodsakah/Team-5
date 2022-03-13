@@ -66,7 +66,7 @@ function AddUser() {
         </Grid>
       </Grid>
       <br />
-      <Button variant="contained" style={{width: '100%'}} color="primary" onClick={() => ValidateAndSubmit()}>
+      <Button variant="outlined" style={{width: '100%'}} color="primary" onClick={() => ValidateAndSubmit()}>
         {'Add User'}
       </Button>
       </Box>

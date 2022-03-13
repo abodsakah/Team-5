@@ -1,8 +1,8 @@
-import {Box, Button, Divider, Grid, TextField, Typography} from '@mui/material'
+import {Box, Button, Divider, Grid, Typography, styled, TextField} from '@mui/material'
 import React, {useEffect} from 'react'
 import LoadingOverlay from '../LoadingOverlay';
 
-function AddCompany({t}) {
+function AddCompany({t, color}) {
 
   const [companyName, setCompanyName] = React.useState('');
   const [companyEmail, setCompanyEmail] = React.useState('');
@@ -33,6 +33,21 @@ function AddCompany({t}) {
     }
   }
 
+  const StyledTextField = styled(TextField)({
+    width: '100%',
+    '& label.Mui-focused': {
+      color: color,
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: color,
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: color,
+      },
+    },
+  });
+
   return (
     <Box m={2}>
       <LoadingOverlay loading={loading} />
@@ -44,7 +59,7 @@ function AddCompany({t}) {
         <br />
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <TextField
+            <StyledTextField
               id="outlined-basic"
               label={t('companyName')}
               variant="outlined"
@@ -53,7 +68,7 @@ function AddCompany({t}) {
             />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField
+            <StyledTextField
               id="outlined-basic"
               label={t('supportEmail')}
               variant="outlined"
@@ -62,7 +77,7 @@ function AddCompany({t}) {
             />
         </Grid>
         <Grid item xs={12} md={4}>
-          <TextField
+          <StyledTextField
             id="outlined-basic"
             label={t('supportPhone')}
             variant="outlined"
@@ -76,44 +91,40 @@ function AddCompany({t}) {
       <br />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <TextField
+          <StyledTextField
             id="outlined-basic"
             label={t('adminFirstName')}
             variant="outlined"
-            style={{width: '100%'}}
             onChange={(e) => setCompanyAdminFName(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
+          <StyledTextField
             id="outlined-basic"
             label={t('adminLastName')}
             variant="outlined"
-            style={{width: '100%'}}
             onChange={(e) => setCompanyAdminLName(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
+          <StyledTextField
             id="outlined-basic"
             label={t('adminMail')}
             variant="outlined"
-            style={{width: '100%'}}
             onChange={(e) => setCompanyAdminMail(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
+          <StyledTextField
             id="outlined-basic"
             label={t('adminUsername')}
             variant="outlined"
-            style={{width: '100%'}}
             onChange={(e) => setCompanyAdminUser(e.target.value)}
           />
         </Grid>
       </Grid>
       <br />
-      <Button variant="contained" style={{width: '100%'}} color="primary" onClick={() => ValidateAndSubmit()}>
+      <Button variant="outlined" style={{width: '100%', borderColor: color, color: color}}  onClick={() => ValidateAndSubmit()}>
         {t('addCompany')}
       </Button>
       </Box>

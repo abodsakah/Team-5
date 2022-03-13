@@ -414,3 +414,23 @@ SELECT
       ws.comp_id
 FROM `website_settings` ws
 INNER JOIN `companies` c ON ws.comp_id = c.id;
+
+
+-- view for company and website settings
+DROP VIEW IF EXISTS `company_settings`;
+CREATE VIEW `company_settings` AS
+SELECT 
+      ws.color,
+      ws.logo,
+      ws.comp_id,
+      c.name
+FROM `website_settings` ws
+INNER JOIN `companies` c ON ws.comp_id = c.id;
+
+--create procedure for getting company settings
+CREATE PROCEDURE `get_company_settings`(IN `company_id` INT)
+BEGIN
+    SELECT 
+      *
+    FROM `company_settings`
+END;

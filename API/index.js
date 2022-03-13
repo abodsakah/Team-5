@@ -183,6 +183,23 @@ app.get("/api/nodes/nodeinfo", async (req, res) => {
     res.send(nodeInfo);
 })
 
+app.get("/api/getCompanySettings", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        try {
+            let companyId = req.query.id;
+            let company = await dbConnection.getCompanySetting(companyId);
+            res.status(200).send(company);
+        } catch (e) {
+            res.status(500).send("Error getting company");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
 app.get("*", (req, res) => {
     res.status(404).send("Not found");
 });

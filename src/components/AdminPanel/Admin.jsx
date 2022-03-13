@@ -3,7 +3,7 @@ import {styled, Typography, Button, Box, Grid, Card, CardMedia, CardContent} fro
 import {Link} from 'react-router-dom'
 import LoadingOverlay from '../LoadingOverlay';
 
-const Admin = ({cookies, t, apiURL}) => {
+const Admin = ({cookies, t, apiURL, color}) => {
 
     const [isLoading, setIsLoading] = React.useState(true)
     const [companies, setCompanies] = React.useState([])
@@ -31,6 +31,8 @@ const Admin = ({cookies, t, apiURL}) => {
               float: 'left',
               marginBottom: '1rem',
               marginTop: '1rem',
+              color: color,
+              borderColor: color
             }}
               variant="outlined"
               component={Link}
