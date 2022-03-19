@@ -101,7 +101,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                     {console.log(companyLogo)}
                     {companyLogo !== "" ?
                         <div sx={{flexGrow: 1}}>
-                            <img src={require(`./static/uploads/images/${companyLogo}`)} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} />
+                            <img src={`${process.env.PUBLIC_URL}/static/uploads/images/${companyLogo}`} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} />
                         </div>
                         : 
                         <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>

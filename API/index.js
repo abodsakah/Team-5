@@ -220,7 +220,7 @@ app.post("/api/updateStyling", async (req, res) => {
         let path;
         if (req.files) {
             logo = req.files.logo;
-            path = __dirname + "/../src/components/static/uploads/images/" + logo.name;
+            path = __dirname + "/../build/static/uploads/images/" + logo.name;
         }
         
         let defaultStyling = await dbConnection.getCompanySetting(companyId);

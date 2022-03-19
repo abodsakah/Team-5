@@ -13,6 +13,7 @@ import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
 import Nodes from './components/AdminPanel/Nodes';
 import WebsiteStyler from './components/AdminPanel/WebsiteStyler';
+import Navbar from './components/Navbar';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography, createTheme, ThemeProvider } from '@mui/material';
@@ -25,7 +26,6 @@ import Cookies from 'universal-cookie';
 
 /* ---------------------------------- Auth0 --------------------------------- */
 import { useAuth0 } from '@auth0/auth0-react';
-import Navbar from './components/Navbar';
 
 /* ------------------------------- Translation file ------------------------------- */
 import {t} from './translator'
@@ -35,8 +35,8 @@ import axios from 'axios';
 
 function App() {
   
-  let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called (server)
-  // let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called (local)
+  // let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called (server)
+  let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called (local)
 
   const drawerWidth = 240; // the width of the drawer
 
