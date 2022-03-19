@@ -18,9 +18,10 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import RuleIcon from '@mui/icons-material/Rule';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import MemoryIcon from '@mui/icons-material/Memory';
+import StyleIcon from '@mui/icons-material/Style';
 
 
-const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
+const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName}) => {
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -96,9 +97,16 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
                     sx={{mr: 2}}
                 >
                 <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" sx={{flexGrow: 1}}>Tract</Typography>
-                
+                    </IconButton>
+                    {console.log(companyLogo)}
+                    {companyLogo !== "" ?
+                        <div sx={{flexGrow: 1}}>
+                            <img src={require(`./static/uploads/images/${companyLogo}`)} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} />
+                        </div>
+                        : 
+                        <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>
+                    }
+
                 {/* User button */}
                 <div>
                     <IconButton
@@ -207,7 +215,15 @@ const Navbar = ({setOpen, open, logout, image, cookies, t}) => {
                             </ListItem>
                             </>
                         }
+                        <ListItem button component={Link} to="/admin/websiteStyling/">
+                            <ListItemIcon>
+                                <StyleIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={t("websiteStyling")} />
+                        </ListItem>
+
                     </List>
+                    
                     {cookies.get("user").role === 0 &&
                     <>
                     <br/>

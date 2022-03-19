@@ -29,7 +29,9 @@
     "adminUsername": "Admin Username",
     "addCompany": "Add Company",
     "companies": "Companies",
+    "company": "Company",
     "tractAdminPanel": "Tract Admin Panel",
+    "adminPanel": "Admin Panel",
     "companiesInformation": "Companies Information",
     "companyAdminInformation": "Company Admin Information",
     "failing": "Failing",
@@ -43,6 +45,11 @@
     "nodeType": "Node type",
     "nodeCompany": "Node company",
     "noNodes": "No nodes",
-    "addNodeSuccess": "Node added successfully"
+    "addNodeSuccess": "Node added successfully",
+    "websiteStyling": "Website Styling",
+    "websiteStylingDescription": "On this page you can change the appearance of the website to be in line with your company's branding.",
+    "mainColor": "Main Color",
+    "logo": "Logo",
+    "save": "Save"
 
 }

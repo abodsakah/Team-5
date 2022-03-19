@@ -434,3 +434,14 @@ BEGIN
       *
     FROM `company_settings`
 END;
+
+DROP PROCEDURE IF EXISTS `update_company_settings`;
+DELIMITER ;;
+CREATE PROCEDURE `update_company_settings`(IN `company_id` INT, IN `color` VARCHAR(255), IN `logo` VARCHAR(255))
+BEGIN
+    UPDATE `website_settings`
+    SET `color` = color,
+        `logo` = logo
+    WHERE `comp_id` = company_id;
+END;;
+DELIMITER ;

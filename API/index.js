@@ -5,6 +5,7 @@ const gatewayMqtt = require('./src/gatewayMqttConnect'); //
 const neoNodeMsgSender = require('./src/neoNodeMsgSender'); // Sends messages to the gateway
 const neoNodeMsgParser = require('./src/neoNodeMsgParser'); // Parses messages from the gateway
 const bcrypt = require('bcrypt'); // for hashing passwords
+const fileupload = require('express-fileupload');
 
 
 const app = express();
@@ -12,6 +13,11 @@ const app = express();
 
 const port = process.env.PORT || 9000;
 
+
+app.use(fileupload({
+    useTempFiles: true,
+    tempFileDir: './tempFiles'
+}));
 
 
 app.use((req, res, next) => {
@@ -183,16 +189,70 @@ app.get("/api/nodes/nodeinfo", async (req, res) => {
     res.send(nodeInfo);
 })
 
-app.get("/api/getCompanySettings", async (req, res) => {
-    let apiKey = req.query.key;
+app.post("/api/getCompanySettings", async (req, res) => {
+    let apiKey = req.body.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    if (keyValid) {
+        try {
+            let companyId = req.body.id;
+            let company = await dbConnection.getCompanySetting(companyId);
+            console.log(company[0][0]);
+            res.status(200).send(company[0][0]);
+        } catch (e) {
+            res.status(500).send("Error getting company");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.post("/api/updateStyling", async (req, res) => {
+    console.log("hello")
+    let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
 
     if (keyValid) {
+        let companyId = req.body.id;
+        let color = req.body.color;
+        let logo = {
+            name: ''
+        };
+        let path;
+        if (req.files) {
+            logo = req.files.logo;
+            path = __dirname + "/../src/components/static/uploads/images/" + logo.name;
+        }
+        
+        let defaultStyling = await dbConnection.getCompanySetting(companyId);
+
+        
+
+        if(logo.name != '') {
+            logo.mv(path, function (err) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("Error uploading file");
+                } else {
+                    console.log("File uploaded");
+                }
+            });
+        }
+
+        if (color == "" || color == null) {
+            color = defaultStyling.color;
+        }
+        if (logo.name == "" || logo.name == undefined) {
+            logo = defaultStyling.logo;
+        }
+
         try {
-            let companyId = req.query.id;
-            let company = await dbConnection.getCompanySetting(companyId);
-            res.status(200).send(company);
+            let company = await dbConnection.updateStyling(companyId, color, logo.name);
+            res.status(200).send({
+                status: "success",
+                message: "Company updated"
+            });
         } catch (e) {
+            console.log(e);
             res.status(500).send("Error getting company");
         }
     } else {

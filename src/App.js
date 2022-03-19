@@ -12,6 +12,7 @@ import Admin from './components/AdminPanel/Admin';
 import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
 import Nodes from './components/AdminPanel/Nodes';
+import WebsiteStyler from './components/AdminPanel/WebsiteStyler';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography, createTheme, ThemeProvider } from '@mui/material';
@@ -28,6 +29,9 @@ import Navbar from './components/Navbar';
 
 /* ------------------------------- Translation file ------------------------------- */
 import {t} from './translator'
+
+/* ---------------------------------- Axios --------------------------------- */
+import axios from 'axios';
 
 function App() {
   
@@ -74,16 +78,15 @@ function App() {
   const [company, setCompany] = useState({}); // set drawer state
   const [companyStyling, setCompanyStyling] = useState({}); // set drawer state
   const [getStyling, setGetStyling] = useState(true); // set drawer state
-  const [MainColor, setMainColor] = useState('#4287f5'); // set drawer state
+  const [MainColor, setMainColor] = useState('4287f5'); // set drawer state
+  const [choosenColor, setChoosenColor] = useState(``); // set drawer state
+  const [companyLogo, setCompanyLogo] = useState(``); // set drawer state
 
   const theme = createTheme({
     palette: {
       primary: {
-        main: MainColor,
+        main: `#${MainColor}`,
       }
-    },
-    '*': {
-      transition: 'all 0.3s ease-in-out',
     },
   });
 
@@ -109,18 +112,49 @@ function App() {
 
   if (getStyling && isAuthenticated) { // if there is no "companyStyling" cookie
     if (cookies.get('user') !== undefined) {
-      fetch(`${apiURL}getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
-        setCompanyStyling(data[0][0]);
-        if(companyStyling.color !== undefined) {
-          setMainColor(companyStyling.color);
+      let data = new FormData();
+      data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+      data.append('id', cookies.get('user').id);
+
+      axios.post(`${apiURL}getCompanySettings`, data).then(res => {
+        let data = res.data;
+        if (companyStyling.color !== undefined || companyStyling.color !== "") {
+          setCompanyStyling(data);
+          setMainColor(data.color);
+          setChoosenColor(data.color);
           setGetStyling(false);
+          console.log(MainColor)
         }
         return data; // return the user data to update the DOM
       });
+
+      // fetch(`${apiURL}getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
+        
+      // });
     }
   }
 
+  useEffect(() => {
+    updateStyling();
+  }, [choosenColor]);
 
+  const updateStyling = () => {
+    if (cookies.get('user') !== undefined && choosenColor !== '') {
+      let data = new FormData();
+
+      data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+      data.append('id', cookies.get('user').company_id);
+      data.append('color', choosenColor);
+      data.append('logo', companyLogo);
+      axios.post(`${apiURL}updateStyling`, data).then(res => {
+        setGetStyling(true);
+        setMainColor(choosenColor);
+        return res;
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+  };
 
 
   // if the application is loading or the user is not authenticated, render the login page
@@ -132,7 +166,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <Navbar  setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
+        <Navbar companyLogo={companyStyling.logo} companyName={companyStyling.name} setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
         <Box sx={{display: 'flex', flexGrow: 1}} style={{height: '100vh'}}>
           <Main open={open}>
             <DrawerHeader />
@@ -144,13 +178,18 @@ function App() {
               <Route path="/devices" element={<Devices t={t} />} />
               <Route path="/devices/:category" element={<DeviceCategory t={t} />} />
               <Route path="/users" element={<Users t={t} />} />
-              {cookies.get("user") && cookies.get("user").role === 0 &&
+              {cookies.get("user") && cookies.get("user").role <= 1 &&
                 <>
-                  <Route path="/admin" element={<Admin t={t} apiURL={apiURL} />} />
-                  <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL}  />} />  
-                  <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL}  />} />            
-                  <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
-                  <Route path="/rules" element={<Rules />} />
+                  {cookies.get("user") && cookies.get("user").role === 0 &&
+                      <>
+                        <Route path="/admin" element={<Admin t={t} apiURL={apiURL} />} />
+                        <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL} />} />
+                        <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />
+                        <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
+                        <Route path="/rules" element={<Rules />} />
+                      </>
+                }
+                <Route path="/admin/websiteStyling" element={<WebsiteStyler t={t} getStyling={setGetStyling}apiURL={apiURL} setChoosenColor={setChoosenColor} setCompanyLogo={setCompanyLogo} choosenColor={choosenColor} updateStyling={updateStyling} />} />
                 </>
               } {/* If there is a "user" cookie and if the user is admin */}
               {/* 404 Page */}

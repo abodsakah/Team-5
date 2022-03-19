@@ -119,6 +119,11 @@ async function getCompanySetting(companyId) {
     return result;
 }
 
+async function updateStyling(companyId, color, logo) {
+    const result = await db.query("CALL update_company_settings(?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [companyId, color, logo]});
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -129,6 +134,7 @@ module.exports = {
     getPreloadedNodes,
     addPreloadedNode,
     addLogicalDevice,
-    getCompanySetting
+    getCompanySetting,
+    updateStyling
 }
 

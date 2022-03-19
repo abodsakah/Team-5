@@ -29,7 +29,9 @@
     "adminUsername": "Admin Användarnamn",
     "addCompany": "Lägg till Företag",
     "companies": "Företag",
+    "company": "Företag",
     "tractAdminPanel": "Tract Admin Panel",
+    "adminPanel": "Admin Panel",
     "companiesInformation": "Företagsinformation",
     "companyAdminInformation": "Företagsadmininformation",
     "failing": "Misslyckande",
@@ -43,5 +45,10 @@
     "nodeType": "Nod typ",
     "nodeCompany": "Nod företag",
     "noNodes": "Inga noder",
-    "addNodeSuccess": "Noden har lagts till"
+    "addNodeSuccess": "Noden har lagts till",
+    "websiteStyling": "Webbplatsstyl",
+    "websiteStylingDescription" : "På den här sidan kan du ändra utseendet på webbplatsen så att den överensstämmer med ditt företags branding.",
+    "mainColor": "Huvudfärg",
+    "logo": "Logo",
+    "save": "Spara"
 }
