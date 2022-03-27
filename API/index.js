@@ -6,10 +6,10 @@ const neoNodeMsgSender = require('./src/neoNodeMsgSender'); // Sends messages to
 const neoNodeMsgParser = require('./src/neoNodeMsgParser'); // Parses messages from the gateway
 const bcrypt = require('bcrypt'); // for hashing passwords
 const fileupload = require('express-fileupload');
+const path = require('path'); // for file uploads
 
 
 const app = express();
-
 
 const port = process.env.PORT || 9000;
 
@@ -18,6 +18,9 @@ app.use(fileupload({
     useTempFiles: true,
     tempFileDir: './tempFiles'
 }));
+
+app.use("/api/static", express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use((req, res, next) => {
@@ -207,7 +210,6 @@ app.post("/api/getCompanySettings", async (req, res) => {
 });
 
 app.post("/api/updateStyling", async (req, res) => {
-    console.log("hello")
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
 
@@ -215,19 +217,24 @@ app.post("/api/updateStyling", async (req, res) => {
         let companyId = req.body.id;
         let color = req.body.color;
         let logo = {
-            name: ''
+            name: "",
         };
+
+        let logoName = "";
+
         let path;
-        if (req.files) {
+        if (req.files) { // if there is a file we will set the path
             logo = req.files.logo;
-            path = __dirname + "/../build/static/uploads/images/" + logo.name;
+            logoName = logo.name;
+            path = __dirname + "/public/uploads/logo/" + logo.name;
         }
         
-        let defaultStyling = await dbConnection.getCompanySetting(companyId);
+
+        let defaultStyling = await dbConnection.getCompanySetting(companyId); // get the default styling
 
         
 
-        if(logo.name != '') {
+        if(logo.name != '') { // if there is a file and the logo is not empty then we move it to our path
             logo.mv(path, function (err) {
                 if (err) {
                     console.log(err);
@@ -238,15 +245,17 @@ app.post("/api/updateStyling", async (req, res) => {
             });
         }
 
-        if (color == "" || color == null) {
+        if (color == "" || color == null) { // if the color is empty we will use the default styling
             color = defaultStyling.color;
         }
-        if (logo.name == "" || logo.name == undefined) {
-            logo = defaultStyling.logo;
+        if (logo.name == "" || logo.name == undefined) { // if the logo is empty we will use the default styling
+            console.log("logo is empty");
+            console.log(defaultStyling[0][0].logo);
+            logoName = defaultStyling[0][0].logo;
         }
 
         try {
-            let company = await dbConnection.updateStyling(companyId, color, logo.name);
+            let company = await dbConnection.updateStyling(companyId, color, logoName);
             res.status(200).send({
                 status: "success",
                 message: "Company updated"
