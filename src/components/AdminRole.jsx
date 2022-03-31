@@ -3,7 +3,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Avatar, Box } from '@mui/material';
 
 const columns = [
-
   {
     field: 'avatar',
     headerName: 'Avatar',
