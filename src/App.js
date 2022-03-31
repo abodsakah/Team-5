@@ -125,7 +125,6 @@ function App() {
           setMainColor(data.color);
           setChoosenColor(data.color);
           setGetStyling(false);
-          console.log(MainColor)
         }
         return data; // return the user data to update the DOM
       });
@@ -168,7 +167,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <Navbar companyLogo={companyStyling.logo} companyName={companyStyling.name} setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t}/>
+        <Navbar companyLogo={companyStyling.logo} companyName={companyStyling.name} setOpen={setOpen} open={open} userName={user.name} image={user.picture} logout={logout} cookies={cookies} t={t} apiURL={apiURL} />
         <Box sx={{display: 'flex', flexGrow: 1}} style={{height: '100vh'}}>
           <Main open={open}>
             <DrawerHeader />

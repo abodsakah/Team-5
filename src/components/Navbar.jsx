@@ -21,7 +21,7 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import StyleIcon from '@mui/icons-material/Style';
 
 
-const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName}) => {
+const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName, apiURL}) => {
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -83,6 +83,14 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
         cookies.remove("user");
     });
 
+    const Logo = styled('img')`
+        width: 5%;
+
+        @media (max-width: ${theme.breakpoints.values.sm}px) {
+            width: 40%;
+        }
+    `
+
     return (
     <>
         {/* Navigation bar */}
@@ -98,10 +106,13 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                 >
                 <MenuIcon />
                     </IconButton>
-                    {console.log(companyLogo)}
                     {companyLogo !== "" ?
-                        <div sx={{flexGrow: 1}}>
-                            <img src={`${process.env.PUBLIC_URL}/static/uploads/images/${companyLogo}`} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} />
+                        <div sx={{flexGrow: 1}} style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            {/* <img src={`${process.env.PUBLIC_URL}/static/uploads/images/${companyLogo}`} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} /> */}
+                            <Logo src={`${apiURL}static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `}/>
                         </div>
                         : 
                         <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>

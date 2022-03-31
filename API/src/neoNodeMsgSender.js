@@ -34,8 +34,9 @@ function sendNodeInfoRequest(companyId) {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (mqttGateway.publishMsg(message, companyId)) {
-    return true;
+  if (await mqttGateway.isConnected()) {
+    console.log(message)
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
@@ -54,8 +55,8 @@ async function sendNeighborListRequest(companyId) {
   var jsonObject = {};
   jsonObject.objectType = objectType;
   var message = JSON.stringify(jsonObject);
-  // Send message
 
+  // Send message
   if (await mqttGateway.isConnected()) {
     console.log(message)
     return await mqttGateway.publishMsg(message, companyId);
@@ -76,8 +77,9 @@ function sendWesServerStart(companyId) {
   var message = '{"objectType": "wesCmd","cmd": 1}';
 
   // Send message
-  if (mqttGateway.publishMsg(message, companyId)) {
-    return true;
+  if (await mqttGateway.isConnected()) {
+    console.log(message)
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
@@ -95,8 +97,9 @@ function sendWesServerStop(companyId) {
   var message = '{"objectType": "wesCmd","cmd": 0}';
 
   // Send message
-  if (mqttGateway.publishMsg(message, companyId)) {
-    return true;
+  if (await mqttGateway.isConnected()) {
+    console.log(message)
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
@@ -116,8 +119,9 @@ function sendWesServerStatus(companyId) {
   var message = '{"objectType": "wesCmd","cmd": 2}';
 
   // Send message
-  if (mqttGateway.publishMsg(message, companyId)) {
-    return true;
+  if (await mqttGateway.isConnected()) {
+    console.log(message)
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
@@ -140,8 +144,9 @@ function sendForceWesMode(nodeId, companyId) {
       ',"cmd": 5,"payload":[2]}';
 
   // Send message
-  if (mqttGateway.publishMsg(companyId, message)) {
-    return true;
+  if (await mqttGateway.isConnected()) {
+    console.log(message)
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
@@ -168,8 +173,9 @@ function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (mqttGateway.publishMsg(message, companyId)) {
-    return true;
+  if (await mqttGateway.isConnected()) {
+    console.log(message)
+    return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
   }
