@@ -124,6 +124,15 @@ async function updateStyling(companyId, color, logo) {
     return result;
 }
 
+/**
+ * 
+ * @param {*} nodeUID The unique id of the device
+ * @param {*} companyId The id of the company that owns the device
+ */
+async function setNodeASDeleted(nodeUID, companyId) {
+    // TODO: do this
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -135,6 +144,7 @@ module.exports = {
     addPreloadedNode,
     addLogicalDevice,
     getCompanySetting,
-    updateStyling
+    updateStyling,
+    setNodeASDeleted
 }
 

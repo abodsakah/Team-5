@@ -4,6 +4,7 @@
 // NeoCortec gateway
 
 const mqttGateway = require('./gatewayMqttConnect');
+const dataBase = require('./dbConnection');
 // TODO: import database module functions needed.
 
 module.exports = {
@@ -197,7 +198,7 @@ async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
 async function deleteNode(nodeId, companyId) {
   // Send delete query to database.
   /* TODO: send query to database */
-
+  dataBase.setNodeASDeleted(nodeId, companyId);
   // Send ForceWesMode to Node.
   if (sendForceWesMode(nodeId, companyId)){
     return true;
