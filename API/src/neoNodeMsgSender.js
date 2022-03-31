@@ -35,8 +35,7 @@ async function sendNodeInfoRequest(companyId) {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  let isConnected = await mqttGateway.isConnected();
-  if (isConnected) {
+  if (await mqttGateway.isConnected()) {
     console.log(message)
     return await mqttGateway.publishMsg(message, companyId);
   } else {
