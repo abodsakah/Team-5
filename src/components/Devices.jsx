@@ -33,7 +33,7 @@ const Devices = ({text}) => {
       <h1>'Företaget's sensorer</h1>
       {/* Add sensor Icon */}
       <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
-        <Fab size="large" color="primary" aria-label="add">
+        <Fab size="large" color="primary" aria-label="add" component={Link} to={'/devices/add-sensor'} >
           <AddIcon />
         </Fab>
       </Box>
@@ -77,15 +77,3 @@ const Devices = ({text}) => {
 
 export default Devices;
 
-
-// import React from 'react';
-
-// const Devices = ({text}) => {
-  
-//   return (
-//     <main>
-//     </main>
-//     );
-// };
-
-// export default Devices;

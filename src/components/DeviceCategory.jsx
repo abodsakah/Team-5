@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams  } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import { Link } from 'react-router-dom';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
@@ -105,7 +106,7 @@ const DeviceCategory = () => {
       <h1 style={{ textTransform: 'capitalize' }}>{category}</h1>
       {/* Add sensor Icon */}
       <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 2 }} sx={{ '& > :not(style)': { m: 3 } }}>
-        <Fab size="large" color="primary" aria-label="add">
+        <Fab size="large" color="primary" aria-label="add" component={Link} to={'/adminpanel'}>
           <AddIcon />
         </Fab>
       </Box>

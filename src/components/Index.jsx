@@ -1,10 +1,13 @@
 import * as React from 'react';
 
+import { Link } from 'react-router-dom';
 import { useParams  } from 'react-router-dom';
-
+import AddIcon from '@mui/icons-material/Add';
 import {Card, CardContent, Grid, Typography, Paper} from '@mui/material';
 import DeviceTable from './DeviceTable';
 import ErrTable from './ErrTable';
+import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
 
 
 
@@ -48,6 +51,12 @@ const Index = ({text, cookies, t}) => {
 
     return (
         <>
+        {/* Add sensor Icon */}
+        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
+            <Fab size="large" color="primary" aria-label="add" component={Link} to={'/devices/add-sensor'} >
+            <AddIcon />
+            </Fab>
+        </Box>
             <Grid container spacing={5}>
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} style={{padding: '1rem'}}>
