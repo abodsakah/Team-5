@@ -19,8 +19,8 @@ app.use(fileupload({
     tempFileDir: './tempFiles'
 }));
 
-app.use("/api/static", express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use("/api/static", express.static(path.join(__dirname, 'public'))); // listen for the /static/api url to get static files
+app.use(express.static(path.join(__dirname, 'public'))); // fallback
 
 
 app.use((req, res, next) => {
