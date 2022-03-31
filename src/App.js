@@ -7,7 +7,9 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom';
 import Index from './components/Index';
 import Devices from './components/Devices';
 import DeviceCategory from './components/DeviceCategory';
+import AddSensor from './components/QrScan';
 import Users from './components/Users';
+import AdminPanel from './components/AdminRole';
 import Admin from './components/AdminPanel/Admin';
 import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
@@ -177,6 +179,8 @@ function App() {
               <Route path="/login" element={<Login t={t} />} />
               <Route path="/devices" element={<Devices t={t} />} />
               <Route path="/devices/:category" element={<DeviceCategory t={t} />} />
+              <Route path="/devices/add-sensor" element={<AddSensor t={t} />} />
+              <Route path="/adminpanel" element={<AdminPanel t={t} />} />
               <Route path="/users" element={<Users t={t} />} />
               {cookies.get("user") && cookies.get("user").role <= 1 &&
                 <>
