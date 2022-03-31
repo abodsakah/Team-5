@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: localhost:3306
--- Tid vid skapande: 21 feb 2022 kl 10:53
+-- Tid vid skapande: 31 mars 2022 kl 15:44
 -- Serverversion: 10.1.48-MariaDB-0+deb9u2
 -- PHP-version: 7.0.33-0+deb9u11
 
@@ -19,6 +19,30 @@ SET time_zone = "+00:00";
 --
 -- Databas: `tract`
 --
+
+DELIMITER $$
+--
+-- Procedurer
+--
+CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `add_node` (IN `node_uid` VARCHAR(255), IN `node_id` INT, IN `node_name` VARCHAR(255), IN `trigger_action` INT, IN `install_date` DATE, IN `is_part_of` INT, IN `status` VARCHAR(255))  begin
+  INSERT INTO `logical_devices` (`uid`, `id`, `name`, `trigger_action`, `install_date`, `is_part_of`, `status`)
+  VALUES (node_uid, node_id, node_name, trigger_action, install_date, is_part_of, status);
+end$$
+
+CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_company_settings` (IN `company_id` INT)  BEGIN
+    SELECT 
+      *
+    FROM `company_settings`;
+END$$
+
+CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `update_company_settings` (IN `company_id` INT, IN `color` VARCHAR(255), IN `logo` VARCHAR(255))  BEGIN
+    UPDATE `website_settings`
+    SET `color` = color,
+        `logo` = logo
+    WHERE `comp_id` = company_id;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -88,6 +112,19 @@ INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Ersättningsstruktur för vy `company_settings`
+-- (See below for the actual view)
+--
+CREATE TABLE `company_settings` (
+`color` varchar(255)
+,`logo` varchar(255)
+,`comp_id` int(11)
+,`name` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellstruktur `logical_devices`
 --
 
@@ -97,8 +134,65 @@ CREATE TABLE `logical_devices` (
   `name` varchar(255) NOT NULL,
   `trigger_action` int(11) NOT NULL,
   `install_date` varchar(255) NOT NULL,
-  `is_part_of` int(11) NOT NULL
+  `is_part_of` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `status1` enum('deleted','on') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `nc_evolutions`
+--
+
+CREATE TABLE `nc_evolutions` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `titleDown` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `batch` int(11) DEFAULT NULL,
+  `checksum` varchar(255) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumpning av Data i tabell `nc_evolutions`
+--
+
+INSERT INTO `nc_evolutions` (`id`, `title`, `titleDown`, `description`, `batch`, `checksum`, `status`, `created`, `created_at`, `updated_at`) VALUES
+(1, '20220322_175512217.up.sql', '20220322_175512217.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(2, '20220322_175833961.up.sql', '20220322_175833961.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(3, '20220322_175903904.up.sql', '20220322_175903904.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(4, '20220322_175935474.up.sql', '20220322_175935474.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(5, '20220322_180201875.up.sql', '20220322_180201875.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(6, '20220322_180204770.up.sql', '20220322_180204770.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(7, '20220322_180603623.up.sql', '20220322_180603623.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(8, '20220322_181302277.up.sql', '20220322_181302277.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(9, '20220325_125825936.up.sql', '20220325_125825936.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(10, '20220325_125847174.up.sql', '20220325_125847174.down.sql', NULL, NULL, NULL, 0, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `node_preloaded`
+--
+
+CREATE TABLE `node_preloaded` (
+  `uid` varchar(100) NOT NULL,
+  `type` int(20) NOT NULL,
+  `company_id` int(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumpning av Data i tabell `node_preloaded`
+--
+
+INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES
+('', 0, 0),
+('32fweipnf234', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -201,8 +295,9 @@ CREATE TABLE `user_login` (
 --
 
 INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, `nickname`, `email_Verified`, `role`, `company_id`) VALUES
-(1, 'abodsakka2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 0),
-(3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3);
+(1, 'abodsakka2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 1),
+(3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
+(4, 'info@abodsakka.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -215,6 +310,22 @@ CREATE TABLE `website_settings` (
   `color` varchar(255) NOT NULL,
   `logo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumpning av Data i tabell `website_settings`
+--
+
+INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
+(1, '39bea3', 'Asset 1.png');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur för vy `company_settings`
+--
+DROP TABLE IF EXISTS `company_settings`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`abodsakka`@`localhost` SQL SECURITY DEFINER VIEW `company_settings`  AS  select `ws`.`color` AS `color`,`ws`.`logo` AS `logo`,`ws`.`comp_id` AS `comp_id`,`c`.`name` AS `name` from (`website_settings` `ws` join `companies` `c` on((`ws`.`comp_id` = `c`.`id`))) ;
 
 --
 -- Index för dumpade tabeller
@@ -254,6 +365,18 @@ ALTER TABLE `companies`
 ALTER TABLE `logical_devices`
   ADD PRIMARY KEY (`id`),
   ADD KEY `trigger_action` (`trigger_action`);
+
+--
+-- Index för tabell `nc_evolutions`
+--
+ALTER TABLE `nc_evolutions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index för tabell `node_preloaded`
+--
+ALTER TABLE `node_preloaded`
+  ADD PRIMARY KEY (`uid`);
 
 --
 -- Index för tabell `node_thresholds`
@@ -320,12 +443,17 @@ ALTER TABLE `assets`
 -- AUTO_INCREMENT för tabell `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
 --
 ALTER TABLE `logical_devices`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT för tabell `nc_evolutions`
+--
+ALTER TABLE `nc_evolutions`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT för tabell `node_thresholds`
 --
@@ -350,7 +478,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 --
 -- Restriktioner för dumpade tabeller
 --
@@ -405,43 +533,3 @@ ALTER TABLE `website_settings`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- view for company and website settings
-CREATE VIEW `company_settings` AS
-SELECT 
-      ws.color,
-      ws.logo,
-      ws.comp_id
-FROM `website_settings` ws
-INNER JOIN `companies` c ON ws.comp_id = c.id;
-
-
--- view for company and website settings
-DROP VIEW IF EXISTS `company_settings`;
-CREATE VIEW `company_settings` AS
-SELECT 
-      ws.color,
-      ws.logo,
-      ws.comp_id,
-      c.name
-FROM `website_settings` ws
-INNER JOIN `companies` c ON ws.comp_id = c.id;
-
---create procedure for getting company settings
-CREATE PROCEDURE `get_company_settings`(IN `company_id` INT)
-BEGIN
-    SELECT 
-      *
-    FROM `company_settings`
-END;
-
-DROP PROCEDURE IF EXISTS `update_company_settings`;
-DELIMITER ;;
-CREATE PROCEDURE `update_company_settings`(IN `company_id` INT, IN `color` VARCHAR(255), IN `logo` VARCHAR(255))
-BEGIN
-    UPDATE `website_settings`
-    SET `color` = color,
-        `logo` = logo
-    WHERE `comp_id` = company_id;
-END;;
-DELIMITER ;
