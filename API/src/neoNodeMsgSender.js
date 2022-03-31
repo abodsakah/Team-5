@@ -26,7 +26,7 @@ module.exports = {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendNodeInfoRequest(companyId) {
+async function sendNodeInfoRequest(companyId) {
   // Create message
   var objectType = 'nodeInfoRequest';
   var jsonObject = {};
@@ -34,7 +34,8 @@ function sendNodeInfoRequest(companyId) {
   var message = JSON.stringify(jsonObject);
 
   // Send message
-  if (await mqttGateway.isConnected()) {
+  let isConnected = await mqttGateway.isConnected();
+  if (isConnected) {
     console.log(message)
     return await mqttGateway.publishMsg(message, companyId);
   } else {
@@ -72,7 +73,7 @@ async function sendNeighborListRequest(companyId) {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesServerStart(companyId) {
+async function sendWesServerStart(companyId) {
   // Create message
   var message = '{"objectType": "wesCmd","cmd": 1}';
 
@@ -92,7 +93,7 @@ function sendWesServerStart(companyId) {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesServerStop(companyId) {
+async function sendWesServerStop(companyId) {
   // Create message
   var message = '{"objectType": "wesCmd","cmd": 0}';
 
@@ -114,7 +115,7 @@ function sendWesServerStop(companyId) {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesServerStatus(companyId) {
+async function sendWesServerStatus(companyId) {
   // Create message
   var message = '{"objectType": "wesCmd","cmd": 2}';
 
@@ -138,7 +139,7 @@ function sendWesServerStatus(companyId) {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendForceWesMode(nodeId, companyId) {
+async function sendForceWesMode(nodeId, companyId) {
   // Create message
   var message = '{"objectType": "networkCommand","nodeId": ' + nodeId +
       ',"cmd": 5,"payload":[2]}';
@@ -163,7 +164,7 @@ function sendForceWesMode(nodeId, companyId) {
  * @param companyId String the companyId the message should be sent too.
  * @returns BOOLEAN
  */
-function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
+async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
   // Create message
   var jsonObject = {};
   jsonObject.objectType = 'wesResponse';
