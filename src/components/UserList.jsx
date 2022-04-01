@@ -1,6 +1,13 @@
+/* ---------------------------------- React --------------------------------- */
 import * as React from 'react';
+
+/* ------------------------------ React Router ------------------------------ */
+import {Link} from 'react-router-dom';
+
+/* ----------------------------------- MUI ---------------------------------- */
 import { DataGrid } from '@mui/x-data-grid';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const columns = [
   {
@@ -46,11 +53,16 @@ const rows = [
   { id: 12, avatar: 'Fannie Long', name: 'Fannie Long', mail: 'vu@afgifak.bs', role: 'Admin'}
 ];
 
-const AdminPanel = ({}) => {
+const UserList = ({}) => {
   return (
     <main>
       <h1>'Företaget's adminpanel</h1>
-      <Box style={{ height: '550px', width: '100%' }} className="mt-7">
+      <Box style={{height: '550px', width: '100%'}} className="mt-7">
+        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
+          <Fab size="large" color="primary" aria-label="add" component={Link} to={'/admin/users/add'} >
+            <AddIcon />
+          </Fab>
+        </Box>
         <DataGrid 
           sx={{
             boxShadow:"5px 5px 5px #F0F0F0",
@@ -68,6 +80,6 @@ const AdminPanel = ({}) => {
 }
 
 
-export default AdminPanel;
+export default UserList;
 
 
