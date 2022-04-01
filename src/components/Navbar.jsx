@@ -197,12 +197,6 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                 </ListItemIcon>
                 <ListItemText primary={t("devices")} />
                 </ListItem>
-                <ListItem button component={Link} to="/users">
-                <ListItemIcon>
-                    <SupervisedUserCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary={t("users")} />
-                </ListItem>
             </List>
             {cookies.get("user") && Number(cookies.get("user").role) < 2 &&
                 <>
@@ -232,23 +226,14 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             </ListItemIcon>
                             <ListItemText primary={t("websiteStyling")} />
                         </ListItem>
+                        <ListItem button component={Link} to="/admin/users">
+                        <ListItemIcon>
+                            <SupervisedUserCircleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={t("users")} />
+                        </ListItem>
 
                     </List>
-                    
-                    {cookies.get("user").role === 0 &&
-                    <>
-                    <br/>
-                    <Typography variant="h6" sx={{textAlign: 'center'}}>{t("rules")}</Typography>
-                    <List>
-                        <ListItem button component={Link} to="/rules">
-                            <ListItemIcon>
-                                <RuleIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={t("rules")} />
-                        </ListItem>
-                    </List>
-                </>
-                }
                 </>
             }
             
