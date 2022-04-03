@@ -80,6 +80,12 @@ async function getPreloadedNodes() {
     return result;
 }
 
+/**
+ * @param {any} deviceId 
+ * @param {any} deviceType 
+ * @param {any} companyId 
+ * @returns {} 
+ */
 async function addPreloadedNode(deviceId, deviceType, companyId) {
     const result = await db.query("INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES (?, ?, ?)", {type: QueryTypes.INSERT, replacements: [deviceId, deviceType, companyId]});
     return result;
