@@ -8,20 +8,19 @@ import Index from './components/Index';
 import Devices from './components/Devices';
 import DeviceCategory from './components/DeviceCategory';
 import AddSensor from './components/QrScan';
-import Users from './components/Users';
-import AdminPanel from './components/AdminRole';
+import AddUser from './components/AddUser';
 import Admin from './components/AdminPanel/Admin';
 import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
 import Nodes from './components/AdminPanel/Nodes';
 import WebsiteStyler from './components/AdminPanel/WebsiteStyler';
 import Navbar from './components/Navbar';
+import UserList from './components/UserList';
+import Login from './components/Login';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography, createTheme, ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
-import Login from './components/Login';
-import Rules from './components/Rules';
 
 /* --------------------------------- Cookies -------------------------------- */
 import Cookies from 'universal-cookie';
@@ -179,8 +178,6 @@ function App() {
               <Route path="/devices" element={<Devices t={t} />} />
               <Route path="/devices/:category" element={<DeviceCategory t={t} />} />
               <Route path="/devices/add-sensor" element={<AddSensor t={t} />} />
-              <Route path="/adminpanel" element={<AdminPanel t={t} />} />
-              <Route path="/users" element={<Users t={t} />} />
               {cookies.get("user") && cookies.get("user").role <= 1 &&
                 <>
                   {cookies.get("user") && cookies.get("user").role === 0 &&
@@ -189,7 +186,8 @@ function App() {
                         <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL} />} />
                         <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />
                         <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
-                        <Route path="/rules" element={<Rules />} />
+                        <Route path="/admin/users" element={<UserList t={t} />} />
+                        <Route path="/admin/users/add" element={<AddUser t={t} />} />
                       </>
                 }
                 <Route path="/admin/websiteStyling" element={<WebsiteStyler t={t} getStyling={setGetStyling}apiURL={apiURL} setChoosenColor={setChoosenColor} setCompanyLogo={setCompanyLogo} choosenColor={choosenColor} updateStyling={updateStyling} />} />

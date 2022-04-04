@@ -15,7 +15,6 @@ function Nodes({t, apiURL}) {
         fetch(`${apiURL}getNodes?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(
             (result) => {
                 setNodes(result)
-                console.log(result)
                 setFetched(true)
             }
         )
