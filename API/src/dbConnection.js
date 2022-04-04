@@ -132,21 +132,23 @@ async function updateStyling(companyId, color, logo) {
 
 /**
  * 
- * @param {*} nodeID The id of the device
+ * @param {*} nodeId The id of the device
+ * @param {*} companyId The id of the company that owns the device
  * @returns The status of the sensor
  */
-async function getNodeStatus(nodeID) {
-    const result = await db.query("CALL get_node_status(?)", {type: QueryTypes.SELECT, replacements: [nodeID]});
+async function getNodeStatus(nodeId) {
+    // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
+    const result = await db.query("CALL get_node_status(?)", {type: QueryTypes.SELECT, replacements: [nodeId]});
     return result[0][0];
 }
 
 /**
  * 
- * @param {*} nodeUID The unique id of the device
+ * @param {*} nodeId The node id of the device
  * @param {*} companyId The id of the company that owns the device
  */
-async function setNodeASDeleted(nodeUID) {
-    const result = await db.query("CALL set_device_as_deleted(?)", {type: QueryTypes.UPDATE, replacements: [nodeUID]});
+async function setNodeASDeleted(nodeId, companyId) {
+    const result = await db.query("CALL set_device_as_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
     return result;
 }
 

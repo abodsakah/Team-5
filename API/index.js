@@ -269,15 +269,16 @@ app.post("/api/updateStyling", async (req, res) => {
     }
 });
 
-app.get("/api/getSensorStatus", async (req, res) => {
+app.get("/api/getNodeStatus", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
-    let sensorId = req.query.sensorId;
+    let nodeId = req.query.sensorId;
+    let companyId = req.query.companyId; // <-- TODO: use this
 
     if (keyValid) {
         try {
-            let sensor = await dbConnection.getNodeStatus(sensorId);
-            res.status(200).send(sensor);
+            let node = await dbConnection.getNodeStatus(nodeId);
+            res.status(200).send(node);
         } catch (e) {
             res.status(500).send("Error getting sensor");
         }
@@ -286,14 +287,15 @@ app.get("/api/getSensorStatus", async (req, res) => {
     }
 })
 
-app.post("/api/setSensorDeleted", async (req, res) => {
+app.post("/api/setNodeDeleted", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
-    let sensorId = req.query.sensorId;
+    let nodeId = req.query.sensorId;
+    let companyId = req.query.companyId;
 
     if (keyValid) {
         try {
-            let sensor = await dbConnection.setNodeASDeleted(sensorId);
+            let node = await dbConnection.setNodeASDeleted(nodeId, companyId);
             res.status(200).send({
                 status: "success",
             });
