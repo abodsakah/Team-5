@@ -269,6 +269,42 @@ app.post("/api/updateStyling", async (req, res) => {
     }
 });
 
+app.get("/api/getSensorStatus", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let sensorId = req.query.sensorId;
+
+    if (keyValid) {
+        try {
+            let sensor = await dbConnection.getNodeStatus(sensorId);
+            res.status(200).send(sensor);
+        } catch (e) {
+            res.status(500).send("Error getting sensor");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
+app.post("/api/setSensorDeleted", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let sensorId = req.query.sensorId;
+
+    if (keyValid) {
+        try {
+            let sensor = await dbConnection.setNodeASDeleted(sensorId);
+            res.status(200).send({
+                status: "success",
+            });
+        } catch (e) {
+            res.status(500).send(e);
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
 app.get("*", (req, res) => {
     res.status(404).send("Not found");
 });

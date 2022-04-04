@@ -126,11 +126,22 @@ async function updateStyling(companyId, color, logo) {
 
 /**
  * 
+ * @param {*} nodeID The id of the device
+ * @returns The status of the sensor
+ */
+async function getNodeStatus(nodeID) {
+    const result = await db.query("CALL get_node_status(?)", {type: QueryTypes.SELECT, replacements: [nodeID]});
+    return result[0][0];
+}
+
+/**
+ * 
  * @param {*} nodeUID The unique id of the device
  * @param {*} companyId The id of the company that owns the device
  */
-async function setNodeASDeleted(nodeUID, companyId) {
-    // TODO: do this
+async function setNodeASDeleted(nodeUID) {
+    const result = await db.query("CALL set_device_as_deleted(?)", {type: QueryTypes.UPDATE, replacements: [nodeUID]});
+    return result;
 }
 
 module.exports = {
@@ -145,6 +156,7 @@ module.exports = {
     addLogicalDevice,
     getCompanySetting,
     updateStyling,
-    setNodeASDeleted
+    setNodeASDeleted,
+    getNodeStatus
 }
 

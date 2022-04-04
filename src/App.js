@@ -194,9 +194,10 @@ function App() {
                 }
                 <Route path="/admin/websiteStyling" element={<WebsiteStyler t={t} getStyling={setGetStyling}apiURL={apiURL} setChoosenColor={setChoosenColor} setCompanyLogo={setCompanyLogo} choosenColor={choosenColor} updateStyling={updateStyling} />} />
                 </>
-              } {/* If there is a "user" cookie and if the user is admin */}
+              } 
+              <Route path="/rules" element={<Rules />} />
+              {/* If there is a "user" cookie and if the user is admin */}
               {/* 404 Page */}
-              <Route path="/rules" element={<Rules/>} />
               <Route path="*" element={<Typography variant="h1">404</Typography>} />
             </Routes>
           </Main>
