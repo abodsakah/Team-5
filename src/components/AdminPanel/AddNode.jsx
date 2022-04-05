@@ -193,8 +193,8 @@ function AddNode({t, apiURL}) {
                         onChange={handleNodeTypeChange}
                     >
                         <MenuItem value={1}>Temperature and Humidity</MenuItem>
-                        <MenuItem value={3}>Switch</MenuItem>
-                        <MenuItem value={4}>Analog wheel</MenuItem>
+                        <MenuItem value={2}>Switch</MenuItem>
+                        <MenuItem value={3}>Analog wheel</MenuItem>
                     </Select>
                 </FormControl>
                 <br /><br />
