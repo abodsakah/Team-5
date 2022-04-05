@@ -272,7 +272,7 @@ app.post("/api/updateStyling", async (req, res) => {
 app.get("/api/getNodeStatus", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
-    let nodeId = req.query.sensorId;
+    let nodeId = req.query.nodeId;
     let companyId = req.query.companyId;
 
     if (keyValid) {
@@ -290,7 +290,7 @@ app.get("/api/getNodeStatus", async (req, res) => {
 app.post("/api/setNodeDeleted", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
-    let nodeId = req.query.sensorId;
+    let nodeId = req.query.nodeId;
     let companyId = req.query.companyId;
 
     if (keyValid) {
