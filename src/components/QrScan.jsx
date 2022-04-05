@@ -169,7 +169,7 @@ function AddSensor({t, apiURL}) {
                     value={nodeType}
                     onChange={handleNodeTypeChange}
                 >
-                    <MenuItem value={1}>Temperature</MenuItem>
+                    <MenuItem value={1}>Temperature and Humidity</MenuItem>
                     <MenuItem value={3}>Switch</MenuItem>
                     <MenuItem value={4}>Analog wheel</MenuItem>
                 </Select>
