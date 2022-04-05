@@ -273,11 +273,11 @@ app.get("/api/getNodeStatus", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.sensorId;
-    let companyId = req.query.companyId; // <-- TODO: use this
+    let companyId = req.query.companyId;
 
     if (keyValid) {
         try {
-            let node = await dbConnection.getNodeStatus(nodeId);
+            let node = await dbConnection.getNodeStatus(nodeId,companyId);
             res.status(200).send(node);
         } catch (e) {
             res.status(500).send("Error getting sensor");
