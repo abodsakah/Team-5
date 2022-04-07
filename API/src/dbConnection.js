@@ -152,6 +152,31 @@ async function setNodeASDeleted(nodeId, companyId) {
     return result;
 }
 
+/**
+ * 
+ * @param {*} companyId The id of the company which to find users for 
+ * @returns a object with all users
+ */
+async function getUsersForCompany(companyId) {
+    const result = await db.query("CALL get_users_for_company(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
+    return result[0];
+}
+
+/**
+ * 
+ * @param {*} companyId 
+ * @returns A list with all the logical devices for a company
+ */
+async function getLogicalDeviceForCompany(companyId) {
+    const result = await db.query("CALL logical_devices_for_company(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
+    return result[0];
+}
+
+async function getAmountOfSensorTypes(sensorType, companyId) {
+    const result = await db.query("CALL get_amount_type_of_sensor(?, ?)", {type: QueryTypes.SELECT, replacements: [sensorType, companyId]});
+    return result[0][0];
+}
+    
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -165,6 +190,9 @@ module.exports = {
     getCompanySetting,
     updateStyling,
     setNodeASDeleted,
-    getNodeStatus
+    getNodeStatus,
+    getUsersForCompany,
+    getLogicalDeviceForCompany,
+    getAmountOfSensorTypes
 }
 

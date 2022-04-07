@@ -7,6 +7,7 @@
     "add": "Add",
     "mostRecent": "Most recent",
     "sensor": "Sensor",
+    "sensors": "Sensors",
     "articleNumber": "Article number",
     "date": "Date",
     "time": "Time",
@@ -50,6 +51,9 @@
     "websiteStylingDescription": "On this page you can change the appearance of the website to be in line with your company's branding.",
     "mainColor": "Main Color",
     "logo": "Logo",
-    "save": "Save"
+    "save": "Save",
+    "tempSensor": "Temperature sensor",
+    "analogSensor": "Analog sensor",
+    "switchSensor": "Switch sensor"
 
 }

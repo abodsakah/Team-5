@@ -533,3 +533,19 @@ ALTER TABLE `website_settings`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+DROP PROCEDURE IF EXISTS `logical_devices_for_company`;
+DELIMITER ;;
+CREATE PROCEDURE `logical_devices_for_company`(IN `company_id` INT)
+BEGIN
+  SELECT * FROM `logical_devices_all` WHERE `company_id` = company_id;
+END;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `get_amount_type_of_sensor`;
+DELIMITER ;;
+CREATE PROCEDURE `get_amount_type_of_sensor`(IN `sensor_type` VARCHAR(255), IN `company_id` INT)
+BEGIN
+  SELECT COUNT(*) FROM `logical_devices` WHERE `type_name` = sensor_type AND `company_id` = company_id;
+END;;
+DELIMITER ;
