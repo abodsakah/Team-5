@@ -1,5 +1,6 @@
 /* ---------------------------------- React --------------------------------- */
 import * as React from 'react';
+import { useEffect } from 'react';
 
 /* ------------------------------ React Router ------------------------------ */
 import {Link} from 'react-router-dom';
@@ -21,39 +22,52 @@ const columns = [
     field: 'name',
     headerName: 'Name',
     width: 150,
-    editable: true,
+    editable: false,
   },
   {
     field: 'mail',
     headerName: 'Mail',
     width: 250,
-    editable: true,
+    editable: false,
   },
   {
     field: 'role',
     headerName: 'Role',
     width: 150,
-    editable: true,
+    editable: false,
   },
   
 ];
 
-const rows = [
-  { id: 1, avatar: 'Harold Williamson', name: 'Harold Williamson', mail: 'japcof@unepaz.au', role: 'Admin'},
-  { id: 2, avatar: 'Jason Hicks', name: 'Jason Hicks', mail: 'boh@fibbafbic.nl', role: 'Admin'},
-  { id: 3, avatar: 'Stella Andrews', name: 'Stella Andrews', mail: 'ewo@alwa.no', role: 'Admin'},
-  { id: 4, avatar: 'Joseph Roberts', name: 'Joseph Roberts', mail: 'gatje@gabec.ec', role: 'Admin'},
-  { id: 5, avatar: 'Andrew Gregory', name: 'Andrew Gregory', mail: 'wi@hi.fo', role: 'Admin'},
-  { id: 6, avatar: 'Fannie Long', name: 'Fannie Long', mail: 'vu@afgifak.bs', role: 'Admin'},
-  { id: 7, avatar: 'Harold Williamson', name: 'Harold Williamson', mail: 'japcof@unepaz.au', role: 'Admin'},
-  { id: 8, avatar: 'Jason Hicks', name: 'Jason Hicks', mail: 'boh@fibbafbic.nl', role: 'Admin'},
-  { id: 9, avatar: 'Stella Andrews', name: 'Stella Andrews', mail: 'ewo@alwa.no', role: 'Admin'},
-  { id: 10, avatar: 'Joseph Roberts', name: 'Joseph Roberts', mail: 'gatje@gabec.ec', role: 'Admin'},
-  { id: 11, avatar: 'Andrew G', name: 'Andrew Gregory', mail: 'wi@hi.fo', role: 'Admin'},
-  { id: 12, avatar: 'Fannie Long', name: 'Fannie Long', mail: 'vu@afgifak.bs', role: 'Admin'}
-];
 
-const UserList = ({}) => {
+const UserList = ({t, apiURL, user}) => {
+  
+  const [rows, setRows] = React.useState([]);
+
+  const fetchUsers = async () => {
+    const response = await fetch(`${apiURL}getUsersForCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`);
+    const data = await response.json();
+    for (let item of Object.values(data)) {
+      if (!rows.includes(item)) {
+        setRows(rows => [...rows, {
+          id: item.id,
+          avatar: `${item.first_name} ${item.last_name}`,
+          name: `${item.first_name} ${item.last_name}`,
+          mail: item.email,
+          role: item.role,
+        }]);
+      }
+    }
+  }
+
+  useEffect(() => {
+    setRows([]);
+    fetchUsers();
+  }
+  , []);
+  
+  console.log(rows);
+
   return (
     <main>
       <h1>'Företaget's adminpanel</h1>
@@ -63,15 +77,17 @@ const UserList = ({}) => {
             <AddIcon />
           </Fab>
         </Box>
-        <DataGrid 
+        <DataGrid
+          {...rows}
           sx={{
             boxShadow:"5px 5px 5px #F0F0F0",
             border: '1px solid #e0e0e0',
             overflowY: 'scroll'
           }}
           rows={rows}
+          loading = {rows.length === 0}
           columns={columns}
-          disableSelectionOnClick
+          
           checkboxSelection
         />
       </Box>

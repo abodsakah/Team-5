@@ -7,6 +7,7 @@
     "add": "Lägg till",
     "mostRecent": "Senaste",
     "sensor": "Sensor",
+    "sensors": "Sensorer",
     "articleNumber": "Artikelnummer",
     "date": "Datum",
     "time": "Tid",
@@ -50,5 +51,8 @@
     "websiteStylingDescription" : "På den här sidan kan du ändra utseendet på webbplatsen så att den överensstämmer med ditt företags branding.",
     "mainColor": "Huvudfärg",
     "logo": "Logo",
-    "save": "Spara"
+    "save": "Spara",
+    "tempSensor": "Temperatursensor",
+    "analogSensor": "Analogsensor",
+    "switchSensor": "Switchsensor"
 }

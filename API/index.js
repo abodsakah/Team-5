@@ -307,6 +307,57 @@ app.post("/api/setNodeDeleted", async (req, res) => {
     }
 })
 
+app.get("/api/getUsersForCompany", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let companyId = req.query.companyId;
+    if (keyValid) {
+        try {
+            let users = await dbConnection.getUsersForCompany(companyId);
+            res.status(200).send(users);
+        } catch (e) {
+            res.status(500).send("Error getting users");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.get("/api/getLogicalDeviceForCompany", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let companyId = req.query.companyId;
+
+    if (keyValid) {
+        try {
+            let devices = await dbConnection.getLogicalDeviceForCompany(companyId);
+            res.status(200).send(devices);
+        } catch (e) {
+            res.status(500).send("Error getting devices");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
+app.get("/api/getLogicalDeviceTypeAmount", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let companyId = req.query.companyId;
+    let type = req.query.type;
+
+    if (keyValid) {
+        try {
+            let devices = await dbConnection.getAmountOfSensorTypes(`${type}`, companyId);
+            res.status(200).send(devices);
+        } catch (e) {
+            res.status(500).send("Error getting devices");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
 app.get("*", (req, res) => {
     res.status(404).send("Not found");
 });
