@@ -81,9 +81,9 @@ async function getPreloadedNodes() {
 }
 
 /**
- * @param {any} deviceId 
- * @param {any} deviceType 
- * @param {any} companyId 
+ * @param {int} deviceId 
+ * @param {int} deviceType 
+ * @param {int} companyId 
  * @returns {} 
  */
 async function addPreloadedNode(deviceId, deviceType, companyId) {
