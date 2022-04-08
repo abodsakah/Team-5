@@ -54,7 +54,7 @@ function isConnected(){
 /**
  * Async Function for sending a JSONstring {message} to the MQTT
  * companyId {companyId}. Makes a JSON string and sends it to the gateway.
- * @param companyId String the companyId the message should be sent too.
+ * @param companyId INT the companyId the message should be sent too.
  * @param message JSONstring the JSON string message to publish.
  * @returns BOOLEAN
  */

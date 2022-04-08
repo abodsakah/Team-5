@@ -134,6 +134,29 @@ async function updateStyling(companyId, color, logo) {
  * 
  * @param {*} nodeId The id of the device
  * @param {*} companyId The id of the company that owns the device
+ * @returns all info for the node
+ */
+async function getNodeInfo(nodeId, companyId) {
+    // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
+    const result = await db.query("CALL get_logical_device_all(?,?)", {type: QueryTypes.SELECT, replacements: [nodeId, companyId]});
+    return result[0][0];
+}
+
+/**
+ * 
+ * @param {*} uid The unique id of the node
+ * @returns The status of the node
+ */
+async function getNodeFromUid(uid) {
+    // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
+    const result = await db.query("CALL get_node_from_uid(?)", {type: QueryTypes.SELECT, replacements: [uid]});
+    return result[0][0];
+}
+
+/**
+ * 
+ * @param {*} nodeId The id of the device
+ * @param {*} companyId The id of the company that owns the device
  * @returns The status of the node
  */
 async function getNodeStatus(nodeId, companyId) {
@@ -193,6 +216,8 @@ module.exports = {
     getNodeStatus,
     getUsersForCompany,
     getLogicalDeviceForCompany,
-    getAmountOfSensorTypes
+    getAmountOfSensorTypes,
+    getNodeInfo,
+    getNodeFromUid
 }
 

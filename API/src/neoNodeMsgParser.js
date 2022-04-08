@@ -1,4 +1,8 @@
 'use strict'
+
+const neoNodeMsgSender = require("./neoNodeMsgSender");
+const dataBase = require('./dbConnection');
+
 // Module with functions for handling
 // JSON string data coming from the
 // NeoCortec gateway
@@ -29,7 +33,8 @@ class Queue {
 
 const SWITCH_CLOSED = 32764;
 const queue = new Queue;
-
+const DELETE_ID = 65535;
+const DELETE_SETTINGS = "000000000000000000000000";
 
 /*
  * Functions
@@ -203,6 +208,19 @@ async function parseMsgData(data, topic) {
       // "uidHex":"ffffffffff",
       // "appFunctionType":0
       // }
+      var uid = dataObj.uidHex;
+      var node = await dataBase.getNodeFromUid(uid);
+
+      if(node == null){
+        console.log("setupRequest uid not found, database returned NULL");
+        return; // exit early if we cant find node in database.
+      }
+      if(node.status == "deleted"){
+        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,node.uid,DELETE_SETTINGS,node.company_id);
+      }else{
+        await neoNodeMsgSender.sendWesSetupResponse(node.id,node.uid,node.app_settings,node.company_id);
+      }
+
       break;
     case 'networkCommandReply':
       console.log('Incoming message type: networkCommandReply');
@@ -246,6 +264,7 @@ async function parseMsgData(data, topic) {
 
 
 // Private Help Functions
+
 
 // Returns the correct temperature in celsius from recieved payload
 function convertToCelsius(data) {

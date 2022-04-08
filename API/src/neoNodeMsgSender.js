@@ -160,8 +160,8 @@ async function sendForceWesMode(nodeId, companyId) {
  * Makes a JSON string and sends it to the gateway.
  * @param nodeId INT: Id of the node to setup.
  * @param uniqueId String: uniqueId(HEX) of the node to setup.
- * @param nodeId String: appSettings(HEX) of the node to setup.
- * @param companyId String the companyId the message should be sent too.
+ * @param appSettings String: appSettings(HEX) of the node to setup.
+ * @param companyId INT the companyId the message should be sent too.
  * @returns BOOLEAN
  */
 async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
@@ -196,8 +196,12 @@ async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
  */
 async function deleteNode(nodeId, companyId) {
   // Send delete query to database.
-  /* TODO: send query to database */
-  dataBase.setNodeASDeleted(nodeId, companyId);
+  await dataBase.setNodeASDeleted(nodeId, companyId);
+  // check status
+  var status = await dataBase.getNodeStatus(nodeId, companyId);
+  if(status.status != "deleted"){
+    return false;
+  }
   // Send ForceWesMode to Node.
   if (sendForceWesMode(nodeId, companyId)){
     return true;

@@ -269,6 +269,24 @@ app.post("/api/updateStyling", async (req, res) => {
     }
 });
 
+app.get("/api/getNodeInfo", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let nodeId = req.query.nodeId;
+    let companyId = req.query.companyId;
+
+    if (keyValid) {
+        try {
+            let node = await dbConnection.getNodeInfo(nodeId,companyId);
+            res.status(200).send(node);
+        } catch (e) {
+            res.status(500).send("Error getting sensor");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
 app.get("/api/getNodeStatus", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
@@ -281,6 +299,26 @@ app.get("/api/getNodeStatus", async (req, res) => {
             res.status(200).send(node);
         } catch (e) {
             res.status(500).send("Error getting sensor");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
+app.post("/api/deleteNode", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let nodeId = req.query.nodeId;
+    let companyId = req.query.companyId;
+
+    if (keyValid) {
+        try {
+            await neoNodeMsgSender.deleteNode(nodeId,companyId);
+            res.status(200).send({
+                status: "success",
+            });
+        } catch (e) {
+            res.status(500).send(e);
         }
     } else {
         res.status(401).send("Invalid API key");
