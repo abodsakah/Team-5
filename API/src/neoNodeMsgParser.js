@@ -224,7 +224,7 @@ async function parseMsgData(data, topic) {
         return; // exit early if we cant find node in database.
       }
       if(node.status == "deleted"){
-        await neoNodeMsgSender.sendWesSetupResponse(68,uid,DELETE_SETTINGS,node.company_id);
+        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
       }else{
         await neoNodeMsgSender.sendWesSetupResponse(node.id,uid,node.app_settings,node.company_id);
       }
