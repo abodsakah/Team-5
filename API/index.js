@@ -305,6 +305,27 @@ app.get("/api/getNodeStatus", async (req, res) => {
     }
 })
 
+app.post("/api/forceWesMode", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let nodeId = req.query.nodeId;
+    let companyId = req.query.companyId;
+
+    if (keyValid) {
+        try {
+            await neoNodeMsgSender.sendForceWesMode(nodeId,companyId);
+            res.status(200).send({
+                status: "success",
+            });
+            console.log("sendForceWesMode success!");
+        } catch (e) {
+            res.status(500).send(e);
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+})
+
 app.post("/api/deleteNode", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
@@ -317,6 +338,7 @@ app.post("/api/deleteNode", async (req, res) => {
             res.status(200).send({
                 status: "success",
             });
+            console.log("deleteNode success!");
         } catch (e) {
             res.status(500).send(e);
         }
