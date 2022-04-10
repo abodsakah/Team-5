@@ -1,7 +1,9 @@
 'use strict'
 
 const neoNodeMsgSender = require("./neoNodeMsgSender");
+const mqttGateway = require('./gatewayMqttConnect');
 const dataBase = require('./dbConnection');
+const gatewayMqttConnect = require("./gatewayMqttConnect");
 
 // Module with functions for handling
 // JSON string data coming from the
@@ -34,7 +36,7 @@ class Queue {
 const SWITCH_CLOSED = 32764;
 const queue = new Queue;
 const DELETE_ID = 65535;
-const DELETE_SETTINGS = "000000000000000000000000";
+const DELETE_SETTINGS = "000000000000000000000000000000000000000000000000";
 
 /*
  * Functions
@@ -42,6 +44,12 @@ const DELETE_SETTINGS = "000000000000000000000000";
 function getMsgQueue(){
   return queue;
 }
+
+// event will trigger when a message comes in on a topic we are subscribed too.
+gatewayMqttConnect.mqttClient.on('message', function(topic, message) {
+  // call parser function.
+  parseMsgData(message, topic);
+})
 
 /**
  * Function for parsing the turning the data
@@ -216,9 +224,9 @@ async function parseMsgData(data, topic) {
         return; // exit early if we cant find node in database.
       }
       if(node.status == "deleted"){
-        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,node.uid,DELETE_SETTINGS,node.company_id);
+        await neoNodeMsgSender.sendWesSetupResponse(68,uid,DELETE_SETTINGS,node.company_id);
       }else{
-        await neoNodeMsgSender.sendWesSetupResponse(node.id,node.uid,node.app_settings,node.company_id);
+        await neoNodeMsgSender.sendWesSetupResponse(node.id,uid,node.app_settings,node.company_id);
       }
 
       break;

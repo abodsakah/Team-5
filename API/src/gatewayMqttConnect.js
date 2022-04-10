@@ -4,12 +4,6 @@
 //
 
 const MQTT = require('async-mqtt');
-const msgParser = require('./neoNodeMsgParser');
-
-module.exports = {
-  publishMsg: publishMsg,
-  isConnected: isConnected,
-};
 
 const clientId = 'NodeJS-server'+Math.floor(Math.random()*1000);
 // connection option
@@ -44,10 +38,11 @@ const setupSubs =
 
                 client.on('connect', setupSubs);
 
- /**
+/**
   * get mqtt connection status
+  * @returns {MQTT connection status} 
   */
-function isConnected(){
+async function isConnected() {
   return client.connected;
 }
 
@@ -77,11 +72,11 @@ async function publishMsg(message, companyId) {
   }
 }
 
-// event will trigger when a message comes in on a topic we are subscribed too.
-client.on('message', function(topic, message) {
-  // call parser function.
-  msgParser.parseMsgData(message, topic);
-})
+// // event will trigger when a message comes in on a topic we are subscribed too.
+// client.on('message', function(topic, message) {
+//   // call parser function.
+//   msgParser.parseMsgData(message, topic);
+// })
 
 // Termination handler.
 const handleExit =
@@ -102,4 +97,10 @@ process.on('exit', handleExit);
 process.on('SIGINT', handleExit);
 process.on('SIGQUIT', handleExit);
 process.on('SIGTERM', handleExit);
+
+module.exports = {
+  publishMsg: publishMsg,
+  isConnected: isConnected,
+  mqttClient: client
+};
 
