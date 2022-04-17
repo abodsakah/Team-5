@@ -104,14 +104,14 @@ async function getCompanies() {
  *  Used to add a new logical device to the database
  * @param {*} uid The unique id of the device
  * @param {*} name The display name of the logical device
- * @param {*} trigger_action The action that triggers a warning from the devices data
+ * @param {*}    The action that triggers a warning from the devices data
  * @param {*} install_date The install date of the device
  * @param {*} is_part_of What asset the device is part of
  * @param {*} status The status of the device
  * @returns the id of the logical device that was created
  */
-async function addLogicalDevice(uid, name, trigger_action, install_date, is_part_of, status) {
-    const result = await db.query("CALL add_node(?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, trigger_action, install_date, is_part_of, status]});
+async function addLogicalDevice(uid, name, trigger_action, is_part_of, type, status) {
+    const result = await db.query("CALL add_node(?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, trigger_action, type, is_part_of, status]});
     return result;
 }
 
@@ -200,6 +200,36 @@ async function getAmountOfSensorTypes(sensorType, companyId) {
     return result[0][0];
 }
     
+/**
+ * Gets all the building, finds all spaces with a NULL as "is_part_of"
+ * @param {*} companyId The company id for the space
+ * @returns A list with all the spaces available for a company
+ */
+async function getBuildingsForCompany(companyId) {
+    const result = await db.query("CALL get_all_buildings(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
+    return result[0];
+}
+
+/**
+ * Gets all the spaces that has the "is_part_of" set to the space_id
+ * @param {*} space_id the space id for the space
+ * @returns A list with all the spaces available for a company
+ */
+async function getSpacesForBuilding(space_id) {
+    const result = await db.query("CALL get_spaces_for_building(?)", {type: QueryTypes.SELECT, replacements: [space_id]});
+    return result[0];
+}
+
+/**
+ * 
+ * @param {*} space_id The space id where the assets are in
+ * @returns a list of the assets in the space
+ */
+async function getAssetsInSpace(space_id) {
+    const result = await db.query("CALL get_assets_in_space(?)", {type: QueryTypes.SELECT, replacements: [space_id]});
+    return result[0];
+}   
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -218,6 +248,9 @@ module.exports = {
     getLogicalDeviceForCompany,
     getAmountOfSensorTypes,
     getNodeInfo,
-    getNodeFromUid
+    getNodeFromUid,
+    getBuildingsForCompany,
+    getSpacesForBuilding,
+    getAssetsInSpace
 }
 

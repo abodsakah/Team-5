@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography, Snackbar, Alert} from '@mui/material';
 import { QrReader } from 'react-qr-reader'
 import LoadingOverlay from './LoadingOverlay';
@@ -67,19 +67,27 @@ const QrContainers = styled("div")`
     }
     `
 
-function AddSensor({t, apiURL}) {
+function AddSensor({t, apiURL, user}) {
 
-    const [nodeType, setNodeType] = React.useState(''); // the type that is choosen
-    const [company, setcompany] = React.useState(''); // the company that is choosen
-    const [companies, setCompanies] = React.useState([]); // the companies that are available
     const [isLoading, setIsLoading] = React.useState(false); // is the loading indicator visible
     const [errors, setErrors] = React.useState([]); // the errors that are returned from the server
 
+    const [buildings, setbuildings] = React.useState([]); // the buildings that are available
+    const [spaces, setSpaces] = React.useState([]); // the spaces that are available
+    const [assets, setAssets] = React.useState([]); // the assets that are available
+
+    const [selectedBuilding, setSelectedBuilding] = React.useState('');
+    const [selectedSpace, setSelectedSpace] = React.useState('');
+    const [selectedAsset, setSelectedAsset] = React.useState('');
+
     // get data from qr code
     const [deviceId, setDeviceId] = React.useState('');
+    const [deviceName, setDeviceName] = React.useState('');
     const [snackBarstatus, setSnackBarstatus] = React.useState(false);
     const [snackBarMessage, setSnackBarMessage] = React.useState('');
     const [snackBarSeverity, setSnackBarSeverity] = React.useState('success');
+
+    const [formIsValid, setFormIsValid] = React.useState(false);
 
     // to be able to change the text
     const onUidTextChange = (e) => {
@@ -93,36 +101,89 @@ function AddSensor({t, apiURL}) {
         setSnackBarstatus(!snackBarstatus);
     }
 
+    const handleDeviceNameChange = (e) => {
+        if (e.target) {
+            setDeviceName(e.target.value);
+        }
+    }
+
     // sets the device id from the qr code
     const getDeviceId = (deviceId) => {
         setDeviceId(deviceId);
         onUidTextChange(deviceId);
     }
 
-    const handleNodeTypeChange = (event) => { // when the node type is changed
-        setNodeType(event.target.value);
-    }
- 
-    const handleCompanyChange = (event) => { // the company that is choosen
-        setcompany(event.target.value); 
+    const checkValid = () => {
+
+        // console.log(selectedBuilding, selectedAsset, deviceId);
+        if (selectedBuilding !== '' && selectedAsset !== '' && deviceId !== '') {
+            setFormIsValid(true);
+        }
     }
 
-    if (companies.length === 0) {
-        fetch(`${apiURL}getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setCompanies(result);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            )
+    const handleBuildingChange = (event) => {
+        setSelectedBuilding(event.target.value);
     }
+ 
+    const handleSpaceChange = (event) => {
+        setSelectedSpace(event.target.value); 
+    }
+
+    const handleAssetChange = (event) => {
+        setSelectedAsset(event.target.value); 
+    }
+
+    const getBuildings = async () => {
+        if (buildings.length === 0) {
+            let buildingsData = await fetch(`${apiURL}getBuildings?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`)
+            let buildingJson = await buildingsData.json().then(data => Object.keys(data).map(key => data[key]));
+            setbuildings(buildingJson);
+        }
+    }
+    getBuildings();
+
+    const getSpaces = async () => {
+        setSelectedSpace('');
+        let spacesData = await fetch(`${apiURL}getSpaces?key=${process.env.REACT_APP_TRACT_API_KEY}&parentId=${selectedBuilding}`)
+        let spacesJson = await spacesData.json().then(data => Object.keys(data).map(key => data[key]));
+        setSpaces(spacesJson);
+    }
+
+    const getAssets = async () => {
+        let space;
+        if (selectedSpace !== '') {
+            console.log('no space selected');
+            space = selectedSpace;
+        } else {
+            console.log(selectedSpace)
+            space = selectedBuilding;
+        }
+
+        let assetsData = await fetch(`${apiURL}getAssetsForSpace?key=${process.env.REACT_APP_TRACT_API_KEY}&spaceId=${space}`);
+        let assetsJson = await assetsData.json().then(data => Object.keys(data).map(key => data[key]));
+        setAssets(assetsJson);
+        console.log(assets);
+    }
+
+    useEffect(() => {
+        getSpaces();
+        getAssets();
+        checkValid();
+    }, [selectedBuilding]);
+
+    useEffect(() => {
+        checkValid();
+    }, [deviceId]);
+
+    useEffect(() => {
+        getAssets();
+        checkValid();
+    }, [selectedSpace]);
+
     
     const sendDevice = () => {
         setIsLoading(true);
-
+        console.log(selectedBuilding, selectedSpace, selectedAsset, deviceId);
         
     }
 
@@ -145,59 +206,85 @@ function AddSensor({t, apiURL}) {
                 textAlign: 'center',
             }} gutterBottom>Scan Qr to add sensor</Typography>
             <Scanners getDeviceId={getDeviceId}/>
-        </QrContainers>
-        <div>
-            <Typography variant="h5" gutterBottom>Node Uid</Typography>
-            <TextField
-                id="outlined-basic"
-                label="uid"
-                variant="outlined"
-                value={deviceId}
-                onChange={onUidTextChange}
-                helperText="Scan the QR code or enter the uid manually"
-                style={{
-                    marginBottom: '1rem',
-                }}
-            />
-                
-            <Typography variant="h5" gutterBottom>Node sensor type</Typography>
-            <FormControl fullWidth>
-                <InputLabel style={{backgroundColor: "white"}} id="node-type">Node type</InputLabel>
-                <Select
-                    labelId='node-type'
-                    id='node-type'
-                    value={nodeType}
-                    onChange={handleNodeTypeChange}
-                >
-                    <MenuItem value={1}>Temperature and Humidity</MenuItem>
-                    <MenuItem value={2}>Switch</MenuItem>
-                    <MenuItem value={3}>Analog wheel</MenuItem>
-                </Select>
-            </FormControl>
-            <br /><br />
-            {/* <Typography variant="h5" gutterBottom>Company of node</Typography>
-            <FormControl fullWidth>
-                {companies.length > 0 ?
-                    <>
-                        <InputLabel style={{backgroundColor: "white"}} id='company-id'>Company</InputLabel>
+                </QrContainers>
+                <div>
+                    <Typography variant="h5" gutterBottom>Sensor name</Typography>
+                    <TextField
+                        id="name"
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        onChange={handleDeviceNameChange}
+                        value={deviceName}
+                    />
+                    
+                    <Typography variant="h5" gutterBottom>Sensor position</Typography>
+                    <FormControl fullWidth>
+                        <InputLabel style={{backgroundColor: "white"}} id="node-type">Building</InputLabel>
                         <Select
-                            labelId='company-id'
-                            id='company-id'
-                            value={company}
-                            onChange={handleCompanyChange}
+                            labelId='node-type'
+                            id='node-type'
+                            value={selectedBuilding}
+                            onChange={handleBuildingChange}
                         >
-                            {companies.map(company => (
-                                <MenuItem key={company.id} value={company.id}>{company.name}</MenuItem>
-                            ))}
+                            {buildings.map((building, index) => {
+                                return (
+                                    <MenuItem key={index} value={building.id}>{building.name}</MenuItem>
+                                )
+                            })}
                         </Select>
-                    </>
-                    :
-                    <CircularProgress/>
-                }
-            </FormControl> */}
-            <Button variant="outlined" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDevice}>
-                {t('addNode')}
-            </Button>
+                    </FormControl>
+                    {spaces.length > 0 &&
+                        <>
+                            <br />
+                            <br />
+                            <FormControl fullWidth>
+                                <InputLabel style={{backgroundColor: "white"}} id="node-type">Space</InputLabel>
+                                <Select
+                                    labelId='node-type'
+                                    id='node-type'
+                                    value={selectedSpace}
+                                    onChange={handleSpaceChange}
+                                >
+                                    {spaces.map((space, index) => {
+                                        return (
+                                            <MenuItem key={index} value={space.id}>{space.name}</MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </>
+                    }
+                    {assets.length > 0 &&
+                        <>
+                            <br />
+                            <br />
+                            <FormControl fullWidth>
+                                <InputLabel style={{backgroundColor: "white"}} id="node-type">Assets</InputLabel>
+                                <Select
+                                    labelId='node-type'
+                                    id='node-type'
+                                    value={selectedAsset}
+                                    onChange={handleAssetChange}
+                                >
+                                    {assets.map((asset, index) => {
+                                        return (
+                                            <MenuItem key={index} value={asset.id}>{asset.name}</MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </>
+                    }
+                    {formIsValid ?
+                        <Button variant="outlined" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDevice}>
+                            {t('addNode')}
+                        </Button>
+                        :
+                        <Button variant="outlined" disabled color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDevice}>
+                            {t('addNode')}
+                        </Button>
+                    }
         </div>    
         </Box>
     </>

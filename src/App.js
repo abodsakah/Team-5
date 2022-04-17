@@ -177,7 +177,7 @@ function App() {
               <Route path="/login" element={<Login t={t} />} />
               <Route path="/devices" element={<Devices t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
               <Route path="/devices/:category" element={<DeviceCategory t={t} />} />
-              <Route path="/devices/add-sensor" element={<AddSensor t={t} />} />
+              <Route path="/devices/add-sensor" element={<AddSensor t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
               {cookies.get("user") && cookies.get("user").role <= 1 &&
                 <>
                   {cookies.get("user") && cookies.get("user").role === 0 &&

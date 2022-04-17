@@ -310,7 +310,7 @@ app.post("/api/forceWesMode", async (req, res) => {
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.nodeId;
     let companyId = req.query.companyId;
-
+    // console.log(nodeId);
     if (keyValid) {
         try {
             await neoNodeMsgSender.sendForceWesMode(nodeId,companyId);
@@ -417,6 +417,76 @@ app.get("/api/getLogicalDeviceTypeAmount", async (req, res) => {
         res.status(401).send("Invalid API key");
     }
 })
+
+app.get("/api/getBuildings", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let companyId = req.query.companyId;
+    if (keyValid) {
+        try {
+            let spaces = await dbConnection.getBuildingsForCompany(companyId);
+            res.status(200).send(spaces);
+        } catch (e) {
+            res.status(500).send("Error getting spaces");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.get("/api/getSpaces", async (req, res) => { 
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let parentSpaceId = req.query.parentId;
+
+    if (keyValid) {
+        try {
+            let spaces = await dbConnection.getSpacesForBuilding(parentSpaceId);
+            res.status(200).send(spaces);
+        } catch (e) {
+            res.status(500).send("Error getting spaces");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.get("/api/getAssetsForSpace", async (req, res) => {
+    let apiKey = req.query.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let spaceId = req.query.spaceId;
+
+    if (keyValid) {
+        try {
+            let assets = await dbConnection.getAssetsInSpace(spaceId);
+            res.status(200).send(assets);
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Error getting assets");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.post("/api/addLogicalDevice", async (req, res) => {
+    let apiKey = req.body.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let companyId = req.body.companyId;
+    let deviceUid = req.body.deviceUid;
+    let deviceName = req.body.deviceName;
+    let is_part_of = req.body.is_part_of;
+    let status = "ACTIVE"
+
+    if (keyValid) {
+        try {
+            let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, 1, is_part_of, 1, status);
+            res.status(200).send(device);
+        } catch (e) {
+            res.status(500).send("Error adding device");
+        }
+    }
+});
 
 app.get("*", (req, res) => {
     res.status(404).send("Not found");
