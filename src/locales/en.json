@@ -54,6 +54,12 @@
     "save": "Save",
     "tempSensor": "Temperature sensor",
     "analogSensor": "Analog sensor",
-    "switchSensor": "Switch sensor"
+    "switchSensor": "Switch sensor",
+    "sensorType": "Sensor type",
+    "chooseTemp": "Choose temperature",
+    "chooseAnalog": "Choose analog value",
+    "chooseSwitch": "Choose switch value",
+    "on": "On",
+    "off": "Off"
 
 }

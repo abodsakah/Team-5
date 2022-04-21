@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography, Snackbar, Alert} from '@mui/material';
+import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography, Snackbar, Alert, Slider, FormLabel, RadioGroup, FormControlLabel, Radio} from '@mui/material';
 import { QrReader } from 'react-qr-reader'
 import LoadingOverlay from './LoadingOverlay';
 
@@ -50,6 +50,11 @@ const Scanners = ({getDeviceId}) => {
                 }}
           style={{ width: '100%' }}
             />
+            {data &&
+                <Typography variant="h6" style={{marginTop: '1rem'}}>
+                    Code: {data}
+                </Typography>
+            }
       </div>
     );
 }
@@ -76,6 +81,10 @@ function AddSensor({t, apiURL, user}) {
     const [spaces, setSpaces] = React.useState([]); // the spaces that are available
     const [assets, setAssets] = React.useState([]); // the assets that are available
 
+    const [nodeType, setNodeType] = React.useState(''); // the node type that is selected
+
+    const [step, setStep] = React.useState(1); // the step that is selected
+
     const [selectedBuilding, setSelectedBuilding] = React.useState('');
     const [selectedSpace, setSelectedSpace] = React.useState('');
     const [selectedAsset, setSelectedAsset] = React.useState('');
@@ -86,6 +95,12 @@ function AddSensor({t, apiURL, user}) {
     const [snackBarstatus, setSnackBarstatus] = React.useState(false);
     const [snackBarMessage, setSnackBarMessage] = React.useState('');
     const [snackBarSeverity, setSnackBarSeverity] = React.useState('success');
+
+    const [deviceType, setDeviceType] = React.useState(null);
+
+    const [choosenTemp, setChoosenTemp] = React.useState(0);
+    const [choosenSwitch, setChoosenSwitch] = React.useState(0);
+    const [choosenAnalog, setChoosenAnalog] = React.useState(0);
 
     const [formIsValid, setFormIsValid] = React.useState(false);
 
@@ -165,6 +180,18 @@ function AddSensor({t, apiURL, user}) {
         console.log(assets);
     }
 
+    const handleChangeTemp = (event) => {
+        setChoosenTemp(event.value);
+    }
+
+    const handleChangeSwitch = (event) => {
+        setChoosenSwitch(event.value);
+    }
+
+    const handleChangeAnalog = (event) => {
+        setChoosenAnalog(event.value);
+    }
+
     useEffect(() => {
         getSpaces();
         getAssets();
@@ -180,15 +207,41 @@ function AddSensor({t, apiURL, user}) {
         checkValid();
     }, [selectedSpace]);
 
+    useEffect(() => {
+        checkValid();
+    }, [selectedAsset, deviceId, deviceName]);
+
     
     const sendDevice = () => {
         setIsLoading(true);
-        console.log(selectedBuilding, selectedSpace, selectedAsset, deviceId);
-        
+        console.log(selectedAsset, deviceId, deviceName);
+        let data = new FormData();
+        data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+        data.append('companyId', user.company_id);
+        data.append('deviceUid', deviceId);
+        data.append('deviceName', deviceName);
+        data.append('is_part_of', selectedAsset);
+
+        fetch(`${apiURL}addLogicalDevice`, {
+            method: 'POST',
+            body: data
+        })
+            .then(response => response.json())
+            .then(data => {
+                if(data){
+                    setIsLoading(false);
+                    setDeviceType(data.type);
+                    setStep(2);
+                }
+            })
+    }
+
+    const sendDeviceType = () => {
+
     }
 
     return (
-        <>
+    <>
         <Snackbar open={snackBarstatus} autoHideDuration={6000} onClose={handleSnackbarStatus}>
             <Alert onClose={handleSnackbarStatus} severity={snackBarSeverity} sx={{ width: '100%' }}>
             {snackBarMessage}
@@ -201,7 +254,9 @@ function AddSensor({t, apiURL, user}) {
             alignItems: 'center',
             justifyContent: 'center',
             }}>
-        <QrContainers>
+        { step === 1 ?
+                    <>
+              <QrContainers>
             <Typography variant="h5" style={{
                 textAlign: 'center',
             }} gutterBottom>Scan Qr to add sensor</Typography>
@@ -285,7 +340,47 @@ function AddSensor({t, apiURL, user}) {
                             {t('addNode')}
                         </Button>
                     }
-        </div>    
+                        </div>  
+                    </>
+                    :
+                    <>
+                        <Typography variant="h5" gutterBottom>{t('sensorType')} {deviceType === 1 ? t('tempSensor') : deviceType === 2 ? t('analogSensor') : deviceType === 3 && t('switchSensor')}
+                        </Typography>
+                        {deviceType === 1 ? 
+                            <>
+                                <Typography variant="h5" gutterBottom>{t('chooseTemp')}</Typography>
+                                <Slider
+                                    defaultValue={32}
+                                    aria-label="Default"
+                                    valueLabelDisplay="auto"
+                                    step={1}
+                                    marks={[{value: -40, label: '-40°C'}, {value: 100, label: '100°C'}]}
+                                    min={-40}
+                                    max={100}
+                                    onChange={handleChangeTemp}
+                                />
+                            </>
+                            :
+                            deviceType === 2 ?
+                                <>
+                                    <FormControl>
+                                        <FormLabel>{t('chooseSwitch')}</FormLabel>
+                                        <RadioGroup aria-label="position" name="value" value={choosenSwitch} onChange={handleChangeSwitch} row>
+                                            <FormControlLabel value="1" control={<Radio />} label={t('on')} />
+                                            <FormControlLabel value="0" control={<Radio />} label={t('off')} />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </>
+                                :
+                                deviceType === 3 &&
+                                <>
+                                    <Typography variant="h5" gutterBottom>{t('chooseAnalog')}</Typography>
+                                    <TextField id="analog" label="Analog" type='number' variant="outlined" fullWidth onChange={handleChangeAnalog} value={choosenAnalog} />
+                                </>
+                        }
+                        <Button variant="contained" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDeviceType}>Submit</Button>
+                    </>            
+    }
         </Box>
     </>
     )

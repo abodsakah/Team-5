@@ -54,5 +54,11 @@
     "save": "Spara",
     "tempSensor": "Temperatursensor",
     "analogSensor": "Analogsensor",
-    "switchSensor": "Switchsensor"
+    "switchSensor": "Switchsensor",
+    "sensorType": "Sensortyp",
+    "chooseTemp": "Välj temperatur",
+    "chooseAnalog": "Välj analog värde",
+    "chooseSwitch": "Välj switch värde",
+    "on": "På",
+    "off": "Av"
 }

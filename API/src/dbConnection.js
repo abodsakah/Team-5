@@ -110,8 +110,8 @@ async function getCompanies() {
  * @param {*} status The status of the device
  * @returns the id of the logical device that was created
  */
-async function addLogicalDevice(uid, name, trigger_action, is_part_of, type, status) {
-    const result = await db.query("CALL add_node(?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, trigger_action, type, is_part_of, status]});
+async function addLogicalDevice(uid, name, is_part_of, type, status) {
+    const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
     return result;
 }
 
@@ -140,6 +140,16 @@ async function getNodeInfo(nodeId, companyId) {
     // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
     const result = await db.query("CALL get_logical_device_all(?,?)", {type: QueryTypes.SELECT, replacements: [nodeId, companyId]});
     return result[0][0];
+}
+
+/**
+ * 
+ * @param {*} uid  The UID of the device
+ * @param {*} companyId comapny that owns the node
+ * @returns all info for the node
+ */
+function getPreloadedNode(uid, companyId) {
+    return db.query("CALL get_preloaded_node(?,?)", {type: QueryTypes.SELECT, replacements: [uid, companyId]});
 }
 
 /**
@@ -251,6 +261,7 @@ module.exports = {
     getNodeFromUid,
     getBuildingsForCompany,
     getSpacesForBuilding,
-    getAssetsInSpace
+    getAssetsInSpace,
+    getPreloadedNode
 }
 

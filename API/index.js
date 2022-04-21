@@ -476,14 +476,21 @@ app.post("/api/addLogicalDevice", async (req, res) => {
     let deviceUid = req.body.deviceUid;
     let deviceName = req.body.deviceName;
     let is_part_of = req.body.is_part_of;
-    let status = "ACTIVE"
+    let node = await dbConnection.getPreloadedNode(deviceUid, companyId);
+    node = node[0][0]
 
     if (keyValid) {
-        try {
-            let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, 1, is_part_of, 1, status);
-            res.status(200).send(device);
-        } catch (e) {
-            res.status(500).send("Error adding device");
+        if (node) {
+            try {
+                let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, 1, is_part_of, node.type, "SETUP");
+                res.status(200).send(node);
+            } catch (e) {
+                // TODO: getting error when adding device
+                console.log(e);
+                res.status(500).send("Error adding device");
+            }
+        } else {
+            res.status(500).send("Device not found");
         }
     }
 });
