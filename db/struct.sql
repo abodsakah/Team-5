@@ -24,8 +24,22 @@ DELIMITER $$
 --
 -- Procedurer
 --
-CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node` (IN `n_uid` VARCHAR(255), IN `n_name` VARCHAR(255), IN `n_trigger_action` INT(11), IN `n_is_part_of` INT(11), IN `n_type` INT(11), IN `n_status` VARCHAR(255))  MODIFIES SQL DATA
-BEGIN
+
+DELIMITER ;;
+CREATE PROCEDURE add_node_no_trigger_action(
+  IN n_node_uid VARCHAR(255),
+  IN n_node_name VARCHAR(255),
+  IN n_is_part_of INT,
+  IN n_node_type INT,
+  IN n_node_status VARCHAR(255)
+)
+begin
+INSERT INTO logical_devices (uid, name, trigger_action, install_date, is_part_of, type, status) VALUES ("88A904A4BD", "testDevice", 1, CURRENT_DATE(), 1, 1, "SETUP")
+
+  INSERT INTO logical_device (node_uid, node_name, trigger_action, install_date, is_part_of, node_type, node_status)
+  VALUES (n_node_uid, n_node_name, 0, CURRENT_DATE(), n_is_part_of, n_node_type, n_node_status);
+end;;
+DELIMITER ;
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES (NULL, `n_uid`, `n_name`, `n_trigger_action`, CURRENT_DATE(), `n_is_part_of`, `n_type`, `n_status`);
 END$$
 
