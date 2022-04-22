@@ -205,6 +205,12 @@ async function getLogicalDeviceForCompany(companyId) {
     return result[0];
 }
 
+/**
+ * 
+ * @param {*} sensorType 
+ * @param {*} companyId 
+ * @returns A json object with the amount
+ */
 async function getAmountOfSensorTypes(sensorType, companyId) {
     const result = await db.query("CALL get_amount_type_of_sensor(?, ?)", {type: QueryTypes.SELECT, replacements: [sensorType, companyId]});
     return result[0][0];
@@ -240,6 +246,28 @@ async function getAssetsInSpace(space_id) {
     return result[0];
 }   
 
+/**
+ * 
+ * @param {*} action What action has to happen for a threshold to be triggered t.ex. UP, DOWN, BETWEEN
+ * @param {*} threshold should be a number that is the threshold
+ * @returns the id of the created threshold
+ */
+async function createThreshold(action, threshold) {
+    const result = await db.query("CALL create_threshold(?, ?)", {type: QueryTypes.INSERT, replacements: [action, threshold]});
+    return result[0];
+}
+
+/**
+ * 
+ * @param {*} deviceUid The unique id of the device
+ * @param {*} thresholdId The id of the threshold
+ * @returns 
+ */
+async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
+    const result = await db.query("CALL update_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -262,6 +290,8 @@ module.exports = {
     getBuildingsForCompany,
     getSpacesForBuilding,
     getAssetsInSpace,
-    getPreloadedNode
+    getPreloadedNode,
+    createThreshold,
+    updateLogicalDeviceWithThreshold
 }
 

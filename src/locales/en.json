@@ -60,6 +60,10 @@
     "chooseAnalog": "Choose analog value",
     "chooseSwitch": "Choose switch value",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "action": "Action",
+    "over": "Over",
+    "under": "Under",
+    "equal": "Equal"
 
 }

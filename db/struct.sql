@@ -770,3 +770,17 @@ BEGIN
 END;;
 DELIMITER ;
 
+DELIMITER ;;
+CREATE PROCEDURE update_threshold(IN deviceUid, IN thresholdId)
+begin
+  UPDATE logical_devices SET trigger_action = thresholdId WHERE id = deviceUid;
+end;;
+DELIMITER ;
+
+DELIMITER ;;
+CREATE PROCEDURE create_threshold(IN n_action vARCHAR(10), IN n_treshold VARCHAR(255))
+begin
+  INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
+  -- select the id of the last inserted row
+  SELECT LAST_INSERT_ID() AS id;
+end;;

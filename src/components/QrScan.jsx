@@ -101,6 +101,8 @@ function AddSensor({t, apiURL, user}) {
     const [choosenTemp, setChoosenTemp] = React.useState(0);
     const [choosenSwitch, setChoosenSwitch] = React.useState(0);
     const [choosenAnalog, setChoosenAnalog] = React.useState(0);
+    const [action, setAction] = React.useState('');
+    const [threshold, setThreshold] = React.useState('');
 
     const [formIsValid, setFormIsValid] = React.useState(false);
 
@@ -185,11 +187,19 @@ function AddSensor({t, apiURL, user}) {
     }
 
     const handleChangeSwitch = (event) => {
-        setChoosenSwitch(event.value);
+        setAction("SAME")
+        setChoosenSwitch(event.target.value);
+        setThreshold(event.target.value);
     }
 
     const handleChangeAnalog = (event) => {
-        setChoosenAnalog(event.value);
+        setChoosenAnalog(event.target.value);
+        setThreshold(event.target.value);
+    }
+
+    const handleChangeAction = (event) => {
+        setAction(event.target.value);
+        setThreshold(event.target.value);
     }
 
     useEffect(() => {
@@ -237,7 +247,27 @@ function AddSensor({t, apiURL, user}) {
     }
 
     const sendDeviceType = () => {
+        setIsLoading(true);
+        let data = new FormData();
+        data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+        data.append('deviceUid', deviceId);
+        data.append('threshold', threshold);
+        data.append('thresholdAction', action);
 
+        fetch(`${apiURL}updateSensorThreshold`, {
+            method: 'POST',
+            body: data
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    if(data.status === "Success") {
+                        setIsLoading(false);
+                        // navigate to /devices
+                        window.location.href = '/devices';
+                    }
+                }
+            })
     }
 
     return (
@@ -349,6 +379,14 @@ function AddSensor({t, apiURL, user}) {
                         {deviceType === 1 ? 
                             <>
                                 <Typography variant="h5" gutterBottom>{t('chooseTemp')}</Typography>
+                                <FormControl>
+                                    <FormLabel>{t('action')}</FormLabel>
+                                    <RadioGroup aria-label="action" name="action" value={action} onChange={handleChangeAction}>
+                                        <FormControlLabel value="UP" control={<Radio />} label={t('over')} />
+                                        <FormControlLabel value="DOWN" control={<Radio />} label={t('under')} />
+                                        <FormControlLabel value="SAME" control={<Radio />} label={t('equal')} />
+                                    </RadioGroup>
+                                </FormControl>
                                 <Slider
                                     defaultValue={32}
                                     aria-label="Default"
@@ -374,6 +412,14 @@ function AddSensor({t, apiURL, user}) {
                                 :
                                 deviceType === 3 &&
                                 <>
+                                    <FormControl>
+                                        <FormLabel>{t('action')}</FormLabel>
+                                        <RadioGroup aria-label="action" name="action" value={action} onChange={handleChangeAction}>
+                                            <FormControlLabel value="UP" control={<Radio />} label={t('over')} />
+                                            <FormControlLabel value="DOWN" control={<Radio />} label={t('under')} />
+                                            <FormControlLabel value="SAME" control={<Radio />} label={t('equal')} />
+                                        </RadioGroup>
+                                    </FormControl>
                                     <Typography variant="h5" gutterBottom>{t('chooseAnalog')}</Typography>
                                     <TextField id="analog" label="Analog" type='number' variant="outlined" fullWidth onChange={handleChangeAnalog} value={choosenAnalog} />
                                 </>

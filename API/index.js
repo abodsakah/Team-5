@@ -482,7 +482,7 @@ app.post("/api/addLogicalDevice", async (req, res) => {
     if (keyValid) {
         if (node) {
             try {
-                let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, 1, is_part_of, node.type, "SETUP");
+                let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, is_part_of, node.type, "SETUP");
                 res.status(200).send(node);
             } catch (e) {
                 // TODO: getting error when adding device
@@ -492,6 +492,26 @@ app.post("/api/addLogicalDevice", async (req, res) => {
         } else {
             res.status(500).send("Device not found");
         }
+    }
+});
+
+app.post("/api/updateSensorThreshold", async (req, res) => {
+    let apiKey = req.body.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let deviceUid = req.body.deviceUid;
+    let threshold = req.body.threshold;
+    let thresholdAction = req.body.thresholdAction;
+    if (keyValid) {
+        try {
+            let thresholdId = await dbConnection.createThreshold(thresholdAction, threshold);
+            console.log(thresholdId);
+            await dbConnection.updateLogicalDeviceWithThreshold(deviceUid, thresholdId.id);
+            res.status(200).send({"status": "Success"});
+        } catch (e) {
+            res.status(500).send("Error updating device");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
     }
 });
 

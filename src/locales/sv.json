@@ -60,5 +60,9 @@
     "chooseAnalog": "Välj analog värde",
     "chooseSwitch": "Välj switch värde",
     "on": "På",
-    "off": "Av"
+    "off": "Av",
+    "action": "Åtgärd",
+    "over": "Över",
+    "under": "Under",
+    "equal": "Lika med"
 }
