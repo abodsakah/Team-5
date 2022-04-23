@@ -45,11 +45,9 @@ const Devices = ({t, apiURL, user}) => {
     setRows([
       createData(t("tempSensor"), amountTempSensor, <DeviceThermostatIcon />),
       createData(t("analogSensor"), amountAnalogSensor, <CandlestickChartIcon />),
-      createData(t("analogSensor"), amountSwitchSensor, <ToggleOnIcon />),
+      createData(t("switchSensor"), amountSwitchSensor, <ToggleOnIcon />),
     ]);
   }, [amountTempSensor, amountAnalogSensor, amountSwitchSensor]);
-
-  console.log(rows);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useParams  } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -30,50 +30,50 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 
  
-const DeviceCategory = () => {
-  let { category } = useParams()
+const DeviceCategory = ({user, t, apiURL}) => {
+  let {category} = useParams()
 
+  const [type, setType] = React.useState(0);
+
+  if (type === 0) {
+    if (category === t("tempSensor")) {
+      setType(1);
+    } else if (category === t("analogSensor")) {
+      setType(3);
+    } else if (category === t("switchSensor")) {
+      setType(2);
+    }
+  }
+
+  const [rows, setRows] = React.useState([]);
 
   // Tablecontent
   function createData(name, calories, status, carbs, protein) {
-    return { name, calories, status, carbs, protein };
+    return {name, calories, status, carbs, protein};
   }
 
-  let rows = []
-  category === "hissensorer" && (
-    rows = [
-      createData('hiss Entré 1', 18, 'status', 24, 4.0),
-      createData('hiss Entré 2', 237, 'status', 37, 4.3),
-      createData('hiss Entré 3', 18, 'status', 24, 4.0),
-      createData('hiss Entré 4', 237, 'status', 37, 4.3),
-    ]
-  )
-  category === "temperatursensorer" && (
-    rows = [
-      createData('temperatursensor 1', 18, 'status', 24, 4.0),
-      createData('temperatursensor 2', 237, 'status', 37, 4.3),
-      createData('temperatursensor 3', 18, 'status', 24, 4.0),
-      createData('temperatursensor 4', 237, 'status', 37, 4.3),
-      createData('temperatursensor 5', 18, 'status', 24, 4.0),
-      createData('temperatursensor 6', 237, 'status', 37, 4.3),
-      createData('temperatursensor 7', 18, 'status', 24, 4.0),
-      createData('temperatursensor 8', 237, 'status', 37, 4.3),
-    ]
-  )
-  category === "dörrsensorer" && (
-    rows = [
-      createData('dörr 1', 18, 'status', 24, 4.0),
-      createData('dörr 2', 237, 'status', 37, 4.3),
-      createData('dörr 3', 237, 'status', 37, 4.3),
-      createData('dörr 4', 18, 'status', 24, 4.0),
-      createData('dörr 5', 237, 'status', 37, 4.3),
-      createData('dörr 6', 18, 'status', 24, 4.0),
-      createData('dörr 7', 237, 'status', 37, 4.3),
-      createData('dörr 8', 18, 'status', 24, 4.0),
-      createData('dörr 9', 237, 'status', 37, 4.3),
-      createData('dörr 10', 237, 'status', 37, 4.3),
-    ]
-  )
+  const getData = () => {
+    const params = new FormData();
+    params.append('key', process.env.REACT_APP_TRACT_API_KEY);
+    params.append('companyId', user.company_id);
+    params.append('type', type);
+    
+    fetch(`${apiURL}getNodesOfType`, {
+      method: 'POST',
+      body: params
+    }).then(res => res.json()).then(res => {
+      setRows(Object.values(res))
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  console.log(rows)
+
+  useEffect(() => {
+    getData();
+  }, [])
+
 
    // Dialog 
    const [openDialog, setOpenDialog] = React.useState(false);

@@ -515,6 +515,23 @@ app.post("/api/updateSensorThreshold", async (req, res) => {
     }
 });
 
+app.post('/api/getNodesOfType', async (req, res) => {
+    let apiKey = req.body.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+    let companyId = req.body.companyId;
+    let type = req.body.type;
+    if (keyValid) {
+        try {
+            let nodes = await dbConnection.getNodesOfType(type, companyId);
+            res.status(200).send(nodes);
+        } catch (e) {
+            res.status(500).send("Error getting nodes");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
 app.get("*", (req, res) => {
     res.status(404).send("Not found");
 });

@@ -268,6 +268,17 @@ async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
     return result;
 }
 
+/**
+ * 
+ * @param {*} type The type string of the sensor 
+ * @param {*} companyId The company that owns the sensor
+ * @returns A list of all sensors
+ */
+async function getNodesOfType(type, companyId) {
+    const result = await db.query("CALL get_nodes_for_type(?, ?)", {type: QueryTypes.SELECT, replacements: [companyId, type]});
+    return result[0];
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -292,6 +303,7 @@ module.exports = {
     getAssetsInSpace,
     getPreloadedNode,
     createThreshold,
-    updateLogicalDeviceWithThreshold
+    updateLogicalDeviceWithThreshold,
+    getNodesOfType
 }
 
