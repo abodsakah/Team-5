@@ -5,7 +5,6 @@
 
 const mqttGateway = require('./gatewayMqttConnect');
 const dataBase = require('./dbConnection');
-// TODO: import database module functions needed.
 
 module.exports = {
   sendNodeInfoRequest: sendNodeInfoRequest,

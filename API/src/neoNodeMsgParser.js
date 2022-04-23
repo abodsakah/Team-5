@@ -216,11 +216,14 @@ async function parseMsgData(data, topic) {
       // "uidHex":"ffffffffff",
       // "appFunctionType":0
       // }
+
+      // Gets node info from database using UID and sends a setupResponse
+      // if node is not null
       var uid = dataObj.uidHex;
       var node = await dataBase.getNodeFromUid(uid);
 
       if(node == null){
-        console.log("setupRequest uid not found, database returned NULL");
+        console.log("setupRequest node uid not found, database returned NULL");
         return; // exit early if we cant find node in database.
       }
       if(node.status == "deleted"){
