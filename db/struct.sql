@@ -784,3 +784,11 @@ begin
   -- select the id of the last inserted row
   SELECT LAST_INSERT_ID() AS id;
 end;;
+
+DROP PROCEDURE IF EXISTS get_nodes_for_type;
+DELIMITER ;;
+CREATE PROCEDURE get_nodes_for_type(IN company_id INT, IN node_type VARCHAR(255))
+BEGIN
+  SELECT * FROM `logical_devices_all` WHERE `type_name` = node_type AND `company_id` = company_id;
+END;;
+DELIMITER ;
