@@ -72,12 +72,6 @@ async function publishMsg(message, companyId) {
   }
 }
 
-// // event will trigger when a message comes in on a topic we are subscribed too.
-// client.on('message', function(topic, message) {
-//   // call parser function.
-//   msgParser.parseMsgData(message, topic);
-// })
-
 // Termination handler.
 const handleExit =
     async () => {
