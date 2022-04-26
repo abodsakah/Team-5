@@ -226,7 +226,7 @@ async function parseMsgData(data, topic) {
         console.log("setupRequest node uid not found, database returned NULL");
         return; // exit early if we cant find node in database.
       }
-      if(node.status == "deleted"){
+      if(node.status == "DELETED"){
         await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
       }else{
         await neoNodeMsgSender.sendWesSetupResponse(node.id,uid,node.app_settings,node.company_id);

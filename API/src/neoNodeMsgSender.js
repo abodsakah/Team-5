@@ -185,10 +185,10 @@ async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
 
 /**
  * Function for deleting a node with {nodeId},
- * sends a database query to mark the node as "deleted" in the database.
+ * sends a database query to mark the node as "DELETED" in the database.
  * Followed by a message to the node mesh network to force the node
  * into WESmode. The system will then handle the incoming setupRequest from this
- * node by setting it to 0xFFFF (deleted/not setup).
+ * node by setting it to 0xFFFF (DELETED aka not setup).
  * @param nodeId INT: Id of the node to delete.
  * @param companyId INT: Identifier for the company associated with the node.
  * @returns BOOLEAN
@@ -196,9 +196,9 @@ async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
 async function deleteNode(nodeId, companyId) {
   // Send delete query to database.
   await dataBase.setNodeASDeleted(nodeId, companyId);
-  // check status
+  // check status and return early if something went wrong and status is not set.
   var status = await dataBase.getNodeStatus(nodeId, companyId);
-  if(status.status != "deleted"){
+  if(status.status != "DELETED"){
     return false;
   }
   // Send ForceWesMode to Node.
