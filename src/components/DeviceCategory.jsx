@@ -68,8 +68,6 @@ const DeviceCategory = ({user, t, apiURL}) => {
     })
   }
 
-  console.log(rows)
-
   useEffect(() => {
     getData();
   }, [])
@@ -139,7 +137,16 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         <Typography variant="subtitle2" color="text.secondary" component="div">
                           { row.status }
                         </Typography>
-                        <CircleRoundedIcon sx={{ fontSize: 20, margin: 'auto', color: 'orange', padding:"0 0.45em" }}>sensorIcon</CircleRoundedIcon>
+                        {row.status === "ACTIVE" ? 
+                          <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'green', padding: "0 0.45em"}} />
+                          :
+                          row.status === "SETUP" ?
+                            <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'orange', padding: "0 0.45em"}} />
+                            :
+                            row.status === "INACTIVE" &&
+                            <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'red', padding: "0 0.45em"}} />
+                          
+                        }
                       </Box>
                     </Box>
                   </Card>
@@ -153,10 +160,10 @@ const DeviceCategory = ({user, t, apiURL}) => {
       <Popover open={openPopover} title={ title } anchorEl={anchorEl} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', margin: '0 auto', padding: "0.5em", alignItems:"flex-start"}}>
           <Button onClick={handleOpenDialog} title={ title } startIcon={<EditIcon />} sx={{ textTransform: 'none' }}>
-            Redigera { title }
+            {t("edit")} { title }
           </Button>
           <Button startIcon={<DeleteIcon />} sx={{ textTransform: 'none', color: '#EB4440' }}>
-            Radera { title }
+            {t("delete")} { title }
           </Button>
         </Box>
       </Popover>

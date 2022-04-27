@@ -64,6 +64,11 @@
     "action": "Action",
     "over": "Over",
     "under": "Under",
-    "equal": "Equal"
+    "equal": "Equal",
+    "submit": "Submit",
+    "coudntAddDevice": "Couldn't add device",
+    "pleaseSelectAnAction": "Please select an action",
+    "edit": "Edit",
+    "delete": "Delete"
 
 }

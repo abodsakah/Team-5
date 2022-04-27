@@ -29,7 +29,7 @@ import Cookies from 'universal-cookie';
 import { useAuth0 } from '@auth0/auth0-react';
 
 /* ------------------------------- Translation file ------------------------------- */
-import {t} from './translator'
+import {t, setLang} from './translator'
 
 /* ---------------------------------- Axios --------------------------------- */
 import axios from 'axios';
@@ -41,6 +41,7 @@ function App() {
 
   const drawerWidth = 240; // the width of the drawer
 
+  setLang(navigator.language); // Set the language to the browser language
   
   const cookies = new Cookies(); // create a new cookie instance
   
