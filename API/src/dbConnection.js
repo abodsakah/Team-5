@@ -270,6 +270,16 @@ async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
 
 /**
  * 
+ * @param {*} deviceUid The unique id of the device
+ * @returns 
+ */
+ async function getNodeThreshold(deviceUid) {
+    const result = await db.query("CALL get_node_threshold(?)", {type: QueryTypes.SELECT, replacements: [deviceUid]});
+    return result[0];
+}
+
+/**
+ * 
  * @param {*} type The type string of the sensor 
  * @param {*} companyId The company that owns the sensor
  * @returns A list of all sensors
@@ -304,6 +314,7 @@ module.exports = {
     getPreloadedNode,
     createThreshold,
     updateLogicalDeviceWithThreshold,
+    getNodeThreshold,
     getNodesOfType
 }
 
