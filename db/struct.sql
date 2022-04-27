@@ -33,12 +33,12 @@ CREATE PROCEDURE add_node_no_trigger_action(
   IN n_node_type INT,
   IN n_node_status VARCHAR(255)
 )
-begin
+BEGIN
 INSERT INTO logical_devices (uid, name, trigger_action, install_date, is_part_of, type, status) VALUES ("88A904A4BD", "testDevice", 1, CURRENT_DATE(), 1, 1, "SETUP")
 
   INSERT INTO logical_device (node_uid, node_name, trigger_action, install_date, is_part_of, node_type, node_status)
   VALUES (n_node_uid, n_node_name, 0, CURRENT_DATE(), n_is_part_of, n_node_type, n_node_status);
-end;;
+END;;
 DELIMITER ;
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES (NULL, `n_uid`, `n_name`, `n_trigger_action`, CURRENT_DATE(), `n_is_part_of`, `n_type`, `n_status`);
 END$$
@@ -98,9 +98,9 @@ FROM logical_devices_all
 WHERE p_uid=uid;
 END$$
 
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_users_for_company` (IN `company_id` INT)  begin
+CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_users_for_company` (IN `company_id` INT)  BEGIN
   SELECT * FROM `user_login` WHERE `company_id` = company_id;
-end$$
+END$$
 
 CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `logical_devices_for_company` (IN `company_id` INT)  BEGIN
   SELECT * FROM `logical_devices_all` WHERE `company_id` = company_id;
@@ -749,9 +749,9 @@ ALTER TABLE `website_settings`
 DROP PROCEDURE IF EXISTS `get_all_buildings`;
 DELMIMTER ;;
 CREATE PROCEDURE `get_all_buildings`(IN `company_id` INT)
-begin
+BEGIN
   SELECT * FROM spaces WHERE is_part_of = NULL AND agent = company_id;
-end;;
+END;;
 DELMIMTER ;
 
 DROP PROCEDURE IF EXISTS `get_spaces_for_company`;
@@ -770,20 +770,30 @@ BEGIN
 END;;
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS update_threshold;
 DELIMITER ;;
 CREATE PROCEDURE update_threshold(IN deviceUid, IN thresholdId)
-begin
+BEGIN
   UPDATE logical_devices SET trigger_action = thresholdId WHERE id = deviceUid;
-end;;
+END;;
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS create_threshold;
 DELIMITER ;;
 CREATE PROCEDURE create_threshold(IN n_action vARCHAR(10), IN n_treshold VARCHAR(255))
-begin
+BEGIN
   INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
   -- select the id of the last inserted row
   SELECT LAST_INSERT_ID() AS id;
-end;;
+END;;
+
+DROP PROCEDURE IF EXISTS get_node_threshold;
+DELIMITER ;;
+CREATE PROCEDURE get_node_threshold(IN deviceUid)
+BEGIN
+  SELECT * FROM node_thresholds WHERE id = deviceUid;
+END;;
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS get_nodes_for_type;
 DELIMITER ;;
