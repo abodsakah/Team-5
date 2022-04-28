@@ -1,7 +1,7 @@
 "use strict"
 
 const {Sequelize, QueryTypes} = require('sequelize');
-const dotenv = require('dotenv').config({ path:  __dirname + '/../../.env' });
+const dotenv = require('dotenv').config();
 
 
 // init db
