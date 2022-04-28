@@ -21,5 +21,13 @@ describe('test getting companies', () => {
       expect(data[0].name).toBe('Tract');
     });
   });
+
+  test('Get company styling', () => {
+    return dbConnection.getCompanySetting(1).then(data => {
+      console.log(data[0]);
+      expect(data[0][0].name).toBe('Tract');
+    });
+  });
 });
+
         
