@@ -69,5 +69,8 @@
     "coudntAddDevice": "Kunde inte lägga till sensor",
     "pleaseSelectAnAction": "Välj en sensortyp",
     "edit": "Redigera",
-    "delete": "Radera"
+    "delete": "Radera",
+    "companyAddedSuccessfully": "Företaget har lagts till",
+    "coudntAddCompany": "Kunde inte lägga till företaget",
+    "invalidInput": "Ogiltig inmatning"
 }

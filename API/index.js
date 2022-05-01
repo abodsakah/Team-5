@@ -103,13 +103,12 @@ app.get("/api/createCompany", async (req, res) => {
             let password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             let passHash = await bcrypt.hash(password, 12);
             let user = await dbConnection.createUser(adminMail, passHash, adminFirstName, adminLastName, adminNickname, 1, companyId);
-            console.log(req);
             // send success message
             let status = {
                 status: "success",
                 message: "Company created",
                 email: adminMail,
-                password: passwords
+                password: password
             }
             res.status(200).send(JSON.stringify(status));
         } catch (e) {

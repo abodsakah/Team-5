@@ -57,8 +57,12 @@
     "start": "concurrently \"react-scripts start\" \"nodemon API/index.js\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test-jest": "jest",
+    "test-jest": "jest --collectCoverage=true",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   },
   "eslintConfig": {
     "extends": [

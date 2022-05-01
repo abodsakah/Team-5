@@ -69,6 +69,9 @@
     "coudntAddDevice": "Couldn't add device",
     "pleaseSelectAnAction": "Please select an action",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "companyAddedSuccessfully": "Company added successfully",
+    "coudntAddCompany": "Couldn't add company",
+    "invalidInput": "Invalid input"
 
 }
