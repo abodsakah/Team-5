@@ -145,7 +145,7 @@ async function sendForceWesMode(nodeId, companyId) {
 
   // Send message
   if (await mqttGateway.isConnected()) {
-    console.log(message)
+    console.log("Sending " + message + " to companyId: " + companyId);
     return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;
@@ -174,7 +174,7 @@ async function sendWesSetupResponse(nodeId, uniqueId, appSettings, companyId) {
 
   // Send message
   if (await mqttGateway.isConnected()) {
-    console.log(message)
+    console.log("Sending " + message + " to companyId: " + companyId);
     return await mqttGateway.publishMsg(message, companyId);
   } else {
     return false;

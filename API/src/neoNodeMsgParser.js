@@ -61,6 +61,7 @@ gatewayMqttConnect.mqttClient.on('message', function(topic, message) {
  */
 async function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
+  var companyId = topic.split('/')[1];
   // add JSON object to queue
   queue.enqueue(dataObj);
   if (queue.length() > 50) {
@@ -74,6 +75,7 @@ async function parseMsgData(data, topic) {
       '[' + dataObj.payload + ']' +
     '\n');
   console.log('From topic: ' + topic + '\n');
+  console.log('From companyId: ' + companyId + '\n');
 
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
@@ -92,10 +94,10 @@ async function parseMsgData(data, topic) {
       //“nodeId”:10, “RSSI”:10
       //}
 
+      // pase object array and convert to an array
       console.log('Incoming message type: neighborListReply');
       for (var node of dataObj.neighbors) {
         console.log('NodeId: ' + node.nodeId + '\n');
-        console.log(nodes)
         if (nodes.length > 0) {
           nodes = []
         }
@@ -106,6 +108,7 @@ async function parseMsgData(data, topic) {
             RSSI: node.RSSI
           });
         }
+        console.log(nodes)
       }
       break;
     case 'receivedPayload':
@@ -123,11 +126,13 @@ async function parseMsgData(data, topic) {
       // "payload":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
       // }
 
-      console.log(
-          'Incoming message: ' +
-          '\n');
       var preId = dataObj.payload[0];
-      switch (preId) {
+      // check node type in database
+      var nodeType = await dataBase.getNodeType(dataObj.nodeId, companyId);
+      nodeType = nodeType.type;
+      console.log("Node type id: " + nodeType + "\n");
+      console.log( 'Incoming message: ' + '\n');
+      switch (nodeType) {
         case 1:
           // temperature sensor
           var tempData =
@@ -155,7 +160,7 @@ async function parseMsgData(data, topic) {
 
           break;
         case 3:
-          // potentiometer
+          // analog-wheel
           var analogData =
               dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
           analogData = parseInt(analogData, 16);

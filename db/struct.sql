@@ -62,7 +62,7 @@ DELETE l
   ON s.id = l.is_part_of
  WHERE l.id = p_id
  	AND s.agent = p_company_id
-    AND l.status = "deleted"
+    AND l.status = "DELETED"
  ;
 END$$
 
@@ -110,7 +110,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_deleted` (IN `p_id` INT(
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
     ON l.is_part_of = s.id
-    SET l.status = "deleted"
+    SET l.status = "DELETED"
     WHERE l.id = p_id AND s.agent = company_id;
 END$$
 
