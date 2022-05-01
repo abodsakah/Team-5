@@ -167,10 +167,20 @@ async function getNodeFromUid(uid) {
  * 
  * @param {*} nodeId The id of the device
  * @param {*} companyId The id of the company that owns the device
+ * @returns The type id of the node
+ */
+async function getNodeType(nodeId, companyId) {
+    const result = await db.query("CALL get_logical_device_type(?,?)", {type: QueryTypes.SELECT, replacements: [nodeId, companyId]});
+    return result[0][0];
+}
+
+/**
+ * 
+ * @param {*} nodeId The id of the device
+ * @param {*} companyId The id of the company that owns the device
  * @returns The status of the node
  */
 async function getNodeStatus(nodeId, companyId) {
-    // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
     const result = await db.query("CALL get_logical_device_status(?,?)", {type: QueryTypes.SELECT, replacements: [nodeId, companyId]});
     return result[0][0];
 }
@@ -303,6 +313,7 @@ module.exports = {
     updateStyling,
     setNodeASDeleted,
     getNodeStatus,
+    getNodeType,
     getUsersForCompany,
     getLogicalDeviceForCompany,
     getAmountOfSensorTypes,
