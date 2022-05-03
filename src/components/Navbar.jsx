@@ -3,6 +3,7 @@ import React from 'react';
 
 /* ------------------------------ React router ------------------------------ */
 import {Link} from 'react-router-dom';
+import { useEffect } from "react";
 
 /* ----------------------------------- MUI ---------------------------------- */
 import { styled, SwipeableDrawer, useTheme } from '@mui/material';
@@ -19,6 +20,7 @@ import RuleIcon from '@mui/icons-material/Rule';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import MemoryIcon from '@mui/icons-material/Memory';
 import StyleIcon from '@mui/icons-material/Style';
+import HistoryIcon from '@mui/icons-material/History';
 
 
 const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName, apiURL}) => {
@@ -66,7 +68,8 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    const [anchorEls, setAnchorEls] = React.useState(null);
+    const [companies, setCompanies] = React.useState([])
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -74,6 +77,25 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+
+    const handleNotification = (event) => {
+        setAnchorEls(event.currentTarget);
+    };
+
+
+    useEffect(() => {
+        async function fetchData() {
+            const res = await fetch(`${apiURL}getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(res => {
+                setCompanies(res)
+              })
+            }
+        fetchData();
+        }, []);
+
+    const handleNotificationClose = () => {
+        setAnchorEls(null);
     };
 
 
@@ -117,7 +139,59 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         : 
                         <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>
                     }
+                {/* HistoryLog button */}
+                <div>
+                    <IconButton
+                        size="large"
+                        aria-haspopup="true"
+                        onClick={handleNotification}
+                        color="inherit"
+                    >
+                        <HistoryIcon />
 
+                    </IconButton>
+                    <Menu
+                        id="noitis-appbar"
+                        anchorEl={anchorEls}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'top',
+                        }}
+                        open={Boolean(anchorEls)}
+                        onClose={handleNotificationClose}
+                        style={{
+                            left: 'auto',
+                            top: '3rem',
+                            right: '0',
+                            width: '23em',
+                        }}
+                    >
+                        {/* HistoryLog List */}
+                        <MenuItem style={{padding: '1em', pointerEvents: 'none'}}>
+                            <Typography variant="h6">
+                                HistoryLog
+                                <List sx={{ width: '15em' }}>
+                                    {companies.map(company => (
+                                        <ListItem divider light style={{ padding: '1em', width: '100%' }}>
+                                            <ListItemText>
+                                                <Typography variant="h6">
+                                                    {company.name}
+                                                </Typography>
+                                                
+                                            </ListItemText>
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Typography>
+                        </MenuItem>
+                    </Menu>
+                </div>
+                {/* End HistoryLog Button */}
                 {/* User button */}
                 <div>
                     <IconButton
