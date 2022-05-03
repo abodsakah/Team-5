@@ -802,3 +802,20 @@ BEGIN
   SELECT * FROM `logical_devices_all` WHERE `type_name` = node_type AND `company_id` = company_id;
 END;;
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS create_company;
+DELIMITER ;;
+CREATE PROCEDURE create_company(IN n_name VARCHAR(255), IN n_email VARCHAR(255), IN n_phone VARCHAR(255))
+BEGIN
+  INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (n_name, n_email, n_phone);
+  -- select the id of the last inserted row
+  SELECT LAST_INSERT_ID() AS id;
+END;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS add_styling;
+DELIMITER ;;
+CREATE PROCEDURE add_styling(IN n_comp_id INT, IN n_color VARCHAR(255), IN n_logo VARCHAR(255))
+BEGIN
+  INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES (n_comp_id, n_color, n_logo);
+END;;

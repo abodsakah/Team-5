@@ -67,7 +67,7 @@ async function createUser(email, password, first_name, last_name, nickname, role
  * @returns 
  */
 async function createCompany(name, email, phone) {
-    const result = await db.query("INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (?, ?, ?)", {type: QueryTypes.INSERT, replacements: [name, email, phone]});
+    const result = await db.query("CALL create_company(?, ?, ?)", {type: QueryTypes.INSERT, replacements: [name, email, phone]});
     return result;
 }
 
@@ -299,6 +299,11 @@ async function getNodesOfType(type, companyId) {
     return result[0];
 }
 
+async function addStyling(comp_id, color, logo) {
+    const result = await db.query("CALL add_styling(?, ?, ?)", {type: QueryTypes.INSERT, replacements: [comp_id, color, logo]});
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -326,6 +331,7 @@ module.exports = {
     createThreshold,
     updateLogicalDeviceWithThreshold,
     getNodeThreshold,
-    getNodesOfType
+    getNodesOfType,
+    addStyling
 }
 

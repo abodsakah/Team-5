@@ -66,8 +66,6 @@ const UserList = ({t, apiURL, user}) => {
   }
   , []);
   
-  console.log(rows);
-
   return (
     <main>
       <h1>'Företaget's adminpanel</h1>

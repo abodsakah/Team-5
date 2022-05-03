@@ -98,7 +98,7 @@ app.get("/api/createCompany", async (req, res) => {
                 companyId: company[0]
             }
 
-            let companyId = company[0];
+            let companyId = company[0].id;
             // generate random password
             let password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             let passHash = await bcrypt.hash(password, 12);
@@ -108,7 +108,8 @@ app.get("/api/createCompany", async (req, res) => {
                 status: "success",
                 message: "Company created",
                 email: adminMail,
-                password: password
+                password: password,
+                companyId: company[0].id
             }
             res.status(200).send(JSON.stringify(status));
         } catch (e) {
@@ -161,7 +162,6 @@ app.get("/api/addNode", async (req, res) => {
     if (keyValid) {
         try {
             let device = await dbConnection.addPreloadedNode(deviceId, deviceType, companyId);
-            console.log(device);
             res.status(200).send(device);
         } catch (e) {
             console.log(e);
@@ -175,7 +175,6 @@ app.get("/api/addNode", async (req, res) => {
 
 app.get("/api/nodes/neighborreq", async (req, res) => {
     let companyId = req.query.companyId;
-    console.log(companyId);
     let data = await  neoNodeMsgSender.sendNeighborListRequest(companyId);
     let nodes = await neoNodeMsgParser.getNodes();
     console.log(await neoNodeMsgParser.nodes);
@@ -198,7 +197,6 @@ app.post("/api/getCompanySettings", async (req, res) => {
         try {
             let companyId = req.body.id;
             let company = await dbConnection.getCompanySetting(companyId);
-            console.log(company[0][0]);
             res.status(200).send(company[0][0]);
         } catch (e) {
             res.status(500).send("Error getting company");
@@ -238,8 +236,6 @@ app.post("/api/updateStyling", async (req, res) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send("Error uploading file");
-                } else {
-                    console.log("File uploaded");
                 }
             });
         }
@@ -248,13 +244,55 @@ app.post("/api/updateStyling", async (req, res) => {
             color = defaultStyling.color;
         }
         if (logo.name == "" || logo.name == undefined) { // if the logo is empty we will use the default styling
-            console.log("logo is empty");
-            console.log(defaultStyling[0][0].logo);
             logoName = defaultStyling[0][0].logo;
         }
 
         try {
             let company = await dbConnection.updateStyling(companyId, color, logoName);
+            res.status(200).send({
+                status: "success",
+                message: "Company updated"
+            });
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Error getting company");
+        }
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.post("/api/addStyling", async (req, res) => {
+    let apiKey = req.body.key;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        let companyId = req.body.id;
+        let color = req.body.color;
+        let logo = {
+            name: "",
+        };
+
+        let logoName = "";
+
+        let path;
+        if (req.files) { // if there is a file we will set the path
+            logo = req.files.logo;
+            logoName = logo.name;
+            path = __dirname + "/public/uploads/logo/" + logo.name;
+        }
+
+        if(logo.name != '') { // if there is a file and the logo is not empty then we move it to our path
+            logo.mv(path, function (err) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("Error uploading file");
+                }
+            });
+        }
+
+        try {
+            let company = await dbConnection.addStyling(companyId, color, logoName);
             res.status(200).send({
                 status: "success",
                 message: "Company updated"
@@ -309,7 +347,6 @@ app.post("/api/forceWesMode", async (req, res) => {
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.nodeId;
     let companyId = req.query.companyId;
-    // console.log(nodeId);
     if (keyValid) {
         try {
             await neoNodeMsgSender.sendForceWesMode(nodeId,companyId);
@@ -337,7 +374,6 @@ app.post("/api/deleteNode", async (req, res) => {
             res.status(200).send({
                 status: "success",
             });
-            console.log("deleteNode success!");
         } catch (e) {
             res.status(500).send(e);
         }
@@ -503,7 +539,6 @@ app.post("/api/updateSensorThreshold", async (req, res) => {
     if (keyValid) {
         try {
             let thresholdId = await dbConnection.createThreshold(thresholdAction, threshold);
-            console.log(thresholdId);
             await dbConnection.updateLogicalDeviceWithThreshold(deviceUid, thresholdId.id);
             res.status(200).send({"status": "Success"});
         } catch (e) {

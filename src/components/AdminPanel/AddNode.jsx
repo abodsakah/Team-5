@@ -9,7 +9,6 @@ const Scanner = ({getDeviceId}) => {
     
     useEffect(() => {
         if (data) {
-            console.log(data);
             getDeviceId(data);
         }
     }, [data]);
@@ -129,7 +128,6 @@ function AddNode({t, apiURL}) {
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result);
                     setIsLoading(false);
                     setSnackBarMessage(t('addNodeSuccess'));
                     setSnackBarSeverity('success');
