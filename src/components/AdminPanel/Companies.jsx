@@ -3,7 +3,7 @@ import {styled, Typography, Button, Box, Grid, Card, CardMedia, CardContent} fro
 import {Link} from 'react-router-dom'
 import LoadingOverlay from '../LoadingOverlay';
 
-const Admin = ({cookies, t, apiURL, color}) => {
+const Companies = ({cookies, t, apiURL, color}) => {
 
     const [isLoading, setIsLoading] = React.useState(true)
     const [companies, setCompanies] = React.useState([])
@@ -43,14 +43,18 @@ const Admin = ({cookies, t, apiURL, color}) => {
           <Grid container spacing={10}>
             {companies.map(company => (
               <Grid item xs={12} md={4} key={company.id}>
-                <Card>
-                  <CardMedia
-                    component="img"
-                    alt={company.name}
-                    height="140"
-                    image="https://source.unsplash.com/random"
-                    title={company.name}
-                  />
+                <Card component={Link} to={`/admin/edit-company/${company.id}`}>
+                  <div
+                    style={{
+                      backgroundColor: `#${company.color}`,
+                      height: '140px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <img src={`${apiURL}static/uploads/logo/${company.logo}`} width={'50%'}/>
+                  </div>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                       {company.name}
@@ -66,4 +70,4 @@ const Admin = ({cookies, t, apiURL, color}) => {
     )
 }
 
-export default Admin
+export default Companies

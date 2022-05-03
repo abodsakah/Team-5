@@ -139,6 +139,92 @@ app.get("/api/getCompnies", async (req, res) => {
     }
 });
 
+app.get("/api/getCompany", async (req, res) => {
+    let apiKey = req.query.key;
+    let companyId = req.query.companyid;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        let company = await dbConnection.getCompany(companyId);
+        res.status(200).send(company);
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
+app.post("/api/updateCompany", async (req, res) => { 
+    let apiKey = req.body.key;
+    let name = req.body.name;
+    let phone = req.body.phone;
+    let email = req.body.email;
+    let color = req.body.color;
+    let companyId = req.body.companyid;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        try {
+
+            let oldInfo = await dbConnection.getCompany(companyId);
+
+            console.log(oldInfo);
+            let logo = {
+                name: "",
+            };
+    
+            let logoName = "";
+    
+            let path;
+            if (req.files) { // if there is a file we will set the path
+                logo = req.files.logo;
+                logoName = logo.name;
+                path = __dirname + "/public/uploads/logo/" + logo.name;
+            }
+    
+            if(logo.name != '') { // if there is a file and the logo is not empty then we move it to our path
+                logo.mv(path, function (err) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send("Error uploading file");
+                    }
+                });
+            }
+    
+            if (color == "" || color == null) { // if the color is empty we will use the default styling
+                color = oldInfo.color;
+            }
+            if (logo == undefined || logo.name == undefined || logo.name == "") { // if the logo is empty we will use the default styling
+                logoName = oldInfo.logo;
+            }
+    
+            try {
+                await dbConnection.updateCompanyInfo(companyId, name, email, phone, color, logoName);
+                
+                res.status(200).send({
+                    status: "success",
+                    message: "Company updated"
+                });
+            } catch (e) {
+                console.log(e);
+                res.status(500).send("Error getting company");
+            }
+
+
+            // send success message
+            let status = {
+                status: "success",
+                message: "Company upaded",
+            }
+            res.status(200).send(JSON.stringify(status));
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Error creating company");
+        }
+
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
 app.get("/api/getNodes", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);

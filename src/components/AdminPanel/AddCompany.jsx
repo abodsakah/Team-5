@@ -60,7 +60,7 @@ function AddCompany({t, color, apiURL}) {
 
     data.append('key', process.env.REACT_APP_TRACT_API_KEY);
     data.append('id', newCompanyId);
-    data.append('color', mainColorInput);
+    data.append('color', mainColorInput.replace('#', ''));
     data.append('logo', fileData);
     axios.post(`${apiURL}addStyling`, data).then(res => {
       setLoading(false);
@@ -110,7 +110,7 @@ function AddCompany({t, color, apiURL}) {
       {currStep === 0 &&
         <Box m={2}>
         
-          <Typography variant="h4">Add Company</Typography>
+          <Typography variant="h4">{t('addCompany')}</Typography>
           <br />
           <Divider />
           <br />

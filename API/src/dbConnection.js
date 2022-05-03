@@ -96,7 +96,7 @@ async function addPreloadedNode(deviceId, deviceType, companyId) {
  * @returns All companies
  */
 async function getCompanies() {
-    const result = await db.query("SELECT * FROM `companies`", {type: QueryTypes.SELECT});
+    const result = await db.query("SELECT * FROM `company_website_settings`", {type: QueryTypes.SELECT});
     return result;
 }
 
@@ -248,6 +248,31 @@ async function getSpacesForBuilding(space_id) {
 
 /**
  * 
+ * @param {*} id The company id
+ * @returns the name, support_email, support_phone, color and logo of the company
+ */
+async function getCompany(id) {
+    const result = await db.query("SELECT * FROM company_website_settings WHERE id = ?", {type: QueryTypes.SELECT, replacements: [id]});
+    return result[0];
+}
+
+/**
+ * 
+ * @param {*} id The id of the company to be updated
+ * @param {*} name The new name of the company
+ * @param {*} email The new email of the company
+ * @param {*} phone The new phone of the company
+ * @param {*} color The new color of the company
+ * @param {*} logo The new logo of the company
+ * @returns 
+ */
+async function updateCompanyInfo(id, name, email, phone, color, logo) {
+    const result = await db.query("CALL update_company_info(?, ?, ?, ?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [id, name, email, phone, color, logo]});
+    return result;
+}
+
+/**
+ * 
  * @param {*} space_id The space id where the assets are in
  * @returns a list of the assets in the space
  */
@@ -332,6 +357,8 @@ module.exports = {
     updateLogicalDeviceWithThreshold,
     getNodeThreshold,
     getNodesOfType,
-    addStyling
+    addStyling,
+    getCompany,
+    updateCompanyInfo
 }
 

@@ -819,3 +819,24 @@ CREATE PROCEDURE add_styling(IN n_comp_id INT, IN n_color VARCHAR(255), IN n_log
 BEGIN
   INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES (n_comp_id, n_color, n_logo);
 END;;
+
+-- View for companies and website settings
+DROP VIEW IF EXISTS `company_website_settings`;
+CREATE VIEW `company_website_settings` AS
+SELECT `companies`.`id` AS `id`,
+  `companies`.`name` AS `name`,
+  `companies`.`support_email` AS `support_email`,
+  `companies`.`support_phone` AS `support_phone`,
+  `website_settings`.`color` AS `color`,
+  `website_settings`.`logo` AS `logo`
+FROM `companies`
+  LEFT JOIN `website_settings` ON `companies`.`id` = `website_settings`.`comp_id`;
+
+DROP PROCEDURE IF EXISTS `update_company_info`;
+DELIMITER ;;
+CREATE PROCEDURE `update_company_info`(IN n_comp_id INT, IN n_name VARCHAR(255), IN n_email VARCHAR(255), IN n_phone VARCHAR(255), IN n_color VARCHAR(255), IN n_logo VARCHAR(255))
+BEGIN
+  UPDATE `companies` SET `name` = n_name, `support_email` = n_email, `support_phone` = n_phone WHERE `id` = n_comp_id;
+  UPDATE `website_settings` SET `color` = n_color, `logo` = n_logo WHERE `comp_id` = n_comp_id;
+END;;
+DELIMITER ;
