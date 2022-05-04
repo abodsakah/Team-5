@@ -72,6 +72,9 @@
     "delete": "Delete",
     "companyAddedSuccessfully": "Company added successfully",
     "coudntAddCompany": "Couldn't add company",
-    "invalidInput": "Invalid input"
+    "invalidInput": "Invalid input",
+    "updateCompany": "Update Company",
+    "addCompany": "Add Company",
+    "editCompany": "Edit Company"
 
 }

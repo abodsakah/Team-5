@@ -246,7 +246,6 @@ function AddSensor({t, apiURL, user}) {
     }
 
     const sendDeviceType = () => {
-        console.log(action, threshold)
         if (action && action != '0' && action !== threshold) {
             setIsLoading(true);
             let data = new FormData();

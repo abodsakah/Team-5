@@ -72,5 +72,8 @@
     "delete": "Radera",
     "companyAddedSuccessfully": "Företaget har lagts till",
     "coudntAddCompany": "Kunde inte lägga till företaget",
-    "invalidInput": "Ogiltig inmatning"
+    "invalidInput": "Ogiltig inmatning",
+    "updateCompany": "Uppdatera företaget",
+    "addCompany": "Lägg till företaget",
+    "editCompany": "Redigera företaget"
 }
