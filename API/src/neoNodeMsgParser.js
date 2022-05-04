@@ -38,6 +38,10 @@ const queue = new Queue;
 const DELETE_ID = 65535;
 const DELETE_SETTINGS = "000000000000000000000000000000000000000000000000";
 
+const UNDER = -1;
+const SAME = 0;
+const OVER = 1;
+
 /*
  * Functions
  */
@@ -127,9 +131,20 @@ async function parseMsgData(data, topic) {
       // }
 
       var preId = dataObj.payload[0];
+
       // check node type in database
       var nodeType = await dataBase.getNodeType(dataObj.nodeId, companyId);
       nodeType = nodeType.type;
+      // get threshold id of node
+      var nodeThresholdId = await dataBase.getNodeInfo(dataObj.nodeId, companyId);
+      nodeThresholdId = nodeThresholdId.trigger_action;
+      // get the nodes threshold
+      var nodeThreshold = await dataBase.getThreshold(nodeThresholdId);
+
+
+      var nodePayload;
+
+      // Print out payload information to console
       console.log("Node type id: " + nodeType + "\n");
       console.log( 'Incoming message: ' + '\n');
       switch (nodeType) {
@@ -144,7 +159,7 @@ async function parseMsgData(data, topic) {
 
           console.log('Temperature: ' + convertToCelsius(tempData) + 'C');
           console.log('Humidity: ' + getHumidity(humidityData) + '%');
-
+          nodePayload = tempData;
           break;
         case 2:
           // switch sensor
@@ -158,6 +173,7 @@ async function parseMsgData(data, topic) {
             console.log('Switch open!');
           }
 
+          nodePayload = switchData;
           break;
         case 3:
           // analog-wheel
@@ -167,12 +183,39 @@ async function parseMsgData(data, topic) {
 
           console.log('Analog value: ' + analogData);
 
+          nodePayload = analogData;
           break;
         default:
           console.log('Invalid sensor type');
           break;
       }
 
+      // Check payload data and create a report if needed
+      console.log("Node Payload: " + nodePayload);
+      console.log("Node Threshold: " + nodeThreshold.threshold);
+      console.log("Node Action: " + nodeThreshold.action);
+
+      var payloadToThresholdDifferential = nodePayload - nodeThreshold.threshold;
+      var payloadToThresholdSign = Math.sign(payloadToThresholdDifferential);
+      
+      var thresholdActionSign;
+      switch (nodeThreshold.action) {
+        case "UNDER":
+          thresholdActionSign = UNDER;
+          break;
+        case "SAME":
+          thresholdActionSign = SAME;
+          break;
+        case "OVER":
+        default:
+          thresholdActionSign = OVER;
+          break;
+      }
+
+      // Create report
+      if (payloadToThresholdSign === thresholdActionSign) {
+        console.log("SKAPA ÄRENDE!!");
+      }
 
       break;
     case 'nodeInfoReply':
@@ -291,6 +334,7 @@ function convertToCelsius(data) {
 function getHumidity(data) {
   return data / (2 ** 16) * 125 - 6;
 }
+
 /**
  * 
  * @returns The nighbor list of the node
