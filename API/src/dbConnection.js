@@ -186,7 +186,17 @@ async function getNodeStatus(nodeId, companyId) {
 }
 
 /**
- * 
+ * Sets node status to "TBD"
+ * @param {*} nodeId The node id of the device
+ * @param {*} companyId The id of the company that owns the device
+ */
+async function setNodeToBeDeleted(nodeId, companyId) {
+    const result = await db.query("CALL set_device_to_be_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
+    return result;
+}
+
+/**
+ * Sets node status to "DELETED"
  * @param {*} nodeId The node id of the device
  * @param {*} companyId The id of the company that owns the device
  */
@@ -342,6 +352,7 @@ module.exports = {
     getCompanySetting,
     updateStyling,
     setNodeASDeleted,
+    setNodeToBeDeleted,
     getNodeStatus,
     getNodeType,
     getUsersForCompany,

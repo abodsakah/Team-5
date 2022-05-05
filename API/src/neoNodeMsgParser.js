@@ -126,7 +126,19 @@ async function parseMsgData(data, topic) {
       // "payload":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
       // }
 
-      var preId = dataObj.payload[0];
+      // Check the nodes status, unless it's "ACTIVE" we dont process it's payload.
+      // We also want to do retry removing a node if we get a message from it with status
+      // "DELETED" or "TBD" (to be deleted)
+      var nodeStatus = await dataBase.getNodeStatus(dataObj.nodeId, companyId);
+      nodeStatus = nodeStatus.status;
+      console.log("Status: " + nodeStatus);
+      if (nodeStatus == "DELETED" || nodeStatus == "TBD") {
+        console.log("Ignoring payload: node should be deleted! Will retry deleting it.");
+        neoNodeMsgSender.deleteNode(dataObj.nodeId, companyId);
+        return;
+      }
+
+      // var preId = dataObj.payload[0];
       // check node type in database
       var nodeType = await dataBase.getNodeType(dataObj.nodeId, companyId);
       nodeType = nodeType.type;
@@ -226,15 +238,21 @@ async function parseMsgData(data, topic) {
       // if node is not null
       var uid = dataObj.uidHex;
       var node = await dataBase.getNodeFromUid(uid);
+      console.log("setupRequest nodeStatus: " + node.status);
 
       if(node == null){
         console.log("setupRequest node uid not found, database returned NULL");
         return; // exit early if we cant find node in database.
       }
-      if(node.status == "DELETED"){
-        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
-      }else{
+      if (node.status == "ACTIVE"){
         await neoNodeMsgSender.sendWesSetupResponse(node.id,uid,node.app_settings,node.company_id);
+      }
+      else if(node.status == "TBD"){
+        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
+        await dataBase.setNodeASDeleted(node.id, node.company_id);
+      }
+      else if(node.status == "DELETED"){
+        console.log("Ignoring setupRequest: Node is already deleted permanently.");
       }
 
       break;
