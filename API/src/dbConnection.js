@@ -315,12 +315,12 @@ async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
 
 /**
  * 
- * @param {*} deviceUid The unique id of the device
- * @returns 
+ * @param {*} thresholdId threshold id we wanna grab
+ * @returns a nodes threshold values
  */
- async function getNodeThreshold(deviceUid) {
-    const result = await db.query("CALL get_node_threshold(?)", {type: QueryTypes.SELECT, replacements: [deviceUid]});
-    return result[0];
+ async function getThreshold(thresholdId) {
+    const result = await db.query("CALL get_threshold(?)", {type: QueryTypes.SELECT, replacements: [thresholdId]});
+    return result[0][0];
 }
 
 /**
@@ -366,7 +366,7 @@ module.exports = {
     getPreloadedNode,
     createThreshold,
     updateLogicalDeviceWithThreshold,
-    getNodeThreshold,
+    getThreshold,
     getNodesOfType,
     addStyling,
     getCompany,
