@@ -177,13 +177,18 @@ async function parseMsgData(data, topic) {
               dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
           switchData = parseInt(switchData, 16);
 
+          var switchStatus = "";
+
           if (switchData == SWITCH_CLOSED) {
             console.log('Switch closed!');
+            switchStatus = "CLOSED";
+            nodePayload = 0;
           } else {
             console.log('Switch open!');
+            switchStatus = "OPEN";
+            nodePayload = 1;
           }
 
-          nodePayload = switchData;
           break;
         case 3:
           // analog-wheel
