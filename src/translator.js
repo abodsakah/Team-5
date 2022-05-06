@@ -18,9 +18,12 @@ function getLanguageFile(language) {
 function setLang(lang) { // gets the language code and sets the language
     switch (lang) {
         case "en":
+        case "en-US":
+        case "en-GB":
             language = getLanguageFile("en");
             break;
         case "sv":
+        case "sv-SE":
             language = getLanguageFile("sv");
             break;
         default:

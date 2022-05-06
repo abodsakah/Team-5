@@ -9,9 +9,8 @@ services:
       - ./db:/docker-entrypoint-initdb.d
     restart: always
     environment:
+      MYSQL_ROOT_USER: tractteam
       MYSQL_ROOT_PASSWORD: 12345678
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 12345678
     healthcheck:
       test: ["CMD", "mysqladmin", "-u", "$MYSQL_USER", "--password=$MYSQL_PASSWORD", "ping"]
       interval: 10s

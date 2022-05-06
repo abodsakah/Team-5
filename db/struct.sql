@@ -33,12 +33,12 @@ CREATE PROCEDURE add_node_no_trigger_action(
   IN n_node_type INT,
   IN n_node_status VARCHAR(255)
 )
-begin
+BEGIN
 INSERT INTO logical_devices (uid, name, trigger_action, install_date, is_part_of, type, status) VALUES ("88A904A4BD", "testDevice", 1, CURRENT_DATE(), 1, 1, "SETUP")
 
   INSERT INTO logical_device (node_uid, node_name, trigger_action, install_date, is_part_of, node_type, node_status)
   VALUES (n_node_uid, n_node_name, 0, CURRENT_DATE(), n_is_part_of, n_node_type, n_node_status);
-end;;
+END;;
 DELIMITER ;
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES (NULL, `n_uid`, `n_name`, `n_trigger_action`, CURRENT_DATE(), `n_is_part_of`, `n_type`, `n_status`);
 END$$
@@ -62,7 +62,7 @@ DELETE l
   ON s.id = l.is_part_of
  WHERE l.id = p_id
  	AND s.agent = p_company_id
-    AND l.status = "deleted"
+    AND l.status = "DELETED"
  ;
 END$$
 
@@ -98,9 +98,9 @@ FROM logical_devices_all
 WHERE p_uid=uid;
 END$$
 
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_users_for_company` (IN `company_id` INT)  begin
+CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_users_for_company` (IN `company_id` INT)  BEGIN
   SELECT * FROM `user_login` WHERE `company_id` = company_id;
-end$$
+END$$
 
 CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `logical_devices_for_company` (IN `company_id` INT)  BEGIN
   SELECT * FROM `logical_devices_all` WHERE `company_id` = company_id;
@@ -110,7 +110,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_deleted` (IN `p_id` INT(
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
     ON l.is_part_of = s.id
-    SET l.status = "deleted"
+    SET l.status = "DELETED"
     WHERE l.id = p_id AND s.agent = company_id;
 END$$
 
@@ -749,9 +749,9 @@ ALTER TABLE `website_settings`
 DROP PROCEDURE IF EXISTS `get_all_buildings`;
 DELMIMTER ;;
 CREATE PROCEDURE `get_all_buildings`(IN `company_id` INT)
-begin
+BEGIN
   SELECT * FROM spaces WHERE is_part_of = NULL AND agent = company_id;
-end;;
+END;;
 DELMIMTER ;
 
 DROP PROCEDURE IF EXISTS `get_spaces_for_company`;
@@ -770,25 +770,73 @@ BEGIN
 END;;
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS update_threshold;
 DELIMITER ;;
 CREATE PROCEDURE update_threshold(IN deviceUid, IN thresholdId)
-begin
+BEGIN
   UPDATE logical_devices SET trigger_action = thresholdId WHERE id = deviceUid;
-end;;
+END;;
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS create_threshold;
 DELIMITER ;;
 CREATE PROCEDURE create_threshold(IN n_action vARCHAR(10), IN n_treshold VARCHAR(255))
-begin
+BEGIN
   INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
   -- select the id of the last inserted row
   SELECT LAST_INSERT_ID() AS id;
-end;;
+END;;
+
+DROP PROCEDURE IF EXISTS get_node_threshold;
+DELIMITER ;;
+CREATE PROCEDURE get_node_threshold(IN deviceUid)
+BEGIN
+  SELECT * FROM node_thresholds WHERE id = deviceUid;
+END;;
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS get_nodes_for_type;
 DELIMITER ;;
 CREATE PROCEDURE get_nodes_for_type(IN company_id INT, IN node_type VARCHAR(255))
 BEGIN
   SELECT * FROM `logical_devices_all` WHERE `type_name` = node_type AND `company_id` = company_id;
+END;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS create_company;
+DELIMITER ;;
+CREATE PROCEDURE create_company(IN n_name VARCHAR(255), IN n_email VARCHAR(255), IN n_phone VARCHAR(255))
+BEGIN
+  INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (n_name, n_email, n_phone);
+  -- select the id of the last inserted row
+  SELECT LAST_INSERT_ID() AS id;
+END;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS add_styling;
+DELIMITER ;;
+CREATE PROCEDURE add_styling(IN n_comp_id INT, IN n_color VARCHAR(255), IN n_logo VARCHAR(255))
+BEGIN
+  INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES (n_comp_id, n_color, n_logo);
+END;;
+
+-- View for companies and website settings
+DROP VIEW IF EXISTS `company_website_settings`;
+CREATE VIEW `company_website_settings` AS
+SELECT `companies`.`id` AS `id`,
+  `companies`.`name` AS `name`,
+  `companies`.`support_email` AS `support_email`,
+  `companies`.`support_phone` AS `support_phone`,
+  `website_settings`.`color` AS `color`,
+  `website_settings`.`logo` AS `logo`
+FROM `companies`
+  LEFT JOIN `website_settings` ON `companies`.`id` = `website_settings`.`comp_id`;
+
+DROP PROCEDURE IF EXISTS `update_company_info`;
+DELIMITER ;;
+CREATE PROCEDURE `update_company_info`(IN n_comp_id INT, IN n_name VARCHAR(255), IN n_email VARCHAR(255), IN n_phone VARCHAR(255), IN n_color VARCHAR(255), IN n_logo VARCHAR(255))
+BEGIN
+  UPDATE `companies` SET `name` = n_name, `support_email` = n_email, `support_phone` = n_phone WHERE `id` = n_comp_id;
+  UPDATE `website_settings` SET `color` = n_color, `logo` = n_logo WHERE `comp_id` = n_comp_id;
 END;;
 DELIMITER ;

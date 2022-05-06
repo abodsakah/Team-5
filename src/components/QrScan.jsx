@@ -9,7 +9,6 @@ const Scanners = ({getDeviceId}) => {
     
     useEffect(() => {
         if (data) {
-            console.log(data);
             getDeviceId(data);
         }
     }, [data]);
@@ -75,13 +74,10 @@ const QrContainers = styled("div")`
 function AddSensor({t, apiURL, user}) {
 
     const [isLoading, setIsLoading] = React.useState(false); // is the loading indicator visible
-    const [errors, setErrors] = React.useState([]); // the errors that are returned from the server
 
     const [buildings, setbuildings] = React.useState([]); // the buildings that are available
     const [spaces, setSpaces] = React.useState([]); // the spaces that are available
     const [assets, setAssets] = React.useState([]); // the assets that are available
-
-    const [nodeType, setNodeType] = React.useState(''); // the node type that is selected
 
     const [step, setStep] = React.useState(1); // the step that is selected
 
@@ -92,9 +88,6 @@ function AddSensor({t, apiURL, user}) {
     // get data from qr code
     const [deviceId, setDeviceId] = React.useState('');
     const [deviceName, setDeviceName] = React.useState('');
-    const [snackBarstatus, setSnackBarstatus] = React.useState(false);
-    const [snackBarMessage, setSnackBarMessage] = React.useState('');
-    const [snackBarSeverity, setSnackBarSeverity] = React.useState('success');
 
     const [deviceType, setDeviceType] = React.useState(null);
 
@@ -105,17 +98,14 @@ function AddSensor({t, apiURL, user}) {
     const [threshold, setThreshold] = React.useState('');
 
     const [formIsValid, setFormIsValid] = React.useState(false);
+    const [error, setError] = React.useState('');
+    const [snacksBarOpen, setSnacksBarOpen] = React.useState(false);
 
     // to be able to change the text
     const onUidTextChange = (e) => {
         if (e.target) {
             setDeviceId(e.target.value);
         }
-    }
-
-    // handle changing the state of the snack bar
-    const handleSnackbarStatus = () => {
-        setSnackBarstatus(!snackBarstatus);
     }
 
     const handleDeviceNameChange = (e) => {
@@ -132,7 +122,6 @@ function AddSensor({t, apiURL, user}) {
 
     const checkValid = () => {
 
-        // console.log(selectedBuilding, selectedAsset, deviceId);
         if (selectedBuilding !== '' && selectedAsset !== '' && deviceId !== '') {
             setFormIsValid(true);
         }
@@ -169,17 +158,14 @@ function AddSensor({t, apiURL, user}) {
     const getAssets = async () => {
         let space;
         if (selectedSpace !== '') {
-            console.log('no space selected');
             space = selectedSpace;
         } else {
-            console.log(selectedSpace)
             space = selectedBuilding;
         }
 
         let assetsData = await fetch(`${apiURL}getAssetsForSpace?key=${process.env.REACT_APP_TRACT_API_KEY}&spaceId=${space}`);
         let assetsJson = await assetsData.json().then(data => Object.keys(data).map(key => data[key]));
         setAssets(assetsJson);
-        console.log(assets);
     }
 
     const handleChangeTemp = (event) => {
@@ -200,6 +186,15 @@ function AddSensor({t, apiURL, user}) {
     const handleChangeAction = (event) => {
         setAction(event.target.value);
         setThreshold(event.target.value);
+    }
+
+    const handleError = (error) => {
+        setError(error);
+        setSnacksBarOpen(true);
+    }
+
+    const handleClose = () => {
+        setSnacksBarOpen(false);
     }
 
     useEffect(() => {
@@ -224,7 +219,6 @@ function AddSensor({t, apiURL, user}) {
     
     const sendDevice = () => {
         setIsLoading(true);
-        console.log(selectedAsset, deviceId, deviceName);
         let data = new FormData();
         data.append('key', process.env.REACT_APP_TRACT_API_KEY);
         data.append('companyId', user.company_id);
@@ -243,40 +237,51 @@ function AddSensor({t, apiURL, user}) {
                     setDeviceType(data.type);
                     setStep(2);
                 }
-            })
+            }).catch(error => {
+                handleError(t("coudntAddDevice"));
+                setIsLoading(false);
+            }
+        );
+
     }
 
     const sendDeviceType = () => {
-        setIsLoading(true);
-        let data = new FormData();
-        data.append('key', process.env.REACT_APP_TRACT_API_KEY);
-        data.append('deviceUid', deviceId);
-        data.append('threshold', threshold);
-        data.append('thresholdAction', action);
+        if (action && action != '0' && action !== threshold) {
+            setIsLoading(true);
+            let data = new FormData();
+            data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+            data.append('deviceUid', deviceId);
+            data.append('threshold', threshold);
+            data.append('thresholdAction', action);
 
-        fetch(`${apiURL}updateSensorThreshold`, {
-            method: 'POST',
-            body: data
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    if(data.status === "Success") {
-                        setIsLoading(false);
-                        // navigate to /devices
-                        window.location.href = '/devices';
-                    }
-                }
+            fetch(`${apiURL}updateSensorThreshold`, {
+                method: 'POST',
+                body: data
             })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        if(data.status === "Success") {
+                            setIsLoading(false);
+                            // navigate to /devices
+                            window.location.href = '/devices';
+                        }
+                    }
+                })
+        }else{
+            handleError(t("pleaseSelectAnAction"));
+        }
     }
 
     return (
-    <>
-        <Snackbar open={snackBarstatus} autoHideDuration={6000} onClose={handleSnackbarStatus}>
-            <Alert onClose={handleSnackbarStatus} severity={snackBarSeverity} sx={{ width: '100%' }}>
-            {snackBarMessage}
-            </Alert>
-        </Snackbar>
+        <>
+            {error !== '' &&
+                <Snackbar open={snacksBarOpen} autoHideDuration={6000} key={'topright'} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity={'error'} sx={{width: '100%'}}>
+                        {error}
+                    </Alert>
+                </Snackbar>
+            }
         <LoadingOverlay loading={isLoading}/>
         <Box sx={{
             display: 'flex',
@@ -374,7 +379,7 @@ function AddSensor({t, apiURL, user}) {
                     </>
                     :
                     <>
-                        <Typography variant="h5" gutterBottom>{t('sensorType')} {deviceType === 1 ? t('tempSensor') : deviceType === 2 ? t('analogSensor') : deviceType === 3 && t('switchSensor')}
+                        <Typography variant="h5" gutterBottom>{t('sensorType')} {deviceType === 1 ? t('tempSensor') : deviceType === 3 ? t('analogSensor') : deviceType === 2 && t('switchSensor')}
                         </Typography>
                         {deviceType === 1 ? 
                             <>
@@ -421,10 +426,10 @@ function AddSensor({t, apiURL, user}) {
                                         </RadioGroup>
                                     </FormControl>
                                     <Typography variant="h5" gutterBottom>{t('chooseAnalog')}</Typography>
-                                    <TextField id="analog" label="Analog" type='number' variant="outlined" fullWidth onChange={handleChangeAnalog} value={choosenAnalog} />
+                                    <TextField id="analog" label="Analog" type='number' variant="outlined" fullWidth onChange={handleChangeAnalog} value={choosenAnalog} required/>
                                 </>
                         }
-                        <Button variant="contained" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDeviceType}>Submit</Button>
+                        <Button variant="contained" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDeviceType}>{t("Submit")}</Button>
                     </>            
     }
         </Box>

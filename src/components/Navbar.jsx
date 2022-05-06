@@ -280,7 +280,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                     <List>
                         {cookies.get("user").role === 0 &&
                             <>
-                            <ListItem button component={Link} to="/admin/">
+                            <ListItem button component={Link} to="/admin/companies">
                                 <ListItemIcon>
                                     <FeaturedPlayListIcon />
                                 </ListItemIcon>
@@ -294,12 +294,6 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             </ListItem>
                             </>
                         }
-                        <ListItem button component={Link} to="/admin/websiteStyling/">
-                            <ListItemIcon>
-                                <StyleIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={t("websiteStyling")} />
-                        </ListItem>
                         <ListItem button component={Link} to="/admin/users">
                         <ListItemIcon>
                             <SupervisedUserCircleIcon />

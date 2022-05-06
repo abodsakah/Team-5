@@ -64,5 +64,16 @@
     "action": "Åtgärd",
     "over": "Över",
     "under": "Under",
-    "equal": "Lika med"
+    "equal": "Lika med",
+    "submit": "Skicka",
+    "coudntAddDevice": "Kunde inte lägga till sensor",
+    "pleaseSelectAnAction": "Välj en sensortyp",
+    "edit": "Redigera",
+    "delete": "Radera",
+    "companyAddedSuccessfully": "Företaget har lagts till",
+    "coudntAddCompany": "Kunde inte lägga till företaget",
+    "invalidInput": "Ogiltig inmatning",
+    "updateCompany": "Uppdatera företaget",
+    "addCompany": "Lägg till företaget",
+    "editCompany": "Redigera företaget"
 }

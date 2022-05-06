@@ -64,6 +64,17 @@
     "action": "Action",
     "over": "Over",
     "under": "Under",
-    "equal": "Equal"
+    "equal": "Equal",
+    "submit": "Submit",
+    "coudntAddDevice": "Couldn't add device",
+    "pleaseSelectAnAction": "Please select an action",
+    "edit": "Edit",
+    "delete": "Delete",
+    "companyAddedSuccessfully": "Company added successfully",
+    "coudntAddCompany": "Couldn't add company",
+    "invalidInput": "Invalid input",
+    "updateCompany": "Update Company",
+    "addCompany": "Add Company",
+    "editCompany": "Edit Company"
 
 }

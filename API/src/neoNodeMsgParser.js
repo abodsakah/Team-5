@@ -38,6 +38,10 @@ const queue = new Queue;
 const DELETE_ID = 65535;
 const DELETE_SETTINGS = "000000000000000000000000000000000000000000000000";
 
+const UNDER = -1;
+const SAME = 0;
+const OVER = 1;
+
 /*
  * Functions
  */
@@ -61,6 +65,7 @@ gatewayMqttConnect.mqttClient.on('message', function(topic, message) {
  */
 async function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
+  var companyId = topic.split('/')[1];
   // add JSON object to queue
   queue.enqueue(dataObj);
   if (queue.length() > 50) {
@@ -74,6 +79,7 @@ async function parseMsgData(data, topic) {
       '[' + dataObj.payload + ']' +
     '\n');
   console.log('From topic: ' + topic + '\n');
+  console.log('From companyId: ' + companyId + '\n');
 
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
@@ -92,10 +98,10 @@ async function parseMsgData(data, topic) {
       //“nodeId”:10, “RSSI”:10
       //}
 
+      // pase object array and convert to an array
       console.log('Incoming message type: neighborListReply');
       for (var node of dataObj.neighbors) {
         console.log('NodeId: ' + node.nodeId + '\n');
-        console.log(nodes)
         if (nodes.length > 0) {
           nodes = []
         }
@@ -106,6 +112,7 @@ async function parseMsgData(data, topic) {
             RSSI: node.RSSI
           });
         }
+        console.log(nodes)
       }
       break;
     case 'receivedPayload':
@@ -123,11 +130,34 @@ async function parseMsgData(data, topic) {
       // "payload":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
       // }
 
-      console.log(
-          'Incoming message: ' +
-          '\n');
-      var preId = dataObj.payload[0];
-      switch (preId) {
+      // Check the nodes status, unless it's "ACTIVE" we dont process it's payload.
+      // We also want to do retry removing a node if we get a message from it with status
+      // "DELETED" or "TBD" (to be deleted)
+      var nodeStatus = await dataBase.getNodeStatus(dataObj.nodeId, companyId);
+      nodeStatus = nodeStatus.status;
+      console.log("Status: " + nodeStatus);
+      if (nodeStatus == "DELETED" || nodeStatus == "TBD") {
+        console.log("Ignoring payload: node should be deleted! Will retry deleting it.");
+        neoNodeMsgSender.deleteNode(dataObj.nodeId, companyId);
+        return;
+      }
+
+      // check node type in database
+      var nodeType = await dataBase.getNodeType(dataObj.nodeId, companyId);
+      nodeType = nodeType.type;
+      // get threshold id of node
+      var nodeThresholdId = await dataBase.getNodeInfo(dataObj.nodeId, companyId);
+      nodeThresholdId = nodeThresholdId.trigger_action;
+      // get the nodes threshold
+      var nodeThreshold = await dataBase.getThreshold(nodeThresholdId);
+
+
+      var nodePayload;
+
+      // Print out payload information to console
+      console.log("Node type id: " + nodeType + "\n");
+      console.log( 'Incoming message: ' + '\n');
+      switch (nodeType) {
         case 1:
           // temperature sensor
           var tempData =
@@ -137,9 +167,12 @@ async function parseMsgData(data, topic) {
               dataObj.payload[3].toString(16) + dataObj.payload[4].toString(16);
           humidityData = parseInt(humidityData, 16);
 
-          console.log('Temperature: ' + convertToCelsius(tempData) + 'C');
-          console.log('Humidity: ' + getHumidity(humidityData) + '%');
+          var celsius = convertToCelsius(tempData);
+          var humidity = getHumidity(humidityData);
 
+          console.log('Temperature: ' + celsius + 'C');
+          console.log('Humidity: ' + humidity + '%');
+          nodePayload = celsius;
           break;
         case 2:
           // switch sensor
@@ -147,27 +180,60 @@ async function parseMsgData(data, topic) {
               dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
           switchData = parseInt(switchData, 16);
 
+          var switchStatus = "";
+
           if (switchData == SWITCH_CLOSED) {
             console.log('Switch closed!');
+            switchStatus = "CLOSED";
+            nodePayload = 0;
           } else {
             console.log('Switch open!');
+            switchStatus = "OPEN";
+            nodePayload = 1;
           }
 
           break;
         case 3:
-          // potentiometer
+          // analog-wheel
           var analogData =
               dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
           analogData = parseInt(analogData, 16);
 
           console.log('Analog value: ' + analogData);
 
+          nodePayload = analogData;
           break;
         default:
           console.log('Invalid sensor type');
           break;
       }
 
+      // Check payload data and create a report if needed
+      console.log("Node Payload: " + nodePayload);
+      console.log("Node Threshold: " + nodeThreshold.threshold);
+      console.log("Node Action: " + nodeThreshold.action);
+
+      var payloadToThresholdDifferential = nodePayload - nodeThreshold.threshold;
+      var payloadToThresholdSign = Math.sign(payloadToThresholdDifferential);
+      
+      var thresholdActionSign;
+      switch (nodeThreshold.action) {
+        case "UNDER":
+          thresholdActionSign = UNDER;
+          break;
+        case "SAME":
+          thresholdActionSign = SAME;
+          break;
+        case "OVER":
+        default:
+          thresholdActionSign = OVER;
+          break;
+      }
+
+      // Create report
+      if (payloadToThresholdSign === thresholdActionSign) {
+        console.log("SKAPA ÄRENDE!!");
+      }
 
       break;
     case 'nodeInfoReply':
@@ -221,15 +287,21 @@ async function parseMsgData(data, topic) {
       // if node is not null
       var uid = dataObj.uidHex;
       var node = await dataBase.getNodeFromUid(uid);
+      console.log("setupRequest nodeStatus: " + node.status);
 
       if(node == null){
         console.log("setupRequest node uid not found, database returned NULL");
         return; // exit early if we cant find node in database.
       }
-      if(node.status == "DELETED"){
-        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
-      }else{
+      if (node.status == "ACTIVE"){
         await neoNodeMsgSender.sendWesSetupResponse(node.id,uid,node.app_settings,node.company_id);
+      }
+      else if(node.status == "TBD"){
+        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
+        await dataBase.setNodeASDeleted(node.id, node.company_id);
+      }
+      else if(node.status == "DELETED"){
+        console.log("Ignoring setupRequest: Node is already deleted permanently.");
       }
 
       break;
@@ -286,6 +358,7 @@ function convertToCelsius(data) {
 function getHumidity(data) {
   return data / (2 ** 16) * 125 - 6;
 }
+
 /**
  * 
  * @returns The nighbor list of the node
