@@ -190,6 +190,7 @@ function App() {
                   <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
                   <Route path="/admin/users" element={<UserList t={t} apiURL={apiURL} user={cookies.get('user')}/>} />
                   <Route path="/admin/users/add" element={<AddUser t={t} />} />
+                  <>{ /*LÄGG HÄR*/ }</>
                 </>
               }
               </>

@@ -259,17 +259,17 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
         <Divider />
             <List>
                 {/* The item list that is showen in the drawer */}
-                <ListItem button component={Link} to="/"> {/* Link to where the item leads */}
-                <ListItemIcon>
-                    <DashboardIcon /> {/* Icon of the item */}
-                </ListItemIcon>
-                <ListItemText primary={t("dashboard")} /> {/* Text of the item */}
+                <ListItem button component={Link} to="/" onClick={toggleDrawer(anchorEl, false)}> {/* Link to where the item leads */}
+                    <ListItemIcon>
+                        <DashboardIcon /> {/* Icon of the item */}
+                    </ListItemIcon>
+                    <ListItemText primary={t("dashboard")} /> {/* Text of the item */}
                 </ListItem>
-                <ListItem button component={Link} to="/devices">
-                <ListItemIcon>
-                    <DeviceHubIcon />
-                </ListItemIcon>
-                <ListItemText primary={t("devices")} />
+                <ListItem button component={Link} to="/devices" onClick={toggleDrawer(anchorEl, false)}>
+                    <ListItemIcon>
+                        <DeviceHubIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={t("devices")} />
                 </ListItem>
             </List>
             {cookies.get("user") && Number(cookies.get("user").role) < 2 &&
@@ -280,21 +280,22 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                     <List>
                         {cookies.get("user").role === 0 &&
                             <>
-                            <ListItem button component={Link} to="/admin/companies">
+                            <ListItem button component={Link} to="/admin/companies" onClick={toggleDrawer(anchorEl, false)}>
                                 <ListItemIcon>
                                     <FeaturedPlayListIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={t("companies")} />
                             </ListItem>
-                            <ListItem button component={Link} to="/admin/nodes/">
+                            <ListItem button component={Link} to="/admin/nodes/" onClick={toggleDrawer(anchorEl, false)}>
                             <ListItemIcon>
                                 <MemoryIcon />
                             </ListItemIcon>
                             <ListItemText primary={t("nodes")} />
                             </ListItem>
+                            <>{ /*LÄGG HÄR*/ }</>
                             </>
                         }
-                        <ListItem button component={Link} to="/admin/users">
+                        <ListItem button component={Link} to="/admin/users" onClick={toggleDrawer(anchorEl, false)}>
                         <ListItemIcon>
                             <SupervisedUserCircleIcon />
                         </ListItemIcon>
