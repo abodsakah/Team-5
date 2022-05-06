@@ -449,10 +449,10 @@ app.post("/api/forceWesMode", async (req, res) => {
 })
 
 app.post("/api/deleteNode", async (req, res) => {
-    let apiKey = req.query.key;
+    let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
-    let nodeId = req.query.nodeId;
-    let companyId = req.query.companyId;
+    let nodeId = req.body.nodeId;
+    let companyId = req.body.companyId;
 
     if (keyValid) {
         try {
