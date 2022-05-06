@@ -167,9 +167,12 @@ async function parseMsgData(data, topic) {
               dataObj.payload[3].toString(16) + dataObj.payload[4].toString(16);
           humidityData = parseInt(humidityData, 16);
 
-          console.log('Temperature: ' + convertToCelsius(tempData) + 'C');
-          console.log('Humidity: ' + getHumidity(humidityData) + '%');
-          nodePayload = tempData;
+          var celsius = convertToCelsius(tempData);
+          var humidity = getHumidity(humidityData);
+
+          console.log('Temperature: ' + celsius + 'C');
+          console.log('Humidity: ' + humidity + '%');
+          nodePayload = celsius;
           break;
         case 2:
           // switch sensor
