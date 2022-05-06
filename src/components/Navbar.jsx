@@ -292,6 +292,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             </ListItemIcon>
                             <ListItemText primary={t("nodes")} />
                             </ListItem>
+                            <>{ /*LÄGG HÄR*/ }</>
                             </>
                         }
                         <ListItem button component={Link} to="/admin/users">
