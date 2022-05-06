@@ -208,7 +208,6 @@ async function parseMsgData(data, topic) {
           break;
       }
 
-        //
       // Check payload data and create a report if needed
       console.log("Node Payload: " + nodePayload);
       console.log("Node Threshold: " + nodeThreshold.threshold);
