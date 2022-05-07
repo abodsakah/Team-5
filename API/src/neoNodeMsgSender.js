@@ -5,6 +5,7 @@
 
 const mqttGateway = require('./gatewayMqttConnect');
 const dataBase = require('./dbConnection');
+// const mobilixClient = require('./mobilixClientConnect');
 
 module.exports = {
   sendNodeInfoRequest: sendNodeInfoRequest,
