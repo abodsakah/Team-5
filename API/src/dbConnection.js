@@ -56,6 +56,7 @@ async function getUserById(id) {
  */
 async function createUser(email, password, first_name, last_name, nickname, role, company_id) {
     const result = await db.query("INSERT INTO `user_login` (`email`, `password`, `first_name`, `last_name`, `nickname`, `role`, `company_id`) VALUES (?, ?, ?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [email, password, first_name, last_name, nickname, role, company_id]});
+    logEvent(`User ${result[0]} created`, company_id);
     return result;
 }
 
@@ -88,6 +89,7 @@ async function getPreloadedNodes() {
  */
 async function addPreloadedNode(deviceId, deviceType, companyId) {
     const result = await db.query("INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES (?, ?, ?)", {type: QueryTypes.INSERT, replacements: [deviceId, deviceType, companyId]});
+    // logEvent(`Node ${deviceId} added to preloaded_nodes`, companyId);
     return result;
 }
 
@@ -112,6 +114,7 @@ async function getCompanies() {
  */
 async function addLogicalDevice(uid, name, is_part_of, type, status) {
     const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
+    logEvent(`Node ${uid} added`, null);
     return result;
 }
 
@@ -127,6 +130,7 @@ async function getCompanySetting(companyId) {
 
 async function updateStyling(companyId, color, logo) {
     const result = await db.query("CALL update_company_settings(?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [companyId, color, logo]});
+    logEvent(`Styling updated`, companyId);
     return result;
 }
 
@@ -192,6 +196,7 @@ async function getNodeStatus(nodeId, companyId) {
  */
 async function setNodeToBeDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_to_be_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
+    logEvent(`Node ${nodeId} set to deleted`, companyId);
     return result;
 }
 
@@ -202,6 +207,7 @@ async function setNodeToBeDeleted(nodeId, companyId) {
  */
 async function setNodeASDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_as_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
+    logEvent(`Node ${nodeId} set to deleted`, companyId);
     return result;
 }
 
@@ -278,6 +284,7 @@ async function getCompany(id) {
  */
 async function updateCompanyInfo(id, name, email, phone, color, logo) {
     const result = await db.query("CALL update_company_info(?, ?, ?, ?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [id, name, email, phone, color, logo]});
+    logEvent(`Company information updated`, id);
     return result;
 }
 
@@ -310,6 +317,7 @@ async function createThreshold(action, threshold) {
  */
 async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
     const result = await db.query("CALL update_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
+    logEvent(`Node ${deviceUid} setup is finished`, deviceUid);
     return result;
 }
 
@@ -336,6 +344,16 @@ async function getNodesOfType(type, companyId) {
 
 async function addStyling(comp_id, color, logo) {
     const result = await db.query("CALL add_styling(?, ?, ?)", {type: QueryTypes.INSERT, replacements: [comp_id, color, logo]});
+    return result;
+}
+
+/**
+ * Report event to log
+ * @param {*} logMsg The message to be logged
+ * @param {*} companyId The company id this message is for
+ */
+async function logEvent(logMsg, companyId) {
+    const result = await db.query("CALL add_to_log(?, ?)", {type: QueryTypes.INSERT, replacements: [logMsg, companyId]});
     return result;
 }
 
@@ -370,6 +388,7 @@ module.exports = {
     getNodesOfType,
     addStyling,
     getCompany,
-    updateCompanyInfo
+    updateCompanyInfo,
+    logEvent
 }
 
