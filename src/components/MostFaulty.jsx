@@ -4,13 +4,8 @@ import React from 'react'
 /* ----------------------------------- MUI ---------------------------------- */
 import {Typography, Box, Fab, TableContainer, Table, Paper, TableBody, TableRow, TableCell, CardContent, IconButton, Card } from '@mui/material'
 
-/* -------------------------------- MUI Icons ------------------------------- */
-import AddIcon from '@mui/icons-material/Add';
-import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
-import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
-import {height} from '@mui/system';
 
-function ErrTable({errors}) {
+function MostFaulty({mostF}) {
 
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -23,7 +18,7 @@ function ErrTable({errors}) {
         <TableContainer component={Paper} style={{boxShadow: 'none'}} >
             <Table size="small" aria-label="a dense table" style={{ borderCollapse:'separate', borderSpacing: '0 0.7em', boxShadow: 'none' }}>
             <TableBody>
-                {errors.map((row) => (
+                {mostF.map((row) => (
                 <TableRow key={row.name}>
                     <TableCell component="th" scope="row" style={{ border: 'none', padding: "0px" }} >
                     {/* Card */}
@@ -52,4 +47,4 @@ function ErrTable({errors}) {
     )
 }
 
-export default ErrTable
+export default MostFaulty
