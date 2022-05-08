@@ -70,7 +70,7 @@ const UserList = ({t, apiURL, user}) => {
     <main>
       <h1>'Företaget's adminpanel</h1>
       <Box style={{height: '550px', width: '100%'}} className="mt-7">
-        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
+        <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 10}} sx={{ '& > :not(style)': { m: 3 } }}>
           <Fab size="large" color="primary" aria-label="add" component={Link} to={'/admin/users/add'} >
             <AddIcon />
           </Fab>

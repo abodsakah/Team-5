@@ -139,6 +139,19 @@ app.get("/api/getCompnies", async (req, res) => {
     }
 });
 
+app.get("/api/getCompanyLog", async (req, res) => {
+    let apiKey = req.query.key;
+    let companyId = req.query.companyid;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        let company = await dbConnection.getCompanyLog(companyId);
+        res.status(200).send(company);
+    } else {
+        res.status(401).send("Invalid API key");
+    }
+});
+
 app.get("/api/getCompany", async (req, res) => {
     let apiKey = req.query.key;
     let companyId = req.query.companyid;

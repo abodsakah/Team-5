@@ -158,6 +158,17 @@ function getPreloadedNode(uid, companyId) {
 
 /**
  * 
+ * @param {*} companyId The company id to fetch log from
+ * @returns Log for specified company
+ */
+async function getCompanyLog(companyId) {
+    // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
+    const result = await db.query("CALL get_company_log(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
+    return result[0][0];
+}
+
+/**
+ * 
  * @param {*} uid The unique id of the node
  * @returns The status of the node
  */
@@ -374,6 +385,7 @@ module.exports = {
     getNodeStatus,
     getNodeType,
     getUsersForCompany,
+    getCompanyLog,
     getLogicalDeviceForCompany,
     getAmountOfSensorTypes,
     getNodeInfo,
