@@ -34,7 +34,7 @@ function AddCompany({t, color, apiURL}) {
 
   let createAPI = () => {
     if (companyEmail.match(emailRegEx) && companyAdminMail.match(emailRegEx) && companyAdminUser.length > 0 && companyAdminFName.length > 0 && companyAdminLName.length > 0 && companyName.length > 0 && companyPhone.length > 0) {
-      fetch(`${apiURL}createCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&name=${companyName}&email=${companyEmail}&phone=${companyPhone}&adminmail=${companyAdminMail}&adminfirstname=${companyAdminFName}&adminlastname=${companyAdminLName}&adminusername=${companyAdminUser}`)
+      fetch(`${apiURL}/createCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&name=${companyName}&email=${companyEmail}&phone=${companyPhone}&adminmail=${companyAdminMail}&adminfirstname=${companyAdminFName}&adminlastname=${companyAdminLName}&adminusername=${companyAdminUser}`)
         .then(res => res.json())
         .then(res => {
           if (res.status === "success") {
@@ -62,7 +62,7 @@ function AddCompany({t, color, apiURL}) {
     data.append('id', newCompanyId);
     data.append('color', mainColorInput.replace('#', ''));
     data.append('logo', fileData);
-    axios.post(`${apiURL}addStyling`, data).then(res => {
+    axios.post(`${apiURL}/addStyling`, data).then(res => {
       setLoading(false);
       return res;
     }).catch(err => {

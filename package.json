@@ -56,6 +56,7 @@
     "upload:test-report": "./node_modules/.bin/codecov",
     "start": "concurrently \"react-scripts start\" \"nodemon API/index.js\"",
     "build": "react-scripts build",
+    "start-serve": "concurrently \"serve -s build -l 3000\" \"nodemon API/index.js\"",
     "test": "react-scripts test",
     "test-jest": "jest --collectCoverage=true",
     "eject": "react-scripts eject"

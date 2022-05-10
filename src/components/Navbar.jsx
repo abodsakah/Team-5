@@ -87,7 +87,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch(`${apiURL}getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(res => {
+            const res = await fetch(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(res => {
                 setCompanies(res)
               })
             }
@@ -134,7 +134,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             justifyContent: 'center',
                         }}>
                             {/* <img src={`${process.env.PUBLIC_URL}/static/uploads/images/${companyLogo}`} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} /> */}
-                            <Logo src={`${apiURL}static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `}/>
+                            <Logo src={`${apiURL}/static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `}/>
                         </div>
                         : 
                         <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>
