@@ -141,7 +141,7 @@ function AddSensor({t, apiURL, user}) {
 
     const getBuildings = async () => {
         if (buildings.length === 0) {
-            let buildingsData = await fetch(`${apiURL}getBuildings?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`)
+            let buildingsData = await fetch(`${apiURL}/getBuildings?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`)
             let buildingJson = await buildingsData.json().then(data => Object.keys(data).map(key => data[key]));
             setbuildings(buildingJson);
         }
@@ -150,7 +150,7 @@ function AddSensor({t, apiURL, user}) {
 
     const getSpaces = async () => {
         setSelectedSpace('');
-        let spacesData = await fetch(`${apiURL}getSpaces?key=${process.env.REACT_APP_TRACT_API_KEY}&parentId=${selectedBuilding}`)
+        let spacesData = await fetch(`${apiURL}/getSpaces?key=${process.env.REACT_APP_TRACT_API_KEY}&parentId=${selectedBuilding}`)
         let spacesJson = await spacesData.json().then(data => Object.keys(data).map(key => data[key]));
         setSpaces(spacesJson);
     }
@@ -163,7 +163,7 @@ function AddSensor({t, apiURL, user}) {
             space = selectedBuilding;
         }
 
-        let assetsData = await fetch(`${apiURL}getAssetsForSpace?key=${process.env.REACT_APP_TRACT_API_KEY}&spaceId=${space}`);
+        let assetsData = await fetch(`${apiURL}/getAssetsForSpace?key=${process.env.REACT_APP_TRACT_API_KEY}&spaceId=${space}`);
         let assetsJson = await assetsData.json().then(data => Object.keys(data).map(key => data[key]));
         setAssets(assetsJson);
     }
@@ -226,7 +226,7 @@ function AddSensor({t, apiURL, user}) {
         data.append('deviceName', deviceName);
         data.append('is_part_of', selectedAsset);
 
-        fetch(`${apiURL}addLogicalDevice`, {
+        fetch(`${apiURL}/addLogicalDevice`, {
             method: 'POST',
             body: data
         })
@@ -254,7 +254,7 @@ function AddSensor({t, apiURL, user}) {
             data.append('threshold', threshold);
             data.append('thresholdAction', action);
 
-            fetch(`${apiURL}updateSensorThreshold`, {
+            fetch(`${apiURL}/updateSensorThreshold`, {
                 method: 'POST',
                 body: data
             })

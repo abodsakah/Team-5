@@ -58,7 +58,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
     params.append('companyId', user.company_id);
     params.append('type', type);
     
-    fetch(`${apiURL}getNodesOfType`, {
+    fetch(`${apiURL}/getNodesOfType`, {
       method: 'POST',
       body: params
     }).then(res => res.json()).then(res => {

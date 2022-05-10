@@ -19,7 +19,7 @@ app.use(fileupload({
     tempFileDir: './tempFiles'
 }));
 
-app.use("/api/static", express.static(path.join(__dirname, 'public'))); // listen for the /static/api url to get static files
+app.use("/api/v1/static", express.static(path.join(__dirname, 'public'))); // listen for the /static/api url to get static files
 app.use(express.static(path.join(__dirname, 'public'))); // fallback
 
 
@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
-app.get("/api/user", async (req, res) => {
+app.get("/api/v1/user", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let userId = req.query.id;
@@ -54,7 +54,7 @@ app.get("/api/user", async (req, res) => {
     }
 });
 
-app.get("/api/createUser", async (req, res) => {
+app.get("/api/v1/createUser", async (req, res) => {
     let apiKey = req.query.key;
     let email = req.query.email;
     let password = req.query.password;
@@ -80,7 +80,7 @@ app.get("/api/createUser", async (req, res) => {
     }
 });
 
-app.get("/api/createCompany", async (req, res) => {
+app.get("/api/v1/createCompany", async (req, res) => {
     let apiKey = req.query.key;
     let name = req.query.name;
     let phone = req.query.phone;
@@ -122,7 +122,7 @@ app.get("/api/createCompany", async (req, res) => {
     }
 });
 
-app.get("/api/getCompnies", async (req, res) => {
+app.get("/api/v1/getCompnies", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
 
@@ -139,7 +139,7 @@ app.get("/api/getCompnies", async (req, res) => {
     }
 });
 
-app.get("/api/getCompanyLog", async (req, res) => {
+app.get("/api/v1/getCompanyLog", async (req, res) => {
     let apiKey = req.query.key;
     let companyId = req.query.companyid;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
@@ -152,7 +152,7 @@ app.get("/api/getCompanyLog", async (req, res) => {
     }
 });
 
-app.get("/api/getCompany", async (req, res) => {
+app.get("/api/v1/getCompany", async (req, res) => {
     let apiKey = req.query.key;
     let companyId = req.query.companyid;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
@@ -165,7 +165,7 @@ app.get("/api/getCompany", async (req, res) => {
     }
 });
 
-app.post("/api/updateCompany", async (req, res) => { 
+app.post("/api/v1/updateCompany", async (req, res) => { 
     let apiKey = req.body.key;
     let name = req.body.name;
     let phone = req.body.phone;
@@ -230,7 +230,7 @@ app.post("/api/updateCompany", async (req, res) => {
     }
 });
 
-app.get("/api/getNodes", async (req, res) => {
+app.get("/api/v1/getNodes", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
 
@@ -242,7 +242,7 @@ app.get("/api/getNodes", async (req, res) => {
     }
 });
 
-app.get("/api/addNode", async (req, res) => { 
+app.get("/api/v1/addNode", async (req, res) => { 
     let apiKey = req.query.key;
     let deviceId = req.query.deviceid;
     let deviceType = req.query.devicetype;
@@ -264,7 +264,7 @@ app.get("/api/addNode", async (req, res) => {
 });
 
 
-app.get("/api/nodes/neighborreq", async (req, res) => {
+app.get("/api/v1/nodes/neighborreq", async (req, res) => {
     let companyId = req.query.companyId;
     let data = await  neoNodeMsgSender.sendNeighborListRequest(companyId);
     let nodes = await neoNodeMsgParser.getNodes();
@@ -272,7 +272,7 @@ app.get("/api/nodes/neighborreq", async (req, res) => {
     res.send(await neoNodeMsgParser.nodes);
 });
 
-app.get("/api/nodes/nodeinfo", async (req, res) => {
+app.get("/api/v1/nodes/nodeinfo", async (req, res) => {
     let companyId = req.query.companyId;
     let nodeId = req.query.nodeId;
 
@@ -281,7 +281,7 @@ app.get("/api/nodes/nodeinfo", async (req, res) => {
     res.send(nodeInfo);
 })
 
-app.post("/api/getCompanySettings", async (req, res) => {
+app.post("/api/v1/getCompanySettings", async (req, res) => {
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     if (keyValid) {
@@ -297,7 +297,7 @@ app.post("/api/getCompanySettings", async (req, res) => {
     }
 });
 
-app.post("/api/updateThreshold", async (req, res) => {
+app.post("/api/v1/updateThreshold", async (req, res) => {
     let apiKey = req.body.key;
     let nodeId = req.body.id;
     let action = req.body.action;
@@ -310,6 +310,7 @@ app.post("/api/updateThreshold", async (req, res) => {
             await dbConnection.updateThreshold(nodeId, action, value, companyId);
             res.status(200).send({status: "success", message: "Threshold updated"});
         } catch (e) {
+            console.log(e);
             res.status(500).send({status: "error", message: "Error updating threshold"});
         }
     } else {
@@ -317,7 +318,7 @@ app.post("/api/updateThreshold", async (req, res) => {
     }
 });
 
-app.post("/api/addStyling", async (req, res) => {
+app.post("/api/v1/addStyling", async (req, res) => {
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
 
@@ -361,7 +362,7 @@ app.post("/api/addStyling", async (req, res) => {
     }
 });
 
-app.get("/api/getNodeInfo", async (req, res) => {
+app.get("/api/v1/getNodeInfo", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.nodeId;
@@ -379,7 +380,7 @@ app.get("/api/getNodeInfo", async (req, res) => {
     }
 })
 
-app.get("/api/getThreshold", async (req, res) => {
+app.get("/api/v1/getThreshold", async (req, res) => {
     let apiKey = req.query.key;
     let nodeId = req.query.id;
     let companyId = req.query.companyId;
@@ -388,7 +389,12 @@ app.get("/api/getThreshold", async (req, res) => {
     if (keyValid) {
         try {
             let threshold = await dbConnection.getThresholdForNode(nodeId, companyId);
-            res.status(200).send(threshold);
+            let node = await dbConnection.getNodeInfo(nodeId, companyId);
+            console.log(threshold);
+            res.status(200).send({
+                threshold: threshold,
+                device: node
+            });
         } catch (e) {
             res.status(500).send({status: "error", message: "Error getting threshold"});
         }
@@ -397,7 +403,7 @@ app.get("/api/getThreshold", async (req, res) => {
     }
 });
 
-app.get("/api/getNodeStatus", async (req, res) => {
+app.get("/api/v1/getNodeStatus", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.nodeId;
@@ -415,7 +421,7 @@ app.get("/api/getNodeStatus", async (req, res) => {
     }
 })
 
-app.post("/api/forceWesMode", async (req, res) => {
+app.post("/api/v1/forceWesMode", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.nodeId;
@@ -435,7 +441,7 @@ app.post("/api/forceWesMode", async (req, res) => {
     }
 })
 
-app.post("/api/deleteNode", async (req, res) => {
+app.post("/api/v1/deleteNode", async (req, res) => {
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.body.nodeId;
@@ -455,7 +461,7 @@ app.post("/api/deleteNode", async (req, res) => {
     }
 })
 
-app.post("/api/setNodeDeleted", async (req, res) => {
+app.post("/api/v1/setNodeDeleted", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let nodeId = req.query.nodeId;
@@ -475,7 +481,7 @@ app.post("/api/setNodeDeleted", async (req, res) => {
     }
 })
 
-app.get("/api/getUsersForCompany", async (req, res) => {
+app.get("/api/v1/getUsersForCompany", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let companyId = req.query.companyId;
@@ -491,7 +497,7 @@ app.get("/api/getUsersForCompany", async (req, res) => {
     }
 });
 
-app.get("/api/getLogicalDeviceForCompany", async (req, res) => {
+app.get("/api/v1/getLogicalDeviceForCompany", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let companyId = req.query.companyId;
@@ -508,7 +514,7 @@ app.get("/api/getLogicalDeviceForCompany", async (req, res) => {
     }
 })
 
-app.get("/api/getLogicalDeviceTypeAmount", async (req, res) => {
+app.get("/api/v1/getLogicalDeviceTypeAmount", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let companyId = req.query.companyId;
@@ -526,7 +532,7 @@ app.get("/api/getLogicalDeviceTypeAmount", async (req, res) => {
     }
 })
 
-app.get("/api/getBuildings", async (req, res) => {
+app.get("/api/v1/getBuildings", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let companyId = req.query.companyId;
@@ -542,7 +548,7 @@ app.get("/api/getBuildings", async (req, res) => {
     }
 });
 
-app.get("/api/getSpaces", async (req, res) => { 
+app.get("/api/v1/getSpaces", async (req, res) => { 
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let parentSpaceId = req.query.parentId;
@@ -559,7 +565,7 @@ app.get("/api/getSpaces", async (req, res) => {
     }
 });
 
-app.get("/api/getAssetsForSpace", async (req, res) => {
+app.get("/api/v1/getAssetsForSpace", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let spaceId = req.query.spaceId;
@@ -577,7 +583,7 @@ app.get("/api/getAssetsForSpace", async (req, res) => {
     }
 });
 
-app.post("/api/addLogicalDevice", async (req, res) => {
+app.post("/api/v1/addLogicalDevice", async (req, res) => {
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let companyId = req.body.companyId;
@@ -603,7 +609,7 @@ app.post("/api/addLogicalDevice", async (req, res) => {
     }
 });
 
-app.post("/api/updateSensorThreshold", async (req, res) => {
+app.post("/api/v1/updateSensorThreshold", async (req, res) => {
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let deviceUid = req.body.deviceUid;
@@ -622,7 +628,7 @@ app.post("/api/updateSensorThreshold", async (req, res) => {
     }
 });
 
-app.post('/api/getNodesOfType', async (req, res) => {
+app.post('/api/v1/getNodesOfType', async (req, res) => {
     let apiKey = req.body.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
     let companyId = req.body.companyId;

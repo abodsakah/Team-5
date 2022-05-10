@@ -24,9 +24,9 @@ const Devices = ({t, apiURL, user}) => {
   const [rows, setRows] = React.useState([]);
 
   const getAmountSensors = async () => {
-    const tempSensors = await fetch(`${apiURL}getLogicalDeviceTypeAmount?key=${process.env.REACT_APP_TRACT_API_KEY}&type=temp-humidity&companyId=${user.company_id}"`);
-    const analogSensor = await fetch(`${apiURL}getLogicalDeviceTypeAmount?key=${process.env.REACT_APP_TRACT_API_KEY}&type=analog-wheel&companyId=${user.company_id}`);
-    const switchSensor = await fetch(`${apiURL}getLogicalDeviceTypeAmount?key=${process.env.REACT_APP_TRACT_API_KEY}&type=switch&companyId=${user.company_id}`);
+    const tempSensors = await fetch(`${apiURL}/getLogicalDeviceTypeAmount?key=${process.env.REACT_APP_TRACT_API_KEY}&type=temp-humidity&companyId=${user.company_id}"`);
+    const analogSensor = await fetch(`${apiURL}/getLogicalDeviceTypeAmount?key=${process.env.REACT_APP_TRACT_API_KEY}&type=analog-wheel&companyId=${user.company_id}`);
+    const switchSensor = await fetch(`${apiURL}/getLogicalDeviceTypeAmount?key=${process.env.REACT_APP_TRACT_API_KEY}&type=switch&companyId=${user.company_id}`);
     
     const tempSensorsData = await tempSensors.json();
     const analogSensorData = await analogSensor.json();

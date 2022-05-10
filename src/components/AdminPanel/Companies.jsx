@@ -13,7 +13,7 @@ const Companies = ({cookies, t, apiURL, color}) => {
       align-items: center;
     `
 
-  fetch(`${apiURL}getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(res => {
+  fetch(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(res => {
     if (isLoading) {
       setCompanies(res)
       setIsLoading(false)
@@ -53,7 +53,7 @@ const Companies = ({cookies, t, apiURL, color}) => {
                       justifyContent: 'center',
                     }}
                   >
-                    <img src={`${apiURL}static/uploads/logo/${company.logo}`} width={'50%'}/>
+                    <img src={`${apiURL}/static/uploads/logo/${company.logo}`} width={'50%'}/>
                   </div>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">

@@ -37,8 +37,8 @@ import axios from 'axios';
 
 function App() {
   
-  // let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called (server)
-  let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called (local)
+  // let apiURL = "https://api.abodsakka.xyz/api/v1"; // The url where the api is going to be called (server)
+  let apiURL = "http://localhost:9000/api/v1"; // The url where the api is going to be called (local)
 
   const drawerWidth = 240; // the width of the drawer
 
@@ -101,7 +101,7 @@ function App() {
     if (isAuthenticated) { // only when the user is authenticated we set the cookie
       try {
         userID = user.sub.split('|')[1]; // get the user id from the user object
-        fetch(`${apiURL}user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
+        fetch(`${apiURL}/user?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${userID}`).then(res => res.json()).then(data => {
           cookies.set('user', data, {path: '/'}); // set the cookie
           setUserData(data); // set the user data
           return data; // return the user data to update the DOM
@@ -119,7 +119,7 @@ function App() {
       data.append('key', process.env.REACT_APP_TRACT_API_KEY);
       data.append('id', cookies.get('user').id);
 
-      axios.post(`${apiURL}getCompanySettings`, data).then(res => {
+      axios.post(`${apiURL}/getCompanySettings`, data).then(res => {
         let data = res.data;
         if (companyStyling.color !== undefined || companyStyling.color !== "") {
           setCompanyStyling(data);
@@ -130,7 +130,7 @@ function App() {
         return data; // return the user data to update the DOM
       });
 
-      // fetch(`${apiURL}getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
+      // fetch(`${apiURL}/getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
         
       // });
     }
@@ -148,7 +148,7 @@ function App() {
       data.append('id', cookies.get('user').company_id);
       data.append('color', choosenColor);
       data.append('logo', companyLogo);
-      axios.post(`${apiURL}updateStyling`, data).then(res => {
+      axios.post(`${apiURL}/updateStyling`, data).then(res => {
         setGetStyling(true);
         setMainColor(choosenColor);
         return res;

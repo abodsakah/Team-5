@@ -109,7 +109,7 @@ function AddNode({t, apiURL}) {
     }
 
     if (companies.length === 0) {
-        fetch(`${apiURL}getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`)
+        fetch(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -124,7 +124,7 @@ function AddNode({t, apiURL}) {
     const sendDevice = () => {
         setIsLoading(true);
 
-        fetch(`${apiURL}addNode?key=${process.env.REACT_APP_TRACT_API_KEY}&deviceid=${deviceId}&devicetype=${nodeType}&companyid=${company}`)
+        fetch(`${apiURL}/addNode?key=${process.env.REACT_APP_TRACT_API_KEY}&deviceid=${deviceId}&devicetype=${nodeType}&companyid=${company}`)
             .then(res => res.json())
             .then(
                 (result) => {

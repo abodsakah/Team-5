@@ -45,7 +45,7 @@ const UserList = ({t, apiURL, user}) => {
   const [rows, setRows] = React.useState([]);
 
   const fetchUsers = async () => {
-    const response = await fetch(`${apiURL}getUsersForCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`);
+    const response = await fetch(`${apiURL}/getUsersForCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`);
     const data = await response.json();
     for (let item of Object.values(data)) {
       if (!rows.includes(item)) {
