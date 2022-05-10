@@ -73,7 +73,7 @@ function saveTokenToFile(jwToken) {
 function readTokenFromFile() {
   try {
     token = fs.readFileSync('.mobilix-token', 'utf8')
-    console.log("Token from file:\n", token, "\n");
+    console.log("Loading token from file:\n", token, "\n");
     // get token exp date
     expDate = getExpDate(token);
   } catch (err) {
@@ -112,29 +112,71 @@ async function getTokenPromise() {
 };
 
 async function setupMobilixClient() {
-  var entityTypes = await client.entityTypes.list();
-  console.log(token);
-  console.log(entityTypes);
+  var entityTypeList = await client.entityTypes.list();
+  var entitySchemaList = await client.entitySchemas.list();
+  var entityTypeId = null;
+  var entitySchemaId = null;
 
+  console.log(token);
+  console.log("entityTypeList:\n", entityTypeList);
+  console.log("entitySchemaList:\n", entitySchemaList);
+
+  /* Create entityType */
   // only create entityType 'neocortec-node' if it doesn't exists.
-  if (!entityTypes.find(element => element.name === 'neocortec-node')) {
+  var eType = entityTypeList.find(element => element.name === 'neocortec-node')
+  if (eType) {
+    console.log('entityType { "name": "neocortec-node" } found');
+    console.log(eType);
+    entityTypeId = eType.id;
+    console.log("ID: ", entityTypeId);
+  }
+  else {
+    console.log('entityType not found, creating entityType { "name": "neocortec-node" }');
     var res = await client.entityTypes.create({ "name": "neocortec-node" });
     console.log(res);
+    entityTypeId = res.id;
+    console.log("ID: ", entityTypeId);
   }
-  // const userList = await client.users.list();
-  // const workorders = await client.workOrders.listEvents();
-  // console.log(userList.entries);
-  // console.log(workorders);
-}
-setupMobilixClient();
-// async function testTokenPromise() {
-//   await getTokenPromise();
-//   await getTokenPromise();
-//   await getTokenPromise();
-//   await getTokenPromise();
-//   await getTokenPromise();
-// }
-// testTokenPromise();
 
+  /* Create entitySchema */
+  // only create entitySchema for 'neocortec-node' if it doesn't exists.
+  /*
+  {
+     "groups": [],
+     "properties": [
+       { "key": "meta.id", "type": "string", "name": "ID" },
+       { "key": "meta.number", "type": "number", "name": "Nummer" },
+       { "key": "meta.code", "type": "string", "name": "Läge" },
+       { "key": "meta.name", "type": "string", "name": "Namn" },
+     ]
+  }
+  */
+  var eSchema = entitySchemaList.find(element => element.entity_type_id === entityTypeId)
+  if (eSchema) {
+    console.log('entitySchema found');
+    console.log(eSchema);
+    entitySchemaId = eSchema.id;
+    console.log("ID: ", entitySchemaId);
+    console.log("Properties: ", eSchema.definition.properties);
+  }
+  else {
+    console.log('entitySchema not found');
+      var definition = {
+        'groups': [],
+        'properties': [
+          { 'key': 'meta.id', 'type': 'number', 'name': 'ID' },
+          { 'key': 'meta.company_id', 'type': 'number', 'name': 'Företags_ID' },
+        ]
+      };
+    var res = await client.entitySchemas.create({"entity_type_id": entityTypeId, definition});
+    console.log(res);
+    entitySchemaId = res.id;
+    console.log("ID: ", entitySchemaId);
+    console.log("Properties: ", res.definition.properties);
+  }
+
+}
+
+setupMobilixClient();
 
 
