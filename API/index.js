@@ -220,14 +220,6 @@ app.post("/api/updateCompany", async (req, res) => {
                 console.log(e);
                 res.status(500).send("Error getting company");
             }
-
-
-            // send success message
-            let status = {
-                status: "success",
-                message: "Company upaded",
-            }
-            res.status(200).send(JSON.stringify(status));
         } catch (e) {
             console.log(e);
             res.status(500).send("Error creating company");
@@ -305,59 +297,23 @@ app.post("/api/getCompanySettings", async (req, res) => {
     }
 });
 
-app.post("/api/updateStyling", async (req, res) => {
+app.post("/api/updateThreshold", async (req, res) => {
     let apiKey = req.body.key;
+    let nodeId = req.body.id;
+    let action = req.body.action;
+    let value = req.body.value;
+    let companyId = req.body.companyid;
     let keyValid = await dbConnection.validateAPIKey(apiKey);
 
     if (keyValid) {
-        let companyId = req.body.id;
-        let color = req.body.color;
-        let logo = {
-            name: "",
-        };
-
-        let logoName = "";
-
-        let path;
-        if (req.files) { // if there is a file we will set the path
-            logo = req.files.logo;
-            logoName = logo.name;
-            path = __dirname + "/public/uploads/logo/" + logo.name;
-        }
-        
-
-        let defaultStyling = await dbConnection.getCompanySetting(companyId); // get the default styling
-
-        
-
-        if(logo.name != '') { // if there is a file and the logo is not empty then we move it to our path
-            logo.mv(path, function (err) {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send("Error uploading file");
-                }
-            });
-        }
-
-        if (color == "" || color == null) { // if the color is empty we will use the default styling
-            color = defaultStyling.color;
-        }
-        if (logo.name == "" || logo.name == undefined) { // if the logo is empty we will use the default styling
-            logoName = defaultStyling[0][0].logo;
-        }
-
         try {
-            let company = await dbConnection.updateStyling(companyId, color, logoName);
-            res.status(200).send({
-                status: "success",
-                message: "Company updated"
-            });
+            await dbConnection.updateThreshold(nodeId, action, value, companyId);
+            res.status(200).send({status: "success", message: "Threshold updated"});
         } catch (e) {
-            console.log(e);
-            res.status(500).send("Error getting company");
+            res.status(500).send({status: "error", message: "Error updating threshold"});
         }
     } else {
-        res.status(401).send("Invalid API key");
+        res.status(401).send({status: "error", message: "Invalid API key"});
     }
 });
 
@@ -422,6 +378,24 @@ app.get("/api/getNodeInfo", async (req, res) => {
         res.status(401).send("Invalid API key");
     }
 })
+
+app.get("/api/getThreshold", async (req, res) => {
+    let apiKey = req.query.key;
+    let nodeId = req.query.id;
+    let companyId = req.query.companyId;
+    let keyValid = await dbConnection.validateAPIKey(apiKey);
+
+    if (keyValid) {
+        try {
+            let threshold = await dbConnection.getThresholdForNode(nodeId, companyId);
+            res.status(200).send(threshold);
+        } catch (e) {
+            res.status(500).send({status: "error", message: "Error getting threshold"});
+        }
+    } else {
+        res.status(401).send({status: "error", message: "Invalid API key"});
+    }
+});
 
 app.get("/api/getNodeStatus", async (req, res) => {
     let apiKey = req.query.key;

@@ -265,8 +265,7 @@ INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 --
 
 CREATE TABLE `company_log` (
-  `id` int(11) NOT NULL,
-  `from_device` int(11) NOT NULL,
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT,
   `report_date` varchar(255) NOT NULL,
   `msg` varchar(255) NOT NULL,
   `company_id` int(11) NOT NULL
@@ -893,5 +892,14 @@ DELIMITER $$
 CREATE PROCEDURE `add_to_log`(IN n_msg VARCHAR(255), IN n_company_id INT)
 BEGIN
   INSERT INTO `company_log` (`msg`, `company_id`, `report_date`) VALUES (n_msg, n_company_id, NOW());
+END$$
+DELIMITER ;
+
+--update threshold
+DROP PROCEDURE IF EXISTS `update_threshold`;
+DELIMITER $$
+CREATE PROCEDURE `update_threshold`(IN n_id INT, IN n_action varchar(255), IN n_value INT)
+BEGIN
+  UPDATE `node_thresholds` SET `action` = n_action, `value` = n_value WHERE `id` = n_id;
 END$$
 DELIMITER ;

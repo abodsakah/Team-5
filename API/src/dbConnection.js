@@ -128,12 +128,6 @@ async function getCompanySetting(companyId) {
     return result;
 }
 
-async function updateStyling(companyId, color, logo) {
-    const result = await db.query("CALL update_company_settings(?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [companyId, color, logo]});
-    logEvent(`Styling updated`, companyId);
-    return result;
-}
-
 /**
  * 
  * @param {*} nodeId The id of the device
@@ -295,7 +289,7 @@ async function getCompany(id) {
  */
 async function updateCompanyInfo(id, name, email, phone, color, logo) {
     const result = await db.query("CALL update_company_info(?, ?, ?, ?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [id, name, email, phone, color, logo]});
-    logEvent(`Company information updated`, id);
+    logEvent(`Company information and/or styling updated`, id);
     return result;
 }
 
@@ -340,6 +334,17 @@ async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
  async function getThreshold(thresholdId) {
     const result = await db.query("CALL get_threshold(?)", {type: QueryTypes.SELECT, replacements: [thresholdId]});
     return result[0][0];
+ }
+
+/**
+ * 
+ * @param {*} nodeId node that has that threshold
+ * @returns a nodes threshold values
+ */
+async function getThresholdForNode(nodeId, companyid) {
+    const node = await getNodeInfo(nodeId, companyid);
+    const result = await db.query("CALL get_threshold(?)", {type: QueryTypes.SELECT, replacements: [node.trigger_action]});
+    return result[0][0];
 }
 
 /**
@@ -368,6 +373,20 @@ async function logEvent(logMsg, companyId) {
     return result;
 }
 
+/**
+ * Updated the node threshold
+ * @param {*} nodeId The id of the threshold
+ * @param {*} action The action to when it should be triggered
+ * @param {*} value the value that should be triggered
+ * @returns 
+ */
+async function updateThreshold(nodeId, action, value, companyId) {
+    let node = await getNodeInfo(nodeId, companyId);
+    const result = await db.query("CALL update_threshold(?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [node.trigger_action, action, value]});
+    logEvent(`Threshold ${nodeId} has been updated`, companyId);
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -379,7 +398,6 @@ module.exports = {
     addPreloadedNode,
     addLogicalDevice,
     getCompanySetting,
-    updateStyling,
     setNodeASDeleted,
     setNodeToBeDeleted,
     getNodeStatus,
@@ -401,6 +419,8 @@ module.exports = {
     addStyling,
     getCompany,
     updateCompanyInfo,
-    logEvent
+    logEvent,
+    updateThreshold,
+    getThresholdForNode
 }
 

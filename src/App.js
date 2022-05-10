@@ -17,6 +17,7 @@ import Navbar from './components/Navbar';
 import UserList from './components/UserList';
 import Login from './components/Login';
 import EditCompany from './components/AdminPanel/EditCompany';
+import EditNodeThreshhold from './components/EditNodeThreshold';
 
 /* ------------------------------- Material Ui ------------------------------ */
 import { styled, Typography, createTheme, ThemeProvider } from '@mui/material';
@@ -36,8 +37,8 @@ import axios from 'axios';
 
 function App() {
   
-  let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called (server)
-  // let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called (local)
+  // let apiURL = "https://api.abodsakka.xyz/api/"; // The url where the api is going to be called (server)
+  let apiURL = "http://localhost:9000/api/"; // The url where the api is going to be called (local)
 
   const drawerWidth = 240; // the width of the drawer
 
@@ -179,6 +180,7 @@ function App() {
             <Route path="/devices" element={<Devices t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
             <Route path="/devices/:category" element={<DeviceCategory t={t} user={cookies.get("user")} apiURL={apiURL}/>} />
             <Route path="/devices/add-sensor" element={<AddSensor t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
+            <Route path="/devices/editNodeThreshold/:id" element={<EditNodeThreshhold t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
             {cookies.get("user") && cookies.get("user").role <= 1 &&
               <>
                 {cookies.get("user") && cookies.get("user").role === 0 &&

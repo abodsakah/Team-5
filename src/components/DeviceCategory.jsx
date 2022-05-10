@@ -89,10 +89,11 @@ const DeviceCategory = ({user, t, apiURL}) => {
   // Popover
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [title, setTitle] = React.useState(null);
+  const [nodeId, setNodeId] = React.useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setTitle(event.currentTarget.title)
-
+    setNodeId(event.currentTarget.id)
   };
   const handleClose = () => setAnchorEl(null);
   const openPopover = Boolean(anchorEl);
@@ -130,7 +131,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
                     </Box>
                     {/* Icons more/status */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', margin: 'auto',  gap: '1em', alignItems:"flex-start"}}>
-                      <IconButton title={ row.name } variant="contained" onClick={handleClick} sx={{ width: "fit-content", alignSelf: 'flex-end' }}>
+                      <IconButton title={ row.name } variant="contained" onClick={handleClick} id={row.id} sx={{ width: "fit-content", alignSelf: 'flex-end' }}>
                         <MoreVertRoundedIcon />
                       </IconButton>
                       <Box style={{ display: 'flex', flexDirection: 'row', margin: '0 auto', textTransform: 'capitalize', alignSelf: 'flex-end'}} >
@@ -159,7 +160,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
       {/* Popover */}
       <Popover open={openPopover} title={ title } anchorEl={anchorEl} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', margin: '0 auto', padding: "0.5em", alignItems:"flex-start"}}>
-          <Button onClick={handleOpenDialog} title={ title } startIcon={<EditIcon />} sx={{ textTransform: 'none' }}>
+          <Button component={Link} to={"/devices/editNodeThreshold/" + nodeId} title={ title } startIcon={<EditIcon />} sx={{ textTransform: 'none' }}>
             {t("edit")} { title }
           </Button>
           <Button startIcon={<DeleteIcon />} sx={{ textTransform: 'none', color: '#EB4440' }}>
