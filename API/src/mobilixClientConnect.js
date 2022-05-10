@@ -114,25 +114,27 @@ async function getTokenPromise() {
 async function setupMobilixClient() {
   var entityTypeList = await client.entityTypes.list();
   var entitySchemaList = await client.entitySchemas.list();
+  var entityList = await client.entities.list();
   var entityTypeId = null;
   var entitySchemaId = null;
 
   console.log(token);
   console.log("entityTypeList:\n", entityTypeList);
   console.log("entitySchemaList:\n", entitySchemaList);
+  console.log("entityList:\n", entityList);
 
   /* Create entityType */
   // only create entityType 'neocortec-node' if it doesn't exists.
   var eType = entityTypeList.find(element => element.name === 'neocortec-node')
   if (eType) {
-    console.log('entityType { "name": "neocortec-node" } found');
+    console.log('entityType { name: "neocortec-node" } found');
     console.log(eType);
     entityTypeId = eType.id;
     console.log("ID: ", entityTypeId);
   }
   else {
-    console.log('entityType not found, creating entityType { "name": "neocortec-node" }');
-    var res = await client.entityTypes.create({ "name": "neocortec-node" });
+    console.log('entityType not found, creating entityType { name: "neocortec-node" }');
+    var res = await client.entityTypes.create({ name: "neocortec-node" });
     console.log(res);
     entityTypeId = res.id;
     console.log("ID: ", entityTypeId);
@@ -140,17 +142,6 @@ async function setupMobilixClient() {
 
   /* Create entitySchema */
   // only create entitySchema for 'neocortec-node' if it doesn't exists.
-  /*
-  {
-     "groups": [],
-     "properties": [
-       { "key": "meta.id", "type": "string", "name": "ID" },
-       { "key": "meta.number", "type": "number", "name": "Nummer" },
-       { "key": "meta.code", "type": "string", "name": "Läge" },
-       { "key": "meta.name", "type": "string", "name": "Namn" },
-     ]
-  }
-  */
   var eSchema = entitySchemaList.find(element => element.entity_type_id === entityTypeId)
   if (eSchema) {
     console.log('entitySchema found');
@@ -160,21 +151,31 @@ async function setupMobilixClient() {
     console.log("Properties: ", eSchema.definition.properties);
   }
   else {
-    console.log('entitySchema not found');
-      var definition = {
-        'groups': [],
-        'properties': [
-          { 'key': 'meta.id', 'type': 'number', 'name': 'ID' },
-          { 'key': 'meta.company_id', 'type': 'number', 'name': 'Företags_ID' },
-        ]
-      };
-    var res = await client.entitySchemas.create({"entity_type_id": entityTypeId, definition});
+    console.log('entitySchema not found, creating one');
+    var def = {
+      "groups": [],
+      "properties": [
+        { "key": "meta.id", "type": "string", "name": "ID" },
+        { "key": "meta.company_id", "type": "string", "name": "Företags_ID" },
+      ]
+    };
+    var res = await client.entitySchemas.create({ entity_type_id: entityTypeId, definition: def });
     console.log(res);
     entitySchemaId = res.id;
     console.log("ID: ", entitySchemaId);
     console.log("Properties: ", res.definition.properties);
   }
 
+  // test add entity
+  var props = {
+    "meta.id": "1234",
+    "meta.company_id": "999"
+  };
+  console.log(props);
+  var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props});
+
+  // var res = await client.entitySchemas.delete(entitySchemaId);
+  console.log("Schema: ",await client.entitySchemas.list());
 }
 
 setupMobilixClient();
