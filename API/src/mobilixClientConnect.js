@@ -7,6 +7,7 @@ const axios = require('axios');
 const jwt_decode = require('jwt-decode');
 const mobilixClient = require('@allbin/mobilix-api-client');
 const dotenv = require('dotenv').config();
+const fs = require('fs');
 
 
 const client = mobilixClient.MobilixApiClient({
@@ -17,7 +18,7 @@ const client = mobilixClient.MobilixApiClient({
 const CLIENT_ID = dotenv.parsed.CLIENT_ID;
 const CLIENT_SECRET = dotenv.parsed.CLIENT_SECRET;
 var expDate = new Date(0);
-var token;
+var token = null;
 
 
 const data = JSON.stringify({
@@ -38,16 +39,64 @@ var config = {
   data: data
 };
 
+/** 
+* get token exp date
+ */
+function getExpDate(jwToken) {
+  // get token exp date
+  var theExpDate = new Date(0);
+
+  try {
+    var decodedToken = jwt_decode(jwToken);
+    var exp = decodedToken.exp;
+    theExpDate = new Date(exp * 1000);
+
+  } catch (error) {
+    console.error(error);
+  }
+  return theExpDate;
+}
+
+function saveTokenToFile(jwToken) {
+  try {
+    fs.writeFile('.mobilix-token', jwToken);
+    console.log("Saved JWT to file");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+/** 
+* reads from file and sets token and expDate
+* if no token is read, expDate is set to 0
+ */
+function readTokenFromFile() {
+  try {
+    token = fs.readFileSync('.mobilix-token', 'utf8')
+    console.log("Token from file:\n", token, "\n");
+    // get token exp date
+    expDate = getExpDate(token);
+  } catch (err) {
+    console.error(err);
+    expDate = new Date(0);
+  }
+}
 
 async function getTokenPromise() {
+  // Check if token is null
+  if (token == null) {
+    // try to get old token from file
+    readTokenFromFile();
+  }
   // if we still have a valid token don't fetch a new one.
   if (Date.now() >= expDate.getTime()) {
     try {
       const res = await axios(config, data);
       token = res.data.access_token;
-      var decodedToken = jwt_decode(token);
-      var exp = decodedToken.exp;
-      expDate = new Date(exp * 1000);
+      // save token to file
+      saveTokenToFile(token);
+      // get token exp date
+      expDate = getExpDate(token);
       console.log("Token is not valid, returning new JWT token.");
     } catch (err) {
       console.error(err);
@@ -62,16 +111,22 @@ async function getTokenPromise() {
   }
 };
 
-async function testMobilixClient() {
-  const entityTypes = await client.entityTypes.list();
+async function setupMobilixClient() {
+  var entityTypes = await client.entityTypes.list();
   console.log(token);
   console.log(entityTypes);
+
+  // only create entityType 'neocortec-node' if it doesn't exists.
+  if (!entityTypes.find(element => element.name === 'neocortec-node')) {
+    var res = await client.entityTypes.create({ "name": "neocortec-node" });
+    console.log(res);
+  }
   // const userList = await client.users.list();
   // const workorders = await client.workOrders.listEvents();
   // console.log(userList.entries);
   // console.log(workorders);
 }
-testMobilixClient();
+setupMobilixClient();
 // async function testTokenPromise() {
 //   await getTokenPromise();
 //   await getTokenPromise();
