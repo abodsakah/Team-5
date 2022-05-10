@@ -24,7 +24,8 @@ const data = JSON.stringify({
   "audience": "https://api.mobilix.dev.allbin.se",
   "grant_type": "client_credentials",
   "client_id": CLIENT_ID,
-  "client_secret": CLIENT_SECRET
+  "client_secret": CLIENT_SECRET,
+  "tenant": "allbinary-dev"
 });
 
 
@@ -47,7 +48,7 @@ async function getTokenPromise() {
       var decodedToken = jwt_decode(token);
       var exp = decodedToken.exp;
       expDate = new Date(exp * 1000);
-      console.log("Token is not valid, returning new JTW token.");
+      console.log("Token is not valid, returning new JWT token.");
     } catch (err) {
       console.error(err);
       console.log("Something went wrong, trying to fetch token.");
@@ -62,11 +63,13 @@ async function getTokenPromise() {
 };
 
 async function testMobilixClient() {
-  // const entityTypes = await client.entityTypes.list();
+  const entityTypes = await client.entityTypes.list();
+  console.log(token);
+  console.log(entityTypes);
   // const userList = await client.users.list();
-  const workorders = await client.workOrders.listEvents();
+  // const workorders = await client.workOrders.listEvents();
   // console.log(userList.entries);
-  console.log(workorders);
+  // console.log(workorders);
 }
 testMobilixClient();
 // async function testTokenPromise() {
