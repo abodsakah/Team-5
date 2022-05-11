@@ -179,8 +179,13 @@ async function setupMobilixClient() {
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
 
-  // var wId = await workOrderExists(1234, 999);
-  // console.log("workOrder_id: ", wId);
+  // var eId = await getEntity(1234, 999);
+  // if (await workOrderExistsForEntity(eId)) {
+  //   console.log("Exists!!!");
+  // }
+  // else {
+  //   console.log("Doesn't exists!!!");
+  // }
 
 
 }
@@ -219,6 +224,10 @@ async function workOrderExistsForEntity(entityId) {
   try {
     var orderList = await client.workOrders.list();
     var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
+    // if workOrder is 'completed' we dont count it.
+    if (workOrder.state == 'completed') {
+      return undefined;
+    }
     var id = workOrder.id;
     return id;
   }
@@ -275,10 +284,10 @@ async function createWorkOrder(nodeId, companyId, title, description) {
     console.log("Something went wrong, enitity probably already exists");
   }
   // Check that nodeId, companyId combo doesn't already have an active workOrder
-  var source_id = nodeId + ":" + companyId;
-  var entity_list = await client.entities.list();
-  var entity = entity_list.find(element => element.source_id === source_id);
-  var entityId = entity.id;
+  var entityId = await getEntity(nodeId, companyId);
+  if (await workOrderExistsForEntity(entityId)) {
+
+  }
 
   // Create workOrder
   var res = await client.workOrders.create(
