@@ -179,13 +179,8 @@ async function setupMobilixClient() {
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
 
-  // var eId = await getEntity(1234, 999);
-  // if (await workOrderExistsForEntity(eId)) {
-  //   console.log("Exists!!!");
-  // }
-  // else {
-  //   console.log("Doesn't exists!!!");
-  // }
+  // var e = await getEntity(1234, 999)
+  // console.log("Entity: ", e);
 
 
 }
@@ -199,9 +194,27 @@ async function setupMobilixClient() {
  * get entity for a nodeId + companyId combo.
  * @param {Int} nodeId 
  * @param {Int} companyId 
- * @returns {} Returns the Entity ID as a String, or undefined otherwise. 
+ * @returns {} Returns the entity object as a String, or undefined otherwise. 
  */
 async function getEntity(nodeId, companyId) {
+  try {
+    var source_id = nodeId + ":" + companyId;
+    var entity_list = await client.entities.list();
+    var entity = entity_list.find(element => element.source_id === source_id);
+    return entity;
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
+
+/**
+ * get entity_id for a nodeId + companyId combo.
+ * @param {Int} nodeId 
+ * @param {Int} companyId 
+ * @returns {} Returns the entity ID as a String, or undefined otherwise. 
+ */
+async function getEntityId(nodeId, companyId) {
   try {
     var source_id = nodeId + ":" + companyId;
     var entity_list = await client.entities.list();
@@ -247,7 +260,7 @@ async function workOrderExistsForEntity(entityId) {
  */
 async function workOrderExists(nodeId, companyId) {
   try {
-    var entityId = await getEntity(nodeId, companyId);
+    var entityId = await getEntityId(nodeId, companyId);
     var workOrderId = await workOrderExistsForEntity(entityId);
     return workOrderId;
   }
@@ -271,7 +284,7 @@ async function workOrderExists(nodeId, companyId) {
  * @param {Int} companyId 
  * @param {String} title 
  * @param {String} description 
- * @returns {} True if workOrder was created, otherwise False
+ * @returns {} Returns the workOrder object, or undefined otherwise.
  */
 async function createWorkOrder(nodeId, companyId, title, description) {
   // try to create entity for node if it doesn't exists.
@@ -283,14 +296,15 @@ async function createWorkOrder(nodeId, companyId, title, description) {
     console.log(err);
     console.log("Something went wrong, enitity probably already exists");
   }
-  // Check that nodeId, companyId combo doesn't already have an active workOrder
-  var entityId = await getEntity(nodeId, companyId);
-  if (await workOrderExistsForEntity(entityId)) {
 
+  // Check that nodeId, companyId combo doesn't already have an active workOrder
+  var entityId = await getEntityId(nodeId, companyId);
+  if (await workOrderExistsForEntity(entityId)) {
+    return undefined;
   }
 
   // Create workOrder
-  var res = await client.workOrders.create(
+  var workOrder = await client.workOrders.create(
     {
       entity_type_id: entityTypeId,
       title: title,
@@ -302,7 +316,8 @@ async function createWorkOrder(nodeId, companyId, title, description) {
       entity_changesets: {}
     }
   );
-  console.log("Created workOrder: ", res);
+
+  return workOrder;
 }
 
 /**
