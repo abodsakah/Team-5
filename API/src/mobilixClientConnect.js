@@ -179,8 +179,8 @@ async function setupMobilixClient() {
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
 
-  // var e = await getEntity(1234, 999)
-  // console.log("Entity: ", e);
+  // var test = await getWorkOrder(1234, 999)
+  // console.log("Entity: ", test);
 
 
 }
@@ -207,6 +207,8 @@ async function getWorkOrder(nodeId, companyId) {
     if (workOrder.state == 'completed') {
       return undefined;
     }
+    workOrder.node_id = nodeId;
+    workOrder.company_id = companyId;
     return workOrder;
   } catch (err) {
     console.error(err);
@@ -374,5 +376,8 @@ async function createEntity(nodeId, companyId) {
   }
 }
 
+module.exports = {
+
+}
 
 
