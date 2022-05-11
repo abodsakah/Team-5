@@ -179,10 +179,8 @@ async function setupMobilixClient() {
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
 
-  var eId = await getEntity(1234, 999);
-  console.log("entity_id: ", eId);
-  var wId = await workOrderExistsForEntity(eId);
-  console.log("workOrder_id: ", wId);
+  // var wId = await workOrderExists(1234, 999);
+  // console.log("workOrder_id: ", wId);
 
 
 }
@@ -240,7 +238,9 @@ async function workOrderExistsForEntity(entityId) {
  */
 async function workOrderExists(nodeId, companyId) {
   try {
-    await getEntity(nodeId, companyId);
+    var entityId = await getEntity(nodeId, companyId);
+    var workOrderId = await workOrderExistsForEntity(entityId);
+    return workOrderId;
   }
   catch (err) {
     console.error(err);
