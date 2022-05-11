@@ -178,6 +178,13 @@ async function setupMobilixClient() {
 
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
+
+  var eId = await getEntity(1234, 999);
+  console.log("entity_id: ", eId);
+  var wId = await workOrderExistsForEntity(eId);
+  console.log("workOrder_id: ", wId);
+
+
 }
 
 
@@ -186,17 +193,18 @@ async function setupMobilixClient() {
  */
 
 /**
- * get entity for a nodeId, companyId combo.
+ * get entity for a nodeId + companyId combo.
  * @param {Int} nodeId 
  * @param {Int} companyId 
- * @returns {} Returns the Entity ID, or undefined otherwise. 
+ * @returns {} Returns the Entity ID as a String, or undefined otherwise. 
  */
 async function getEntity(nodeId, companyId) {
   try {
     var source_id = nodeId + ":" + companyId;
     var entity_list = await client.entities.list();
     var entity = entity_list.find(element => element.source_id === source_id);
-    var entityId = entity.id;
+    var id = entity.id;
+    return id;
   } catch (err) {
     console.error(err);
     return undefined;
@@ -207,7 +215,7 @@ async function getEntity(nodeId, companyId) {
  * Checks if an active workOrder exists for an entity_id
  * A workOrder with state 'completed' does not count as a active workOrder.
  * @param {String} entityId 
- * @returns {} Returns the workOrder ID String, or undefined otherwise.
+ * @returns {} Returns the workOrder ID as a String, or undefined otherwise.
  */
 async function workOrderExistsForEntity(entityId) {
   try {
@@ -224,22 +232,19 @@ async function workOrderExistsForEntity(entityId) {
 }
 
 /**
- * Checks if an active workOrder exists for the nodeId and companyId combo.
+ * Checks if an active workOrder exists for a nodeId + companyId combo.
  * A workOrder with state 'completed' does not count as a active workOrder.
  * @param {Int} nodeId 
  * @param {Int} companyId 
- * @returns {} Returns the workOrder ID String, or undefined otherwise.
+ * @returns {} Returns the workOrder ID as a String, or undefined otherwise.
  */
 async function workOrderExists(nodeId, companyId) {
   try {
-    var source_id = nodeId + ":" + companyId;
-    var entity_list = await client.entities.list();
-    var entity = entity_list.find(element => element.source_id === source_id);
-    var entityId = entity.id;
+    await getEntity(nodeId, companyId);
   }
   catch (err) {
     console.error(err);
-    return null
+    return undefined;
   }
 
 }
