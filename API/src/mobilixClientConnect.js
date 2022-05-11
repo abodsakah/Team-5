@@ -112,11 +112,12 @@ async function getTokenPromise() {
 };
 
 async function setupMobilixClient() {
+  var entityTypeId = null;
+  var entitySchemaId = null;
+
   var entityTypeList = await client.entityTypes.list();
   var entitySchemaList = await client.entitySchemas.list();
   var entityList = await client.entities.list();
-  var entityTypeId = null;
-  var entitySchemaId = null;
 
   console.log(token);
   console.log("entityTypeList:\n", entityTypeList);
@@ -155,8 +156,8 @@ async function setupMobilixClient() {
     var def = {
       "groups": [],
       "properties": [
-        { "key": "meta.id", "type": "string", "name": "ID" },
-        { "key": "meta.company_id", "type": "string", "name": "Företags_ID" },
+        { "key": "meta.id", "type": "number", "name": "ID" },
+        { "key": "meta.company_id", "type": "number", "name": "Företags_ID" },
       ]
     };
     var res = await client.entitySchemas.create({ entity_type_id: entityTypeId, definition: def });
@@ -167,15 +168,31 @@ async function setupMobilixClient() {
   }
 
   // test add entity
+  var metaId = 1234;
   var props = {
-    "meta.id": "1234",
-    "meta.company_id": "999"
+    "meta.id": metaId,
+    "meta.company_id": 999
   };
   console.log(props);
-  var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props});
+  // var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props, source_id: metaId.toString()});
 
   // var res = await client.entitySchemas.delete(entitySchemaId);
-  console.log("Schema: ",await client.entitySchemas.list());
+  console.log("Entities: ",await client.entities.list());
+}
+
+/**
+ * @param {any} nodeId 
+ * @param {any} company_id 
+ */
+async function createEntity(nodeId, company_id) {
+  // test add entity
+  var metaId = 1234;
+  var props = {
+    "meta.id": metaId,
+    "meta.company_id": 999
+  };
+  console.log(props);
+  // var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props, source_id: metaId.toString()});
 }
 
 setupMobilixClient();
