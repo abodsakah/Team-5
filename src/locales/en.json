@@ -75,6 +75,7 @@
     "invalidInput": "Invalid input",
     "updateCompany": "Update Company",
     "addCompany": "Add Company",
-    "editCompany": "Edit Company"
+    "editCompany": "Edit Company",
+    "mostFaulty": "Most Faulty "
 
 }

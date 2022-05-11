@@ -18,7 +18,8 @@ const options = {
 const IN_TOPIC = 'In/';
 const OUT_TOPIC = 'Out/#';
 
-const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
+// const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
+const client = MQTT.connect('mqtt://localhost:8883', options);
 
 // Called on sucessfull connection to setup subscriptions.
 const setupSubs =

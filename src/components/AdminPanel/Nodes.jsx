@@ -12,7 +12,7 @@ function Nodes({t, apiURL}) {
     const [fetched, setFetched] = React.useState(false)
 
     if (!fetched) {
-        fetch(`${apiURL}getNodes?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(
+        fetch(`${apiURL}/getNodes?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(
             (result) => {
                 setNodes(result)
                 setFetched(true)

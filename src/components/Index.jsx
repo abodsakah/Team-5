@@ -8,6 +8,7 @@ import DeviceTable from './DeviceTable';
 import ErrTable from './ErrTable';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
+import MostFaulty from './MostFaulty';
 
 
 
@@ -46,15 +47,30 @@ const Index = ({text, cookies, t}) => {
             dateAndTime: '2020-01-01 12:00:00'
         },
     ]
+
+    let mostF = [
+        {
+            name: 'Sensor 4512-Q4',
+            msg:'Total: 23',
+        },
+        { 
+            name: 'Sensor 55654-A13',
+            msg:'Total: 15',
+        },
+        {
+            name: 'Sensor 112554-T334',
+            msg:'Total: 7',
+        },
+    ]
         
     
 
     return (
         <>
         {/* Add sensor Icon */}
-        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
-            <Fab size="large" color="primary" aria-label="add" component={Link} to={'/devices/add-sensor'} >
-            <AddIcon />
+        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ fontSize: 25, padding: '1rem', marginBottom: '1rem', '& > :not(style)': { m: 1 } }}>
+            <Fab variant="extended" size="large" color="primary"  aria-label="add" component={Link} to={'/devices/add-sensor'} >
+            <AddIcon />Lägg till sensor
             </Fab>
         </Box>
             <Grid container spacing={5}>
@@ -72,6 +88,14 @@ const Index = ({text, cookies, t}) => {
                             {t('errMessages')}
                         </Typography>
                         <ErrTable errors={errors} />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={13}>
+                    <Paper elevation={5} style={{padding: '1rem', marginBottom: '1rem'}}>
+                        <Typography variant="h3" component="h2">
+                            {t('mostFaulty')}
+                        </Typography>
+                        <MostFaulty mostF={mostF} />
                     </Paper>
                 </Grid>
             </Grid>

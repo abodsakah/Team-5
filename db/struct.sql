@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: localhost:3306
--- Tid vid skapande: 16 apr 2022 kl 19:31
+-- Tid vid skapande: 08 maj 2022 kl 18:04
 -- Serverversion: 10.1.48-MariaDB-0+deb9u2
 -- PHP-version: 7.0.33-0+deb9u11
 
@@ -24,24 +24,17 @@ DELIMITER $$
 --
 -- Procedurer
 --
-
-DELIMITER ;;
-CREATE PROCEDURE add_node_no_trigger_action(
-  IN n_node_uid VARCHAR(255),
-  IN n_node_name VARCHAR(255),
-  IN n_is_part_of INT,
-  IN n_node_type INT,
-  IN n_node_status VARCHAR(255)
-)
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node` (IN `n_uid` VARCHAR(255), IN `n_name` VARCHAR(255), IN `n_trigger_action` INT(11), IN `n_is_part_of` INT(11), IN `n_type` INT(11), IN `n_status` VARCHAR(255))  MODIFIES SQL DATA
 BEGIN
-INSERT INTO logical_devices (uid, name, trigger_action, install_date, is_part_of, type, status) VALUES ("88A904A4BD", "testDevice", 1, CURRENT_DATE(), 1, 1, "SETUP")
-
-  INSERT INTO logical_device (node_uid, node_name, trigger_action, install_date, is_part_of, node_type, node_status)
-  VALUES (n_node_uid, n_node_name, 0, CURRENT_DATE(), n_is_part_of, n_node_type, n_node_status);
-END;;
-DELIMITER ;
-INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES (NULL, `n_uid`, `n_name`, `n_trigger_action`, CURRENT_DATE(), `n_is_part_of`, `n_type`, `n_status`);
+INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `comp_id`, `install_date`, `is_part_of`, `type`, `status`) VALUES (NULL, `n_uid`, `n_name`, `n_trigger_action`, CURRENT_DATE(), `n_is_part_of`, `n_type`, `n_status`);
 END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node_no_trigger_action` (IN `n_node_uid` VARCHAR(255), IN `n_node_name` VARCHAR(255), IN `n_is_part_of` INT, IN `n_node_type` INT, IN `n_node_status` VARCHAR(255))  begin
+  INSERT INTO logical_devices (uid, name, trigger_action, install_date, is_part_of, type, status)
+  VALUES (n_node_uid, n_node_name, 1, CURRENT_DATE(), n_is_part_of, n_node_type, n_node_status);
+end$$
+
+$$
 
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_test_logical_device_base` ()  BEGIN
 -- node threshold
@@ -51,8 +44,19 @@ INSERT INTO `spaces` (`id`, `type`, `name`, `agent`, `has_capability`, `is_part_
 VALUES (NULL, 'test', 'test space', '1', '123', NULL);
 -- logical device
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `status`)
-VALUES (NULL, '123456', 'test logical device', '1', CURRENT_DATE(), '1', 'active');
+VALUES (NULL, '123456', 'test logical device', '1', CURRENT_DATE(), '1', 'ACTIVE');
 END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `create_company` (IN `n_name` VARCHAR(255), IN `n_email` VARCHAR(255), IN `n_phone` VARCHAR(255))  BEGIN
+  INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (n_name, n_email, n_phone);
+    SELECT LAST_INSERT_ID() AS id;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `create_threshold` (IN `n_action` VARCHAR(10), IN `n_treshold` INT(255))  begin
+  INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
+  -- select the id of the last inserted row
+  SELECT LAST_INSERT_ID() as id;
+end$$
 
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `delete_node` (IN `p_id` INT, IN `p_company_id` INT)  NO SQL
 BEGIN
@@ -66,8 +70,24 @@ DELETE l
  ;
 END$$
 
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_amount_type_of_sensor` (IN `sensor_type` VARCHAR(255), IN `company_id` VARCHAR(255))  BEGIN
-  SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = sensor_type AND `company_id` = company_id;
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_all_buildings` (IN `company_id` INT)  begin
+  SELECT * FROM spaces WHERE is_part_of IS NULL AND agent = company_id;
+end$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_amount_type_of_sensor` (IN `n_sensor_type` VARCHAR(255), IN `n_company_id` INT)  BEGIN
+  SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = n_sensor_type AND `company_id` = n_company_id;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_assets_in_space` (IN `space_id` INT)  BEGIN
+  SELECT * FROM assets WHERE located_in = space_id;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_company_log` (IN `p_company_id` INT(11))  NO SQL
+BEGIN
+  SELECT
+  *
+  FROM `company_log`
+  WHERE `p_company_id` = company_id;
 END$$
 
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_company_settings` (IN `company_id` INT)  BEGIN
@@ -90,6 +110,17 @@ FROM `logical_devices_with_company_id`
 WHERE p_id=id AND p_company_id=company_id;
 END$$
 
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_logical_device_type` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL
+BEGIN
+SELECT type
+FROM logical_devices_all
+WHERE p_id=id AND p_company_id=company_id;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_nodes_for_type` (IN `n_company_id` INT, IN `n_sensor_type` INT)  BEGIN
+  SELECT * FROM `logical_devices_all` WHERE `type` = n_sensor_type AND `company_id` = n_company_id;
+END$$
+
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_node_from_uid` (IN `p_uid` VARCHAR(20) CHARSET utf8mb4)  NO SQL
     COMMENT 'get all logical_device info for a certain UID'
 BEGIN
@@ -98,20 +129,46 @@ FROM logical_devices_all
 WHERE p_uid=uid;
 END$$
 
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `get_users_for_company` (IN `company_id` INT)  BEGIN
-  SELECT * FROM `user_login` WHERE `company_id` = company_id;
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_preloaded_node` (IN `n_uid` INT(11), IN `n_company_id` INT)  NO SQL
+SELECT * FROM node_preloaded WHERE uid = n_uid AND company_id = n_company_id$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_spaces_for_building` (IN `space_id` INT)  BEGIN
+  SELECT * FROM spaces WHERE is_part_of = space_id;
 END$$
 
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `logical_devices_for_company` (IN `company_id` INT)  BEGIN
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_threshold` (IN `thresholdId` INT(11))  NO SQL
+BEGIN
+	SELECT * FROM node_thresholds WHERE id = thresholdId;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_users_for_company` (IN `company_id` INT)  begin
+  SELECT * FROM `user_login` WHERE `company_id` = company_id;
+end$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `logical_devices_for_company` (IN `company_id` INT)  BEGIN
   SELECT * FROM `logical_devices_all` WHERE `company_id` = company_id;
 END$$
 
-CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_deleted` (IN `p_id` INT(11), IN `company_id` INT(11))  BEGIN
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_deleted` (IN `p_id` INT(11), IN `p_company_id` INT(11))  BEGIN
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
     ON l.is_part_of = s.id
     SET l.status = "DELETED"
-    WHERE l.id = p_id AND s.agent = company_id;
+    WHERE l.id = p_id AND s.agent = p_company_id;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_to_be_deleted` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL
+BEGIN
+    UPDATE logical_devices l
+    LEFT OUTER JOIN spaces s
+    ON l.is_part_of = s.id
+    SET l.status = "TBD"
+    WHERE l.id = p_id AND s.agent = p_company_id;
+END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_info` (IN `n_comp_id` INT, IN `n_name` VARCHAR(255), IN `n_email` VARCHAR(255), IN `n_phone` VARCHAR(255), IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))  BEGIN
+  UPDATE `companies` SET `name` = n_name, `support_email` = n_email, `support_phone` = n_phone WHERE `id` = n_comp_id;
+  UPDATE `website_settings` SET `color` = n_color, `logo` = n_logo WHERE `comp_id` = n_comp_id;
 END$$
 
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_settings` (IN `company_id` INT, IN `color` VARCHAR(255), IN `logo` VARCHAR(255))  BEGIN
@@ -120,6 +177,10 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_settings` (IN `company_
         `logo` = logo
     WHERE `comp_id` = company_id;
 END$$
+
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_threshold` (IN `deviceUid` VARCHAR(20), IN `thresholdId` INT)  begin
+  UPDATE logical_devices SET trigger_action = thresholdId WHERE uid = deviceUid;
+end$$
 
 DELIMITER ;
 
@@ -168,6 +229,14 @@ CREATE TABLE `assets` (
   `has_capability` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumpning av Data i tabell `assets`
+--
+
+INSERT INTO `assets` (`id`, `name`, `artic_num`, `located_in`, `has_capability`) VALUES
+(1, 'Chair 1', '1234567', 1, 16),
+(3, 'Chair 2', '231242', 4, 42);
+
 -- --------------------------------------------------------
 
 --
@@ -187,7 +256,27 @@ CREATE TABLE `companies` (
 
 INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 (1, 'Tract', 'info@abodsakka.xyz', '0721282737'),
-(2, 'allBinary', 'test@test.test', '00000');
+(24, 'Test old', 'test@new.com', '12345678');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur `company_log`
+--
+
+CREATE TABLE `company_log` (
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT,
+  `report_date` varchar(255) NOT NULL,
+  `msg` varchar(255) NOT NULL,
+  `company_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumpning av Data i tabell `company_log`
+--
+
+INSERT INTO `company_log` (`id`, `from_device`, `report_date`, `msg`, `company_id`) VALUES
+(1, 42, '2022-05-06', 'some message goes here', 1);
 
 -- --------------------------------------------------------
 
@@ -200,6 +289,21 @@ CREATE TABLE `company_settings` (
 ,`logo` varchar(255)
 ,`comp_id` int(11)
 ,`name` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Ersättningsstruktur för vy `company_website_settings`
+-- (See below for the actual view)
+--
+CREATE TABLE `company_website_settings` (
+`id` int(11)
+,`name` varchar(255)
+,`support_email` varchar(255)
+,`support_phone` varchar(255)
+,`color` varchar(255)
+,`logo` varchar(255)
 );
 
 -- --------------------------------------------------------
@@ -224,11 +328,11 @@ CREATE TABLE `logical_devices` (
 --
 
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES
-(16, '89390484BD', 'switch-sensor', 4, '2022-04-07', 2, 2, 'active'),
-(24, 'ACB914A4BD', 'analog-wheel-sensor', 3, '2022-04-07', 1, 3, 'active'),
-(42, 'ACB904843D', 'temp-sensor', 3, '2022-04-05', 2, 1, 'active'),
-(102, 'ADB900243F', 'all-binary-node', 3, '2022-04-14', 4, 1, 'active'),
-(103, '23531345', 'Device 1', 1, '2022-04-16', 1, 2, 'ACTIVE');
+(16, '89390484BD', 'switch-sensor', 4, '2022-04-07', 2, 2, 'ACTIVE'),
+(42, 'ACB904843D', 'temp-sensor', 3, '2022-04-05', 2, 1, 'ACTIVE'),
+(77, 'ACB914A4BD', 'analog-wheel-sensor', 3, '2022-04-07', 1, 3, 'ACTIVE'),
+(103, '23531345', 'Device 1', 1, '2022-04-16', 1, 2, 'DELETED'),
+(142, '88A904A4BD', 'all binary sensor', 26, '2022-04-28', 3, 3, 'SETUP');
 
 -- --------------------------------------------------------
 
@@ -322,6 +426,7 @@ CREATE TABLE `node_preloaded` (
 INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES
 ('88A904A4BD', 3, 1),
 ('89390484BD', 2, 1),
+('A83910B471', 2, 1),
 ('ACB904843D', 1, 1),
 ('ACB914A4BD', 3, 1);
 
@@ -334,17 +439,23 @@ INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES
 CREATE TABLE `node_thresholds` (
   `id` int(11) NOT NULL,
   `action` varchar(255) NOT NULL,
-  `trigger_action` varchar(255) NOT NULL
+  `threshold` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumpning av Data i tabell `node_thresholds`
 --
 
-INSERT INTO `node_thresholds` (`id`, `action`, `trigger_action`) VALUES
-(1, 'test action', 'test trigger action'),
-(3, 'test action', 'test trigger action'),
-(4, 'test action', 'test trigger action');
+INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
+(1, 'OVER', 1000),
+(3, 'UNDER', 24),
+(4, 'SAME', 0),
+(21, 'UNDER', 0),
+(22, 'SAME', 0),
+(23, 'SAME', 2),
+(24, 'UNDER', 1000),
+(25, 'UNDER', 1000),
+(26, 'UNDER', 2000);
 
 -- --------------------------------------------------------
 
@@ -379,7 +490,7 @@ CREATE TABLE `shared_log` (
   `artic_num` varchar(255) NOT NULL,
   `reg_date` varchar(255) NOT NULL,
   `install_date` varchar(255) NOT NULL,
-  `time_stamp` varchar(255) NOT NULL
+  `error_date` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -405,7 +516,7 @@ INSERT INTO `spaces` (`id`, `type`, `name`, `agent`, `has_capability`, `is_part_
 (1, 'test', 'test space 1', 1, 123, NULL),
 (2, 'test', 'test space 2', 1, 123, NULL),
 (3, 'test', 'test space 3', 1, 123, NULL),
-(4, 'allbinary', 'test', 2, 123, 2);
+(4, 'allbinary', 'test', 1, 123, 2);
 
 -- --------------------------------------------------------
 
@@ -436,7 +547,6 @@ INSERT INTO `users` (`id`, `user_id`, `role`, `company_id`) VALUES
 
 CREATE TABLE `user_log` (
   `id` int(11) NOT NULL,
-  `in_space` int(11) NOT NULL,
   `from_device` int(11) DEFAULT NULL,
   `report_date` varchar(255) NOT NULL,
   `msg` varchar(255) NOT NULL,
@@ -468,7 +578,17 @@ CREATE TABLE `user_login` (
 INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, `nickname`, `email_Verified`, `role`, `company_id`) VALUES
 (1, 'abodsakka2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 1),
 (3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
-(4, 'info@abodsakka.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1);
+(4, 'info@abodsakka.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
+(5, 'abodsakka2001@gmail.com', '$2b$12$Tep7lxCri4GDHSHyJ3OUFO2L2ZfzcXc4uODc6JBi24PdG1wUJuQle', 'abod', 'sakka', 'abodsakka', 0, 1, 3),
+(6, 'eeefwfwe@erpgre.com', '$2b$12$.KUyeoLNrkvlRM5XVIPHA.uCcI426VeUNQ03Nc4.8d2uiFIVW4dqy', 'pifwe', 'grergreg', 'egregerge', 0, 1, 4),
+(7, 'efwfwef', '$2b$12$EPEYgAfVlbTbOPIkCOQQIuxs52bKp225R/1Uje9gKsXRnMnQpEwM6', 'efwefwefewf', 'ewfwefewfw', 'efwefwef', 0, 1, 5),
+(8, 'ewfwfewf', '$2b$12$fjpZVjJPzjwGIfvw8HTtYOzDLFIT/LW668xaysxeYtgRHhB6ff24.', 'wefwefewf', 'ewfwefw', 'wffwefweflb', 0, 1, 6),
+(9, 'admin@inc.com', '$2b$12$w5jMUPF.SAW045ybULVd8.Woy1799ibXJ76S0zOSMDcNlAf4/hMbe', 'big', 'boss', 'bigboss', 0, 1, 19),
+(10, 'big.b@comp.com', '$2b$12$ao7j0P7zs0RHIk1BdNxO5ucx5oXGGaGvPwhhGchwNzpjSncU8drNO', 'big', 'boss', 'bigboss', 0, 1, 20),
+(11, 'big.b@comp.com', '$2b$12$CylUW8HXA/PgWVA0NYA9d.xnEK5BXgFfFvtersTU..rXz1c2vmfTm', 'big', 'boss', 'bigboss', 0, 1, 21),
+(12, 'big.b@comp.com', '$2b$12$RdJU/aCWaA1l..dLLN8YNeAJDFK7d.ry2JAd7Jx6bUny/InQeTrGK', 'big', 'boss', 'bigboss', 0, 1, 22),
+(13, 'bog.b@comp.se', '$2b$12$z2fTrJ9m9J2rfIOgmfYLD.dUQGuxJdCBv1gIxs1S7PhvvTK6DMIK2', 'big', 'boss', 'bigboss', 0, 1, 23),
+(14, 'big.m@inco.se', '$2b$12$gFIQ1M352rey517uIPdnr.bNS6FO66kH15Wspcw2PzOpKYs7DNy7m', 'big', 'boss man', 'big boss man', 0, 1, 24);
 
 -- --------------------------------------------------------
 
@@ -487,7 +607,8 @@ CREATE TABLE `website_settings` (
 --
 
 INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
-(1, '38e39a', 'Asset 1.png');
+(1, '5471c0', 'Asset 1.png'),
+(24, '7bb15d', 'ICA-logotyp.png');
 
 -- --------------------------------------------------------
 
@@ -497,6 +618,15 @@ INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
 DROP TABLE IF EXISTS `company_settings`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`abodsakka`@`localhost` SQL SECURITY DEFINER VIEW `company_settings`  AS  select `ws`.`color` AS `color`,`ws`.`logo` AS `logo`,`ws`.`comp_id` AS `comp_id`,`c`.`name` AS `name` from (`website_settings` `ws` join `companies` `c` on((`ws`.`comp_id` = `c`.`id`))) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur för vy `company_website_settings`
+--
+DROP TABLE IF EXISTS `company_website_settings`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`abodsakka`@`localhost` SQL SECURITY DEFINER VIEW `company_website_settings`  AS  select `companies`.`id` AS `id`,`companies`.`name` AS `name`,`companies`.`support_email` AS `support_email`,`companies`.`support_phone` AS `support_phone`,`website_settings`.`color` AS `color`,`website_settings`.`logo` AS `logo` from (`companies` left join `website_settings` on((`companies`.`id` = `website_settings`.`comp_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -547,6 +677,13 @@ ALTER TABLE `assets`
 --
 ALTER TABLE `companies`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Index för tabell `company_log`
+--
+ALTER TABLE `company_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `from_device` (`from_device`);
 
 --
 -- Index för tabell `logical_devices`
@@ -609,7 +746,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `user_log`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `in_space` (`in_space`),
   ADD KEY `from_device` (`from_device`);
 
 --
@@ -637,17 +773,22 @@ ALTER TABLE `api_keys`
 -- AUTO_INCREMENT för tabell `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT för tabell `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+--
+-- AUTO_INCREMENT för tabell `company_log`
+--
+ALTER TABLE `company_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
 --
 ALTER TABLE `logical_devices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 --
 -- AUTO_INCREMENT för tabell `nc_evolutions`
 --
@@ -657,7 +798,7 @@ ALTER TABLE `nc_evolutions`
 -- AUTO_INCREMENT för tabell `node_thresholds`
 --
 ALTER TABLE `node_thresholds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT för tabell `node_types`
 --
@@ -682,7 +823,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- Restriktioner för dumpade tabeller
 --
@@ -701,6 +842,12 @@ ALTER TABLE `acess`
 ALTER TABLE `assets`
   ADD CONSTRAINT `assets_ibfk_1` FOREIGN KEY (`located_in`) REFERENCES `spaces` (`id`),
   ADD CONSTRAINT `assets_ibfk_2` FOREIGN KEY (`has_capability`) REFERENCES `logical_devices` (`id`);
+
+--
+-- Restriktioner för tabell `company_log`
+--
+ALTER TABLE `company_log`
+  ADD CONSTRAINT `company_log_ibfk_1` FOREIGN KEY (`from_device`) REFERENCES `logical_devices` (`id`);
 
 --
 -- Restriktioner för tabell `logical_devices`
@@ -730,13 +877,6 @@ ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`);
 
 --
--- Restriktioner för tabell `user_log`
---
-ALTER TABLE `user_log`
-  ADD CONSTRAINT `user_log_ibfk_1` FOREIGN KEY (`in_space`) REFERENCES `spaces` (`id`),
-  ADD CONSTRAINT `user_log_ibfk_2` FOREIGN KEY (`from_device`) REFERENCES `logical_devices` (`id`);
-
---
 -- Restriktioner för tabell `website_settings`
 --
 ALTER TABLE `website_settings`
@@ -746,97 +886,20 @@ ALTER TABLE `website_settings`
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-DROP PROCEDURE IF EXISTS `get_all_buildings`;
-DELMIMTER ;;
-CREATE PROCEDURE `get_all_buildings`(IN `company_id` INT)
+-- add to both log and company log
+DROP PROCEDURE IF EXISTS `add_to_log`;
+DELIMITER $$
+CREATE PROCEDURE `add_to_log`(IN n_msg VARCHAR(255), IN n_company_id INT)
 BEGIN
-  SELECT * FROM spaces WHERE is_part_of = NULL AND agent = company_id;
-END;;
-DELMIMTER ;
-
-DROP PROCEDURE IF EXISTS `get_spaces_for_company`;
-DELIMITER ;;
-CREATE PROCEDURE `get_spaces_for_company`(IN `company_id` INT, IN `space_id` INT)
-BEGIN
-  SELECT * FROM spaces WHERE is_part_of = space_id;
-END;;
+  INSERT INTO `company_log` (`msg`, `company_id`, `report_date`) VALUES (n_msg, n_company_id, NOW());
+END$$
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `get_assets_in_space`;
-DELIMITER ;;
-CREATE PROCEDURE `get_assets_in_space`(IN `space_id` INT)
+--update threshold
+DROP PROCEDURE IF EXISTS `update_threshold`;
+DELIMITER $$
+CREATE PROCEDURE `update_threshold`(IN n_id INT, IN n_action varchar(255), IN n_value INT)
 BEGIN
-  SELECT * FROM assets WHERE located_in = space_id;
-END;;
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS update_threshold;
-DELIMITER ;;
-CREATE PROCEDURE update_threshold(IN deviceUid, IN thresholdId)
-BEGIN
-  UPDATE logical_devices SET trigger_action = thresholdId WHERE id = deviceUid;
-END;;
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS create_threshold;
-DELIMITER ;;
-CREATE PROCEDURE create_threshold(IN n_action vARCHAR(10), IN n_treshold VARCHAR(255))
-BEGIN
-  INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
-  -- select the id of the last inserted row
-  SELECT LAST_INSERT_ID() AS id;
-END;;
-
-DROP PROCEDURE IF EXISTS get_node_threshold;
-DELIMITER ;;
-CREATE PROCEDURE get_node_threshold(IN deviceUid)
-BEGIN
-  SELECT * FROM node_thresholds WHERE id = deviceUid;
-END;;
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS get_nodes_for_type;
-DELIMITER ;;
-CREATE PROCEDURE get_nodes_for_type(IN company_id INT, IN node_type VARCHAR(255))
-BEGIN
-  SELECT * FROM `logical_devices_all` WHERE `type_name` = node_type AND `company_id` = company_id;
-END;;
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS create_company;
-DELIMITER ;;
-CREATE PROCEDURE create_company(IN n_name VARCHAR(255), IN n_email VARCHAR(255), IN n_phone VARCHAR(255))
-BEGIN
-  INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (n_name, n_email, n_phone);
-  -- select the id of the last inserted row
-  SELECT LAST_INSERT_ID() AS id;
-END;;
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS add_styling;
-DELIMITER ;;
-CREATE PROCEDURE add_styling(IN n_comp_id INT, IN n_color VARCHAR(255), IN n_logo VARCHAR(255))
-BEGIN
-  INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES (n_comp_id, n_color, n_logo);
-END;;
-
--- View for companies and website settings
-DROP VIEW IF EXISTS `company_website_settings`;
-CREATE VIEW `company_website_settings` AS
-SELECT `companies`.`id` AS `id`,
-  `companies`.`name` AS `name`,
-  `companies`.`support_email` AS `support_email`,
-  `companies`.`support_phone` AS `support_phone`,
-  `website_settings`.`color` AS `color`,
-  `website_settings`.`logo` AS `logo`
-FROM `companies`
-  LEFT JOIN `website_settings` ON `companies`.`id` = `website_settings`.`comp_id`;
-
-DROP PROCEDURE IF EXISTS `update_company_info`;
-DELIMITER ;;
-CREATE PROCEDURE `update_company_info`(IN n_comp_id INT, IN n_name VARCHAR(255), IN n_email VARCHAR(255), IN n_phone VARCHAR(255), IN n_color VARCHAR(255), IN n_logo VARCHAR(255))
-BEGIN
-  UPDATE `companies` SET `name` = n_name, `support_email` = n_email, `support_phone` = n_phone WHERE `id` = n_comp_id;
-  UPDATE `website_settings` SET `color` = n_color, `logo` = n_logo WHERE `comp_id` = n_comp_id;
-END;;
+  UPDATE `node_thresholds` SET `action` = n_action, `value` = n_value WHERE `id` = n_id;
+END$$
 DELIMITER ;

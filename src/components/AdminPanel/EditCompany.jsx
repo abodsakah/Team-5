@@ -34,7 +34,7 @@ function EditCompany({t, apiURL}) {
 
 
   const getCompanyInfo = () => {
-    fetch(`${apiURL}getCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${companyId}`).then(res => res.json()).then(res => {
+    fetch(`${apiURL}/getCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${companyId}`).then(res => res.json()).then(res => {
         setCompanyId(res.id);
         setCompanyName(res.name);
         setCompanyEmail(res.support_email);
@@ -60,7 +60,7 @@ function EditCompany({t, apiURL}) {
     data.append('email', companyEmail);
     data.append('phone', companyPhone);
 
-    axios.post(`${apiURL}updateCompany`, data).then(res => {
+    axios.post(`${apiURL}/updateCompany`, data).then(res => {
       setLoading(false);
       return res;
     }).catch(err => {

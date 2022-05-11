@@ -45,7 +45,7 @@ const UserList = ({t, apiURL, user}) => {
   const [rows, setRows] = React.useState([]);
 
   const fetchUsers = async () => {
-    const response = await fetch(`${apiURL}getUsersForCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`);
+    const response = await fetch(`${apiURL}/getUsersForCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`);
     const data = await response.json();
     for (let item of Object.values(data)) {
       if (!rows.includes(item)) {
@@ -70,7 +70,7 @@ const UserList = ({t, apiURL, user}) => {
     <main>
       <h1>'Företaget's adminpanel</h1>
       <Box style={{height: '550px', width: '100%'}} className="mt-7">
-        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
+        <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 10}} sx={{ '& > :not(style)': { m: 3 } }}>
           <Fab size="large" color="primary" aria-label="add" component={Link} to={'/admin/users/add'} >
             <AddIcon />
           </Fab>

@@ -25,7 +25,7 @@ function ErrTable({errors}) {
             <TableBody>
                 {errors.map((row) => (
                 <TableRow key={row.name}>
-                    <TableCell component="th" scope="row" style={{ border: 'none', padding: "7px" }} >
+                    <TableCell component="th" scope="row" style={{ border: 'none', padding: "0px" }} >
                     {/* Card */}
                     <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', padding: "0 1em", boxShadow:"none", height: '7rem'}} >
                         {/* Sensor title */}
