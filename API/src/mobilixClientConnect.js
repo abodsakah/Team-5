@@ -19,6 +19,8 @@ const CLIENT_ID = dotenv.parsed.CLIENT_ID;
 const CLIENT_SECRET = dotenv.parsed.CLIENT_SECRET;
 var expDate = new Date(0);
 var token = null;
+var entityTypeId = null;
+var entitySchemaId = null;
 
 
 const data = JSON.stringify({
@@ -111,10 +113,13 @@ async function getTokenPromise() {
   }
 };
 
+/**
+ * Creates entityType neocortec-node if it doesnt exists.
+ * Also creates a entitySchema for this entityType if it doesn't exists.
+ * Sets file global variables 'entityTypeId' and 'entitySchemaId'
+ * to be used by other functions in this file.
+*/
 async function setupMobilixClient() {
-  var entityTypeId = null;
-  var entitySchemaId = null;
-
   var entityTypeList = await client.entityTypes.list();
   var entitySchemaList = await client.entitySchemas.list();
   var entityList = await client.entities.list();
@@ -168,31 +173,68 @@ async function setupMobilixClient() {
   }
 
   // test add entity
-  var metaId = 1234;
-  var props = {
-    "meta.id": metaId,
-    "meta.company_id": 999
-  };
-  console.log(props);
-  // var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props, source_id: metaId.toString()});
+  // var metaId = 1234;
+  // var props = {
+  //   "meta.id": metaId,
+  //   "meta.company_id": 999
+  // };
+  // console.log(props);
+  // // var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props, source_id: metaId.toString()});
+  // await createEntity(4321, 999);
+
+  // test add workOrder
+  var node_id = 1234;
+  var company_id = 999;
+  var description = "This is a description of the workorder and what needs to be done";
+  var entity_list = await client.entities.list();
+  var entity = entity_list.find(element => element.source_id === node_id.toString());
+  var entityId = entity.id;
+  var entityPrevChangeSetId = entity.changeset_head;
+  var entityProperties = entity.properties;
+  var res = await client.workOrders.create(
+    {
+      entity_type_id: entityTypeId,
+      title: "Test workorder - test",
+      description: description,
+      state: "created",
+      tags: ["neoCortec", "test"],
+      contractors: [],
+      entities: [],
+
+    }
+  );
+  console.log("workOrder: ", res);
 
   // var res = await client.entitySchemas.delete(entitySchemaId);
-  console.log("Entities: ",await client.entities.list());
+  console.log("Entities: ", await client.entities.list());
+  console.log("WorkOrders: ", await client.workOrders.list());
 }
 
 /**
- * @param {any} nodeId 
- * @param {any} company_id 
+ * Creates a entity if it doesn't already exists.
+ * @param {Int} nodeId 
+ * @param {Int} companyId 
  */
-async function createEntity(nodeId, company_id) {
-  // test add entity
-  var metaId = 1234;
-  var props = {
-    "meta.id": metaId,
-    "meta.company_id": 999
-  };
-  console.log(props);
-  // var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props, source_id: metaId.toString()});
+async function createEntity(nodeId, companyId) {
+  try {
+    // test add entity
+    var metaId = nodeId;
+    var props = {
+      "meta.id": metaId,
+      "meta.company_id": companyId
+    };
+    console.log(props);
+    var res = await client.entities.create(
+      {
+        entity_type_id: entityTypeId,
+        properties: props,
+        source_id: metaId.toString()
+      });
+    console.log(res);
+  }
+  catch (err) {
+    console.error(err);
+  }
 }
 
 setupMobilixClient();
