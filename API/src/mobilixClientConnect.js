@@ -22,6 +22,7 @@ var token = null;
 var entityTypeId = null;
 var entitySchemaId = null;
 
+setupMobilixClient();
 
 const data = JSON.stringify({
   "audience": "https://api.mobilix.dev.allbin.se",
@@ -61,8 +62,8 @@ function getExpDate(jwToken) {
 
 function saveTokenToFile(jwToken) {
   try {
-    fs.writeFile('.mobilix-token', jwToken);
-    console.log("Saved JWT to file");
+    fs.writeFileSync('.mobilix-token', jwToken);
+    console.log("Saving JWT to file...");
   } catch (err) {
     console.error(err);
   }
@@ -75,7 +76,7 @@ function saveTokenToFile(jwToken) {
 function readTokenFromFile() {
   try {
     token = fs.readFileSync('.mobilix-token', 'utf8')
-    console.log("Loading token from file:\n", token, "\n");
+    console.log("Loading JWT from file...");
     // get token exp date
     expDate = getExpDate(token);
   } catch (err) {
@@ -93,7 +94,7 @@ async function getTokenPromise() {
   // if we still have a valid token don't fetch a new one.
   if (Date.now() >= expDate.getTime()) {
     try {
-      const res = await axios(config, data);
+      var res = await axios(config, data);
       token = res.data.access_token;
       // save token to file
       saveTokenToFile(token);
@@ -124,7 +125,6 @@ async function setupMobilixClient() {
   var entitySchemaList = await client.entitySchemas.list();
   var entityList = await client.entities.list();
 
-  console.log(token);
   console.log("entityTypeList:\n", entityTypeList);
   console.log("entitySchemaList:\n", entitySchemaList);
   console.log("entityList:\n", entityList);
@@ -172,46 +172,128 @@ async function setupMobilixClient() {
     console.log("Properties: ", res.definition.properties);
   }
 
-  // test add entity
-  // var metaId = 1234;
-  // var props = {
-  //   "meta.id": metaId,
-  //   "meta.company_id": 999
-  // };
-  // console.log(props);
-  // // var res = await client.entities.create({ entity_type_id: entityTypeId, properties: props, source_id: metaId.toString()});
-  // await createEntity(4321, 999);
+  // test add entity/add workOrder
+  // await createWorkOrder(4321, 333, "Någon titel här :D", "Detta är ett ärende för node 4321 hos företag 999.");
+  // await client.workOrders.delete("12d57e91-0403-48e5-b70d-67229640fa71");
 
-  // test add workOrder
-  var node_id = 1234;
-  var company_id = 999;
-  var description = "This is a description of the workorder and what needs to be done";
-  var entity_list = await client.entities.list();
-  var entity = entity_list.find(element => element.source_id === node_id.toString());
-  var entityId = entity.id;
-  var entityPrevChangeSetId = entity.changeset_head;
-  var entityProperties = entity.properties;
-  var res = await client.workOrders.create(
-    {
-      entity_type_id: entityTypeId,
-      title: "Test workorder - test",
-      description: description,
-      state: "created",
-      tags: ["neoCortec", "test"],
-      contractors: [],
-      entities: [],
-
-    }
-  );
-  console.log("workOrder: ", res);
-
-  // var res = await client.entitySchemas.delete(entitySchemaId);
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
 }
 
+
+/*
+ * Userful Functions
+ */
+
+/**
+ * get entity for a nodeId, companyId combo.
+ * @param {Int} nodeId 
+ * @param {Int} companyId 
+ * @returns {} Returns the Entity ID, or undefined otherwise. 
+ */
+async function getEntity(nodeId, companyId) {
+  try {
+    var source_id = nodeId + ":" + companyId;
+    var entity_list = await client.entities.list();
+    var entity = entity_list.find(element => element.source_id === source_id);
+    var entityId = entity.id;
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
+
+/**
+ * Checks if an active workOrder exists for an entity_id
+ * A workOrder with state 'completed' does not count as a active workOrder.
+ * @param {String} entityId 
+ * @returns {} Returns the workOrder ID String, or undefined otherwise.
+ */
+async function workOrderExistsForEntity(entityId) {
+  try {
+    var orderList = await client.workOrders.list();
+    var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
+    var id = workOrder.id;
+    return id;
+  }
+  catch (err) {
+    console.error(err);
+    return undefined;
+  }
+
+}
+
+/**
+ * Checks if an active workOrder exists for the nodeId and companyId combo.
+ * A workOrder with state 'completed' does not count as a active workOrder.
+ * @param {Int} nodeId 
+ * @param {Int} companyId 
+ * @returns {} Returns the workOrder ID String, or undefined otherwise.
+ */
+async function workOrderExists(nodeId, companyId) {
+  try {
+    var source_id = nodeId + ":" + companyId;
+    var entity_list = await client.entities.list();
+    var entity = entity_list.find(element => element.source_id === source_id);
+    var entityId = entity.id;
+  }
+  catch (err) {
+    console.error(err);
+    return null
+  }
+
+}
+
+/**
+ * Creates a workOrder and connects it to an entity coresponding
+ * to the nodeId and companyId passed in as a parameter.
+ * If an entity doesn't exists for the node, one is created.
+ * 
+ * A workOrder is only created if no active workOrder already
+ * exists for this nodeId+companyId.
+ * If a workOrder exists but is in the 'completed' state
+ * it is not counted as an active workOrder.
+ * @param {Int} nodeId 
+ * @param {Int} companyId 
+ * @param {String} title 
+ * @param {String} description 
+ * @returns {} True if workOrder was created, otherwise False
+ */
+async function createWorkOrder(nodeId, companyId, title, description) {
+  // try to create entity for node if it doesn't exists.
+  try {
+    console.log("Trying to create entity");
+    await createEntity(nodeId, companyId);
+  }
+  catch (err) {
+    console.log(err);
+    console.log("Something went wrong, enitity probably already exists");
+  }
+  // Check that nodeId, companyId combo doesn't already have an active workOrder
+  var source_id = nodeId + ":" + companyId;
+  var entity_list = await client.entities.list();
+  var entity = entity_list.find(element => element.source_id === source_id);
+  var entityId = entity.id;
+
+  // Create workOrder
+  var res = await client.workOrders.create(
+    {
+      entity_type_id: entityTypeId,
+      title: title,
+      description: description,
+      state: "created",
+      tags: [],
+      contractors: [],
+      entities: [entityId],
+      entity_changesets: {}
+    }
+  );
+  console.log("Created workOrder: ", res);
+}
+
 /**
  * Creates a entity if it doesn't already exists.
+ * source_id for entity is "nodeId:companyId"
  * @param {Int} nodeId 
  * @param {Int} companyId 
  */
@@ -219,24 +301,23 @@ async function createEntity(nodeId, companyId) {
   try {
     // test add entity
     var metaId = nodeId;
+    var sourceId = nodeId + ":" + companyId;
     var props = {
       "meta.id": metaId,
       "meta.company_id": companyId
     };
-    console.log(props);
     var res = await client.entities.create(
       {
         entity_type_id: entityTypeId,
         properties: props,
-        source_id: metaId.toString()
+        source_id: sourceId
       });
-    console.log(res);
+    console.log("Created Entity: ", res);
   }
   catch (err) {
     console.error(err);
   }
 }
 
-setupMobilixClient();
 
 
