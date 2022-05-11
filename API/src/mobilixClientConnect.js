@@ -190,11 +190,35 @@ async function setupMobilixClient() {
  * Userful Functions
  */
 
+
+/**
+ * get active workOrder for a nodeId + companyId combo.
+ * @param {Int} nodeId 
+ * @param {Int} companyId 
+ * @returns {} Returns the workOrder object with nodeId and companyId added,
+ * or undefined otherwise. 
+ */
+async function getWorkOrder(nodeId, companyId) {
+  try {
+    var entityId = await getEntityId(nodeId, companyId);
+    var orderList = await client.workOrders.list();
+    var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
+    // if workOrder is 'completed' we dont count it.
+    if (workOrder.state == 'completed') {
+      return undefined;
+    }
+    return workOrder;
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
+
 /**
  * get entity for a nodeId + companyId combo.
  * @param {Int} nodeId 
  * @param {Int} companyId 
- * @returns {} Returns the entity object as a String, or undefined otherwise. 
+ * @returns {} Returns the entity object, or undefined otherwise. 
  */
 async function getEntity(nodeId, companyId) {
   try {
@@ -325,6 +349,7 @@ async function createWorkOrder(nodeId, companyId, title, description) {
  * source_id for entity is "nodeId:companyId"
  * @param {Int} nodeId 
  * @param {Int} companyId 
+ * @returns {} Returns the entity object, or undefined otherwise.
  */
 async function createEntity(nodeId, companyId) {
   try {
@@ -335,16 +360,17 @@ async function createEntity(nodeId, companyId) {
       "meta.id": metaId,
       "meta.company_id": companyId
     };
-    var res = await client.entities.create(
+    var entity = await client.entities.create(
       {
         entity_type_id: entityTypeId,
         properties: props,
         source_id: sourceId
       });
-    console.log("Created Entity: ", res);
+    return entity;
   }
   catch (err) {
     console.error(err);
+    return undefined;
   }
 }
 
