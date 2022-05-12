@@ -4,6 +4,7 @@ const neoNodeMsgSender = require("./neoNodeMsgSender");
 const mqttGateway = require('./gatewayMqttConnect');
 const dataBase = require('./dbConnection');
 const gatewayMqttConnect = require("./gatewayMqttConnect");
+const mobilixClient = require("./mobilixApiClient");
 
 // Module with functions for handling
 // JSON string data coming from the
