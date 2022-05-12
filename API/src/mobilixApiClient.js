@@ -22,7 +22,6 @@ var token = null;
 var entityTypeId = null;
 var entitySchemaId = null;
 
-setupMobilixClient();
 
 const data = JSON.stringify({
   "audience": "https://api.mobilix.dev.allbin.se",
@@ -170,36 +169,37 @@ async function setupMobilixClient() {
     console.log("Properties: ", res.definition.properties);
   }
 
-  /////////////
-  // TESTING //
-  /////////////
-
-  await createWorkOrder(6789, 999, "Någon titel här :D", "Detta är ett ärende för node 6789 hos företag 999.");
-  // await client.workOrders.delete("b3a0f383-f5e2-4a5c-acae-f83ba249a6a2");
-  // await client.workOrders.delete("2e1f74e6-bf9c-499d-a78f-3902bc0d85e7");
-
-  // var entityList = await client.entities.list();
-  // console.log("Entities: ", entityList);
-  // console.log("WorkOrders: ", await client.workOrders.list());
-
-  // // var test = await getActiveWorkOrder(1234, 999)
-  // // console.log("workOrder: ", test);
-
-  // // console.log("company_id: ", entityList[0].properties["meta.company_id"]);
-
-  console.log("companyWorkOrders: ", await getActiveCompanyWorkOrders(999));
 
 }
 
-/* TODO:
- Functions:
-delete all workorders.
-delete all workoders for a nodeId+companyId combo. ??
-*/
 
 /*
  * Useful Functions
  */
+
+/**
+ * IGNORE, DOESN'T WORK, DONT HAVE ACCESS!!!
+ * Marks a workOrder as completed by setting it's 'state' key to 'completed'.
+ * @param {String} workOrderId 
+ * @returns {} True, or False if something went wrong.
+ */
+async function setWorkOrderStateCompleted(workOrderId) {
+  try {
+    var workOrderList = await client.workOrders.list();
+    var workOrder = workOrderList.find(element => element.id === workOrderId);
+
+    // set state to 'completed'
+    workOrder.state = 'accepted';
+
+    // update workOrder
+    await client.workOrders.update(workOrderId, workOrder);
+
+    return false;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
 
 /**
  * (For testing)
@@ -208,9 +208,11 @@ delete all workoders for a nodeId+companyId combo. ??
 async function deleteAllWorkOrders() {
   try {
     var workOrders = await client.workOrders.list();
+    var id = "";
     workOrders.forEach((workOrder) => {
-      await client.workOrders.delete(workOrder.id);
+      id = workOrder.id;
     });
+    await client.workOrders.delete(id);
   } catch (err) {
     console.error(err);
   }
@@ -473,6 +475,8 @@ async function createEntity(nodeId, companyId) {
     return undefined;
   }
 }
+
+setupMobilixClient();
 
 module.exports = {
   createWorkOrder,
