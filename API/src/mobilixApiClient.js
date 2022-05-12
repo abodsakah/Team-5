@@ -170,7 +170,10 @@ async function setupMobilixClient() {
     console.log("Properties: ", res.definition.properties);
   }
 
-  // test add entity/add workOrder
+  /////////////
+  // TESTING //
+  /////////////
+
   await createWorkOrder(6789, 999, "Någon titel här :D", "Detta är ett ärende för node 6789 hos företag 999.");
   // await client.workOrders.delete("b3a0f383-f5e2-4a5c-acae-f83ba249a6a2");
   // await client.workOrders.delete("2e1f74e6-bf9c-499d-a78f-3902bc0d85e7");
@@ -195,8 +198,23 @@ delete all workoders for a nodeId+companyId combo. ??
 */
 
 /*
- * Userful Functions
+ * Useful Functions
  */
+
+/**
+ * (For testing)
+ * Function to delete all workOrders in Mobilix
+ */
+async function deleteAllWorkOrders() {
+  try {
+    var workOrders = await client.workOrders.list();
+    workOrders.forEach((workOrder) => {
+      await client.workOrders.delete(workOrder.id);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 /**
  * Get a list of all workOrders associated with a companyId.
