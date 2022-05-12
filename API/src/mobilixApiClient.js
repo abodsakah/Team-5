@@ -171,7 +171,7 @@ async function setupMobilixClient() {
   }
 
   // test add entity/add workOrder
-  // await createWorkOrder(4321, 999, "Någon titel här :D", "Detta är ett ärende för node 4321 hos företag 999.");
+  await createWorkOrder(6789, 999, "Någon titel här :D", "Detta är ett ärende för node 6789 hos företag 999.");
   // await client.workOrders.delete("b3a0f383-f5e2-4a5c-acae-f83ba249a6a2");
   // await client.workOrders.delete("2e1f74e6-bf9c-499d-a78f-3902bc0d85e7");
 
@@ -184,13 +184,12 @@ async function setupMobilixClient() {
 
   // // console.log("company_id: ", entityList[0].properties["meta.company_id"]);
 
-  // console.log("companyWorkOrders: ", await getCompanyWorkOrders(999));
+  console.log("companyWorkOrders: ", await getActiveCompanyWorkOrders(999));
 
 }
 
 /* TODO:
  Functions:
-get list of active workOrders with nodeId and companyId added to each, for a companyId.
 delete all workorders.
 delete all workoders for a nodeId+companyId combo. ??
 */
@@ -248,6 +247,13 @@ async function getActiveCompanyWorkOrders(companyId) {
     var activeWorkOrders = [];
     var workOrders = await getCompanyWorkOrders(companyId);
 
+    workOrders.forEach((workOrder) => {
+      if (workOrder.state != 'completed') {
+        activeWorkOrders.push(workOrder);
+      }
+    });
+
+    return activeWorkOrders;
   } catch (err) {
     console.error(err);
     return undefined;
@@ -455,6 +461,7 @@ module.exports = {
   workOrderExists,
   getActiveWorkOrder,
   getCompanyWorkOrders,
+  getActiveCompanyWorkOrders,
 }
 
 
