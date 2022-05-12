@@ -171,20 +171,20 @@ async function setupMobilixClient() {
   }
 
   // test add entity/add workOrder
-  await createWorkOrder(1234, 999, "Någon titel här :D", "Detta är ett ärende för node 1234 hos företag 999.");
+  // await createWorkOrder(4321, 999, "Någon titel här :D", "Detta är ett ärende för node 4321 hos företag 999.");
   // await client.workOrders.delete("b3a0f383-f5e2-4a5c-acae-f83ba249a6a2");
   // await client.workOrders.delete("2e1f74e6-bf9c-499d-a78f-3902bc0d85e7");
 
-  var entityList = await client.entities.list();
-  console.log("Entities: ", entityList);
-  console.log("WorkOrders: ", await client.workOrders.list());
+  // var entityList = await client.entities.list();
+  // console.log("Entities: ", entityList);
+  // console.log("WorkOrders: ", await client.workOrders.list());
 
-  // var test = await getActiveWorkOrder(1234, 999)
-  // console.log("workOrder: ", test);
+  // // var test = await getActiveWorkOrder(1234, 999)
+  // // console.log("workOrder: ", test);
 
-  // console.log("company_id: ", entityList[0].properties["meta.company_id"]);
+  // // console.log("company_id: ", entityList[0].properties["meta.company_id"]);
 
-  console.log("companyWorkOrders: ", await getCompanyWorkOrders(333));
+  // console.log("companyWorkOrders: ", await getCompanyWorkOrders(999));
 
 }
 
@@ -216,7 +216,6 @@ async function getCompanyWorkOrders(companyId) {
         companyEntities.push(entity);
       }
     });
-    console.log("companyEntities: ", companyEntities);
     // Get all workOrders that match an entity_id in our 'companyEntities' array
     var companyWorkOrders = [];
     var workOrderList = await client.workOrders.list();
@@ -371,6 +370,7 @@ async function createWorkOrder(nodeId, companyId, title, description) {
   // Check that nodeId, companyId combo doesn't already have an active workOrder
   var entityId = await getEntityId(nodeId, companyId);
   if (await workOrderExistsForEntity(entityId)) {
+    console.log("Active workOrder already exists for node: ", nodeId, " company: ", companyId);
     return undefined;
   }
 
