@@ -179,12 +179,16 @@ async function setupMobilixClient() {
   console.log("Entities: ", await client.entities.list());
   console.log("WorkOrders: ", await client.workOrders.list());
 
-  // var test = await getWorkOrder(1234, 999)
-  // console.log("Entity: ", test);
+  var test = await getActiveWorkOrder(1234, 999)
+  console.log("workOrder: ", test);
 
 
 }
 
+/* TODO:
+get list of workOrders with nodeId and companyId added to each, for a companyId.
+get list of active workOrders with nodeId and companyId added to each, for a companyId.
+*/
 
 /*
  * Userful Functions
@@ -198,7 +202,7 @@ async function setupMobilixClient() {
  * @returns {} Returns the workOrder object with nodeId and companyId added,
  * or undefined otherwise. 
  */
-async function getWorkOrder(nodeId, companyId) {
+async function getActiveWorkOrder(nodeId, companyId) {
   try {
     var entityId = await getEntityId(nodeId, companyId);
     var orderList = await client.workOrders.list();
