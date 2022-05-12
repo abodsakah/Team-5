@@ -169,7 +169,6 @@ async function setupMobilixClient() {
     console.log("Properties: ", res.definition.properties);
   }
 
-
 }
 
 
@@ -335,9 +334,7 @@ async function getEntity(nodeId, companyId) {
  */
 async function getEntityId(nodeId, companyId) {
   try {
-    var source_id = nodeId + ":" + companyId;
-    var entity_list = await client.entities.list();
-    var entity = entity_list.find(element => element.source_id === source_id);
+    var entity = await getEntity(nodeId, companyId);
     var id = entity.id;
 
     return id;
