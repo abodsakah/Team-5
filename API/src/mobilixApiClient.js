@@ -190,7 +190,6 @@ async function setupMobilixClient() {
 
 /* TODO:
  Functions:
-get list of workOrders with nodeId and companyId added to each, for a companyId.
 get list of active workOrders with nodeId and companyId added to each, for a companyId.
 delete all workorders.
 delete all workoders for a nodeId+companyId combo. ??
@@ -211,6 +210,7 @@ async function getCompanyWorkOrders(companyId) {
     // Get all entities with matching companyId 
     var companyEntities = [];
     var entityList = await client.entities.list();
+
     entityList.forEach((entity) => {
       if (entity.properties["meta.company_id"] == companyId) {
         companyEntities.push(entity);
@@ -219,6 +219,7 @@ async function getCompanyWorkOrders(companyId) {
     // Get all workOrders that match an entity_id in our 'companyEntities' array
     var companyWorkOrders = [];
     var workOrderList = await client.workOrders.list();
+
     workOrderList.forEach((workOrder) => {
       companyEntities.forEach((entity) => {
         if (workOrder.entities.find(e => e === entity.id)) {
@@ -228,7 +229,25 @@ async function getCompanyWorkOrders(companyId) {
         }
       });
     });
+
     return companyWorkOrders;
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
+
+/**
+ * Get a list of all active workOrders associated with a companyId.
+ * @param {Int} companyId 
+ * @returns {} List of active workOrder objects, or an empty array.
+ * Otherwise undefined. 
+ */
+async function getActiveCompanyWorkOrders(companyId) {
+  try {
+    var activeWorkOrders = [];
+    var workOrders = await getCompanyWorkOrders(companyId);
+
   } catch (err) {
     console.error(err);
     return undefined;
@@ -247,12 +266,15 @@ async function getActiveWorkOrder(nodeId, companyId) {
     var entityId = await getEntityId(nodeId, companyId);
     var orderList = await client.workOrders.list();
     var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
+
     // if workOrder is 'completed' we dont count it.
     if (workOrder.state == 'completed') {
       return undefined;
     }
+
     workOrder.node_id = nodeId;
     workOrder.company_id = companyId;
+
     return workOrder;
   } catch (err) {
     console.error(err);
@@ -271,6 +293,7 @@ async function getEntity(nodeId, companyId) {
     var source_id = nodeId + ":" + companyId;
     var entity_list = await client.entities.list();
     var entity = entity_list.find(element => element.source_id === source_id);
+
     return entity;
   } catch (err) {
     console.error(err);
@@ -290,6 +313,7 @@ async function getEntityId(nodeId, companyId) {
     var entity_list = await client.entities.list();
     var entity = entity_list.find(element => element.source_id === source_id);
     var id = entity.id;
+
     return id;
   } catch (err) {
     console.error(err);
@@ -307,11 +331,13 @@ async function workOrderExistsForEntity(entityId) {
   try {
     var orderList = await client.workOrders.list();
     var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
+
     // if workOrder is 'completed' we dont count it.
     if (workOrder.state == 'completed') {
       return undefined;
     }
     var id = workOrder.id;
+
     return id;
   }
   catch (err) {
@@ -332,6 +358,7 @@ async function workOrderExists(nodeId, companyId) {
   try {
     var entityId = await getEntityId(nodeId, companyId);
     var workOrderId = await workOrderExistsForEntity(entityId);
+
     return workOrderId;
   }
   catch (err) {
@@ -407,12 +434,14 @@ async function createEntity(nodeId, companyId) {
       "meta.id": metaId,
       "meta.company_id": companyId
     };
+
     var entity = await client.entities.create(
       {
         entity_type_id: entityTypeId,
         properties: props,
         source_id: sourceId
       });
+
     return entity;
   }
   catch (err) {
@@ -422,7 +451,10 @@ async function createEntity(nodeId, companyId) {
 }
 
 module.exports = {
-
+  createWorkOrder,
+  workOrderExists,
+  getActiveWorkOrder,
+  getCompanyWorkOrders,
 }
 
 
