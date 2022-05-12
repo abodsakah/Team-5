@@ -123,11 +123,9 @@ async function getTokenPromise() {
 async function setupMobilixClient() {
   var entityTypeList = await client.entityTypes.list();
   var entitySchemaList = await client.entitySchemas.list();
-  var entityList = await client.entities.list();
 
   console.log("entityTypeList:\n", entityTypeList);
   console.log("entitySchemaList:\n", entitySchemaList);
-  console.log("entityList:\n", entityList);
 
   /* Create entityType */
   // only create entityType 'neocortec-node' if it doesn't exists.
@@ -173,30 +171,73 @@ async function setupMobilixClient() {
   }
 
   // test add entity/add workOrder
-  // await createWorkOrder(4321, 333, "Någon titel här :D", "Detta är ett ärende för node 4321 hos företag 999.");
-  // await client.workOrders.delete("12d57e91-0403-48e5-b70d-67229640fa71");
+  await createWorkOrder(1234, 999, "Någon titel här :D", "Detta är ett ärende för node 1234 hos företag 999.");
+  // await client.workOrders.delete("b3a0f383-f5e2-4a5c-acae-f83ba249a6a2");
+  // await client.workOrders.delete("2e1f74e6-bf9c-499d-a78f-3902bc0d85e7");
 
-  console.log("Entities: ", await client.entities.list());
+  var entityList = await client.entities.list();
+  console.log("Entities: ", entityList);
   console.log("WorkOrders: ", await client.workOrders.list());
 
-  var test = await getActiveWorkOrder(1234, 999)
-  console.log("workOrder: ", test);
+  // var test = await getActiveWorkOrder(1234, 999)
+  // console.log("workOrder: ", test);
 
+  // console.log("company_id: ", entityList[0].properties["meta.company_id"]);
+
+  console.log("companyWorkOrders: ", await getCompanyWorkOrders(333));
 
 }
 
 /* TODO:
+ Functions:
 get list of workOrders with nodeId and companyId added to each, for a companyId.
 get list of active workOrders with nodeId and companyId added to each, for a companyId.
+delete all workorders.
+delete all workoders for a nodeId+companyId combo. ??
 */
 
 /*
  * Userful Functions
  */
 
+/**
+ * Get a list of all workOrders associated with a companyId.
+ * @param {Int} companyId 
+ * @returns {} List of workOrder objects, or an empty array.
+ * Otherwise undefined. 
+ */
+async function getCompanyWorkOrders(companyId) {
+  try {
+    // Get all entities with matching companyId 
+    var companyEntities = [];
+    var entityList = await client.entities.list();
+    entityList.forEach((entity) => {
+      if (entity.properties["meta.company_id"] == companyId) {
+        companyEntities.push(entity);
+      }
+    });
+    console.log("companyEntities: ", companyEntities);
+    // Get all workOrders that match an entity_id in our 'companyEntities' array
+    var companyWorkOrders = [];
+    var workOrderList = await client.workOrders.list();
+    workOrderList.forEach((workOrder) => {
+      companyEntities.forEach((entity) => {
+        if (workOrder.entities.find(e => e === entity.id)) {
+          workOrder.node_id = entity.properties["meta.id"];
+          workOrder.company_id = entity.properties["meta.company_id"];
+          companyWorkOrders.push(workOrder);
+        }
+      });
+    });
+    return companyWorkOrders;
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
 
 /**
- * get active workOrder for a nodeId + companyId combo.
+ * Get active workOrder for a nodeId + companyId combo.
  * @param {Int} nodeId 
  * @param {Int} companyId 
  * @returns {} Returns the workOrder object with nodeId and companyId added,
@@ -221,7 +262,7 @@ async function getActiveWorkOrder(nodeId, companyId) {
 }
 
 /**
- * get entity for a nodeId + companyId combo.
+ * Get entity for a nodeId + companyId combo.
  * @param {Int} nodeId 
  * @param {Int} companyId 
  * @returns {} Returns the entity object, or undefined otherwise. 
@@ -239,7 +280,7 @@ async function getEntity(nodeId, companyId) {
 }
 
 /**
- * get entity_id for a nodeId + companyId combo.
+ * Get entity_id for a nodeId + companyId combo.
  * @param {Int} nodeId 
  * @param {Int} companyId 
  * @returns {} Returns the entity ID as a String, or undefined otherwise. 
