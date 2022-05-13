@@ -158,7 +158,7 @@ function getPreloadedNode(uid, companyId) {
 async function getCompanyLog(companyId) {
     // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
     const result = await db.query("CALL get_company_log(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
-    return result[0][0];
+    return result[0];
 }
 
 /**
