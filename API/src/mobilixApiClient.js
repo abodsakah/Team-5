@@ -130,15 +130,13 @@ async function setupMobilixClient() {
   // only create entityType 'neocortec-node' if it doesn't exists.
   var eType = entityTypeList.find(element => element.name === 'neocortec-node')
   if (eType) {
-    console.log('entityType { name: "neocortec-node" } found');
-    console.log(eType);
     entityTypeId = eType.id;
+    console.log('entityType { name: "neocortec-node" } found');
     console.log("ID: ", entityTypeId);
   }
   else {
     console.log('entityType not found, creating entityType { name: "neocortec-node" }');
     var res = await client.entityTypes.create({ name: "neocortec-node" });
-    console.log(res);
     entityTypeId = res.id;
     console.log("ID: ", entityTypeId);
   }
@@ -148,10 +146,8 @@ async function setupMobilixClient() {
   var eSchema = entitySchemaList.find(element => element.entity_type_id === entityTypeId)
   if (eSchema) {
     console.log('entitySchema found');
-    console.log(eSchema);
     entitySchemaId = eSchema.id;
     console.log("ID: ", entitySchemaId);
-    console.log("Properties: ", eSchema.definition.properties);
   }
   else {
     console.log('entitySchema not found, creating one');
@@ -163,12 +159,9 @@ async function setupMobilixClient() {
       ]
     };
     var res = await client.entitySchemas.create({ entity_type_id: entityTypeId, definition: def });
-    console.log(res);
     entitySchemaId = res.id;
-    console.log("ID: ", entitySchemaId);
-    console.log("Properties: ", res.definition.properties);
   }
-
+  console.log("Mobilix setup completed!");
 }
 
 
