@@ -362,6 +362,10 @@ app.post("/api/v1/addStyling", async (req, res) => {
     }
 });
 
+app.get("/api/getLogsForCompany", async (req, res) => {
+    // TODO
+});
+
 app.get("/api/v1/getNodeInfo", async (req, res) => {
     let apiKey = req.query.key;
     let keyValid = await dbConnection.validateAPIKey(apiKey);

@@ -1,0 +1,27 @@
+version: '3'
+services:
+  frontend:
+    image: node
+    container_name: nodejs
+    volumes:
+      - '.:/home/node/app'
+      - 'node_modules:/home/node/app/node_modules'
+    ports:
+      - '4500:3000'
+      - 9000:9000
+    command: bash -c "cd home/node/app && yarn && yarn global add serve && yarn run start-serve"
+  eclipse-mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+      - 8083:8083
+      - 8883:8883
+    volumes:
+      - './Docker/mosquitto/:/mosquitto/config/'
+      - './Docker/mosquitto/passwordFile/:/etc/mosquitto/'
+    # command: mosquitto_passwd -c /etc/mosquitto/passwd tractteam
+volumes:
+  db_data: null
+  node_modules: null
+  db: null
