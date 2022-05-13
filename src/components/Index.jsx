@@ -70,13 +70,13 @@ const Index = ({text, cookies, t}) => {
         {/* Add sensor Icon */}
         <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ fontSize: 25, padding: '1rem', marginBottom: '1rem', '& > :not(style)': { m: 1 } }}>
             <Fab variant="extended" size="large" color="primary"  aria-label="add" component={Link} to={'/devices/add-sensor'} >
-            <AddIcon />Lägg till sensor
+            <AddIcon />{t("addSensor")}
             </Fab>
         </Box>
             <Grid container spacing={5}>
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} style={{padding: '1rem'}}>
-                        <Typography variant="h3" component="h2">
+                        <Typography variant="h4" component="h2">
                             {t('failing')}
                         </Typography>
                         <DeviceTable devices={rows} />
@@ -84,7 +84,7 @@ const Index = ({text, cookies, t}) => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Paper elevation={4} style={{padding: '1rem', marginBottom: '1rem'}}>
-                        <Typography variant="h3" component="h2">
+                        <Typography variant="h4" component="h2">
                             {t('errMessages')}
                         </Typography>
                         <ErrTable errors={errors} />
@@ -92,7 +92,7 @@ const Index = ({text, cookies, t}) => {
                 </Grid>
                 <Grid item xs={12} md={13}>
                     <Paper elevation={5} style={{padding: '1rem', marginBottom: '1rem'}}>
-                        <Typography variant="h3" component="h2">
+                        <Typography variant="h4" component="h2">
                             {t('mostFaulty')}
                         </Typography>
                         <MostFaulty mostF={mostF} />

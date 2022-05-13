@@ -40,9 +40,11 @@
     "errMessages": "Error messages",
     "node": "Node",
     "nodes": "Nodes",
+    "nodeTypes": "Nodetypes",
     "nodeInformation": "Node Information",
     "addNode": "Add Node",
-    "nodeId": "Node id",
+    "addNodeType": "Add Nodetype",
+    "nodeId": "Node ID",
     "nodeType": "Node type",
     "nodeCompany": "Node company",
     "noNodes": "No nodes",
@@ -76,6 +78,8 @@
     "updateCompany": "Update Company",
     "addCompany": "Add Company",
     "editCompany": "Edit Company",
-    "mostFaulty": "Most Faulty "
+    "mostFaulty": "Most Faulty ",
+    "scanQRAddNode": "Scan Qr code to add node",
+    "scanQRorManually": "Scan the QR code or enter the uid manually"
 
 }

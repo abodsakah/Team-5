@@ -104,9 +104,9 @@ const DeviceCategory = ({user, t, apiURL}) => {
     <main>
       <h1 style={{ textTransform: 'capitalize' }}>{category}</h1>
       {/* Add sensor Icon */}
-      <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 2 }} sx={{ '& > :not(style)': { m: 3 } }}>
-        <Fab size="large" color="primary" aria-label="add" component={Link} to={'/adminpanel'}>
-          <AddIcon />
+      <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ fontSize: 25, padding: '1rem', marginBottom: '1rem', '& > :not(style)': { m: 1 } }}>
+        <Fab variant="extended" size="large" color="primary"  aria-label="add" component={Link} to={'/devices/add-sensor'} >
+          <AddIcon />{t("addSensor")}
         </Fab>
       </Box>
       {/* Table */}

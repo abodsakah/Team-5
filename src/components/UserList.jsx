@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom';
 
 /* ----------------------------------- MUI ---------------------------------- */
 import { DataGrid } from '@mui/x-data-grid';
-import { Avatar, Box, Fab } from '@mui/material';
+import { Avatar, Box, Fab, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 const columns = [
@@ -68,7 +68,10 @@ const UserList = ({t, apiURL, user}) => {
   
   return (
     <main>
-      <h1>'Företaget's adminpanel</h1>
+      <Typography variant="h4">
+        {user.company_name} {t("users")}
+      </Typography>
+      < br />
       <Box style={{height: '550px', width: '100%'}} className="mt-7">
         <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 10}} sx={{ '& > :not(style)': { m: 3 } }}>
           <Fab size="large" color="primary" aria-label="add" component={Link} to={'/admin/users/add'} >
