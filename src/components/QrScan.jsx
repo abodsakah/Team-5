@@ -294,7 +294,7 @@ function AddSensor({t, apiURL, user}) {
               <QrContainers>
             <Typography variant="h5" style={{
                 textAlign: 'center',
-            }} gutterBottom>Scan Qr to add sensor</Typography>
+            }} gutterBottom>{t('scanQRAddNode')}</Typography>
             <Scanners getDeviceId={getDeviceId}/>
                 </QrContainers>
                 <div>

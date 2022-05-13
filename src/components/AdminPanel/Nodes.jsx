@@ -27,7 +27,8 @@ function Nodes({t, apiURL}) {
             alignItems: 'center',
             justifyContent: 'center',
         }}>
-            <Typography variant="h3" gutterBottom>{t('nodes')}</Typography>
+            <Typography variant="h4" gutterBottom>{t('nodes')}</Typography>
+            < br />
             <Button variant="outlined" style={{marginBottom: '1rem'}} component={Link} to="/admin/add-node">{t('addNode')}</Button>
             {nodes.length > 0 ? 
                 <>
@@ -55,7 +56,7 @@ function Nodes({t, apiURL}) {
                 </TableContainer>
                     </>
                 :
-                <Typography variant="h4">{t('noNodes')}</Typography>
+                <Typography variant="h5">{t('noNodes')}</Typography>
             }
         </Box>
     )
