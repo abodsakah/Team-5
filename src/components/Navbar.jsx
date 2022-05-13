@@ -23,7 +23,8 @@ import StyleIcon from '@mui/icons-material/Style';
 import HistoryIcon from '@mui/icons-material/History';
 
 
-const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName, apiURL}) => {
+const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName, apiURL, user}) => {
+
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -69,7 +70,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEls, setAnchorEls] = React.useState(null);
-    const [companies, setCompanies] = React.useState([])
+    const [companies, setCompanies] = React.useState([]);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -84,19 +85,19 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
         setAnchorEls(event.currentTarget);
     };
 
-
-    useEffect(() => {
-        async function fetchData() {
-            const res = await fetch(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`).then(res => res.json()).then(res => {
-                setCompanies(res)
-              })
-            }
-        fetchData();
-        }, []);
-
     const handleNotificationClose = () => {
         setAnchorEls(null);
     };
+
+    const getCompanyLog = () => {
+        fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
+            setCompanies([res]);
+          });
+      };
+    
+      useEffect(() => {
+        getCompanyLog();
+      }, []);
 
 
     const handleLogout = (() => {
@@ -172,22 +173,26 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* HistoryLog List */}
-                        <MenuItem style={{padding: '1em', pointerEvents: 'none'}}>
-                            <Typography variant="h6">
-                                HistoryLog
-                                <List sx={{ width: '15em' }}>
-                                    {companies.map(company => (
-                                        <ListItem divider light style={{ padding: '1em', width: '100%' }}>
-                                            <ListItemText>
-                                                <Typography variant="h6">
-                                                    {company.name}
-                                                </Typography>
-                                                
-                                            </ListItemText>
-                                        </ListItem>
-                                    ))}
+                        <MenuItem style={{ pointerEvents: 'none' }}>
+                            {companies.map(company => (
+                            <div>
+                                <Typography variant="h6">
+                                    {companyName} historylog
+                                </Typography>
+                                <List sx={{width: '100%', padding: "10px 0" }}>
+                                    <ListItem disableGutters={true} divider light>
+                                        <ListItemText style={{ padding: "0.7em 0" }}>  
+                                            <Typography variant="h6">
+                                                { company.msg}
+                                            </Typography>
+                                            <Typography style={{ fontSize: "14px" }}>
+                                                { company.report_date}
+                                            </Typography>
+                                        </ListItemText>
+                                    </ListItem>
                                 </List>
-                            </Typography>
+                            </div>
+                            ))}
                         </MenuItem>
                     </Menu>
                 </div>
