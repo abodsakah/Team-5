@@ -163,25 +163,25 @@ function AddNode({t, apiURL}) {
             <QrContainer>
                 <Typography variant="h5" style={{
                     textAlign: 'center',
-                }} gutterBottom>Scan Qr to add node</Typography>
+                }} gutterBottom>{t('scanQRAddNode')}</Typography>
                 <Scanner getDeviceId={getDeviceId}/>
             </QrContainer>
             <div>
                 
-                <Typography variant="h5" gutterBottom>Node Uid</Typography>
+                <Typography variant="h5" gutterBottom>{t('nodeId')}</Typography>
                 <TextField
                     id="outlined-basic"
                     label="uid"
                     variant="outlined"
                     value={deviceId}
                     onChange={onUidTextChange}
-                    helperText="Scan the QR code or enter the uid manually"
+                    helperText={t('scanQRorManually')}
                     style={{
                         marginBottom: '1rem',
                     }}
                 />
                 
-                <Typography variant="h5" gutterBottom>Node sensor type</Typography>
+                <Typography variant="h5" gutterBottom>{t('nodeType')}</Typography>
                 <FormControl fullWidth>
                     <InputLabel style={{backgroundColor: "white"}} id="node-type">Node type</InputLabel>
                     <Select
@@ -196,7 +196,7 @@ function AddNode({t, apiURL}) {
                     </Select>
                 </FormControl>
                 <br /><br />
-                <Typography variant="h5" gutterBottom>Company of node</Typography>
+                <Typography variant="h5" gutterBottom>{t('nodeCompany')}</Typography>
                 <FormControl fullWidth>
                     {companies.length > 0 ?
                         <>

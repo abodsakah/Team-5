@@ -40,11 +40,13 @@
     "errMessages": "Felmeddelanden",
     "node": "Nod",
     "nodes": "Noder",
+    "nodeTypes": "Nodetyper",
     "nodeInformation": "Node information",
     "addNode": "Lägg till en Node",
-    "nodeId": "Nod id",
-    "nodeType": "Nod typ",
-    "nodeCompany": "Nod företag",
+    "addNodeType": "Lägg till nodetyp",
+    "nodeId": "Node ID",
+    "nodeType": "Node typ",
+    "nodeCompany": "Node företag",
     "noNodes": "Inga noder",
     "addNodeSuccess": "Noden har lagts till",
     "websiteStyling": "Webbplatsstyl",
@@ -75,5 +77,10 @@
     "invalidInput": "Ogiltig inmatning",
     "updateCompany": "Uppdatera företaget",
     "addCompany": "Lägg till företaget",
-    "editCompany": "Redigera företaget"
+    "editCompany": "Redigera företaget",
+    "scanQRAddNode": "Skanna QR-kod för att lägga till sensor", 
+    "scanQRorManually": "Skanna QR-kod eller lägg till sensor manuellt"
+
+
+
 }
