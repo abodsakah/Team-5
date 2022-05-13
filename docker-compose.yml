@@ -49,8 +49,8 @@ services:
       - 8083:8083
       - 8883:8883
     volumes:
-      - './Docker/mosquitto/:/mosquitto/config/'
-      - './Docker/mosquitto/passwordFile/:/etc/mosquitto/'
+      - './Docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf'
+      - './Docker/mosquitto/passwordFile/passwd:/etc/mosquitto/passwd'
     # command: mosquitto_passwd -c /etc/mosquitto/passwd tractteam
 volumes:
   db_data: null
