@@ -112,9 +112,9 @@ async function getCompanies() {
  * @param {*} status The status of the device
  * @returns the id of the logical device that was created
  */
-async function addLogicalDevice(uid, name, is_part_of, type, status) {
+async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
     const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
-    logEvent(`Node ${uid} added`, null);
+    logEvent(`Node ${uid} added`, companyId);
     return result;
 }
 
@@ -321,7 +321,7 @@ async function createThreshold(action, threshold) {
  * @returns 
  */
 async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
-    const result = await db.query("CALL update_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
+    const result = await db.query("CALL update_logical_device_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
     logEvent(`Node ${deviceUid} setup is finished`, deviceUid);
     return result;
 }

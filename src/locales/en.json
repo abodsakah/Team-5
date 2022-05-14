@@ -80,6 +80,15 @@
     "editCompany": "Edit Company",
     "mostFaulty": "Most Faulty ",
     "scanQRAddNode": "Scan Qr code to add node",
-    "scanQRorManually": "Scan the QR code or enter the uid manually"
-
+    "scanQRorManually": "Scan the QR code or enter the uid manually",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "username": "Username",
+    "email": "Email",
+    "addUser": "Add User",
+    "userInformation": "User Information",
+    "role": "Role",
+    "tractAdmin": "Tract Admin",
+    "companyAdmin": "Company Admin",
+    "companyWorker": "Company Worker"
 }
