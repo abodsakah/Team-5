@@ -147,8 +147,8 @@ async function parseMsgData(data, topic) {
       var nodeType = await dataBase.getNodeType(dataObj.nodeId, companyId);
       nodeType = nodeType.type;
       // get threshold id of node
-      var nodeThresholdId = await dataBase.getNodeInfo(dataObj.nodeId, companyId);
-      nodeThresholdId = nodeThresholdId.trigger_action;
+      var nodeInfo = await dataBase.getNodeInfo(dataObj.nodeId, companyId);
+      var nodeThresholdId = nodeInfo.trigger_action;
       // get the nodes threshold
       var nodeThreshold = await dataBase.getThreshold(nodeThresholdId);
 
@@ -231,9 +231,43 @@ async function parseMsgData(data, topic) {
           break;
       }
 
-      // Create report
+      // Create work order
       if (payloadToThresholdSign === thresholdActionSign) {
-        console.log("SKAPA ÄRENDE!!");
+        var workOrderDescription = "Workorder created at asset ";
+        var workOrderTitle = "Work order on node " + nodeInfo.name;
+
+        // Get asset associated with the node
+        var nodeAssetId = nodeInfo.is_part_of;
+        var asset = await dataBase.getAssetFromId(nodeAssetId);
+
+        if (asset == undefined) {
+          return console.log("Asset to node does not exist, return error");
+        }
+
+        workOrderDescription = workOrderDescription.concat(asset.name);
+
+        // Get all spaces the asset is located in
+        var space = await dataBase.getSpaceFromId(asset.located_in);
+
+        var nodeSpaces = [];
+        nodeSpaces.push(space);
+        var childSpaceId = space.is_part_of;
+
+        while (childSpaceId != undefined) {
+          var childSpace = await dataBase.getSpaceFromId(childSpaceId);
+          nodeSpaces.push(childSpace);
+          childSpaceId = childSpace.is_part_of;
+        }
+        
+        nodeSpaces.forEach(space => workOrderDescription = workOrderDescription.concat(" in space " + space.name));
+        
+        // Create work order in mobilix
+        console.log("\nCreating Work Order!!");
+        // Kommenterat ut detta så vi inte crashar konstant i onödan
+        // var workOrder = mobilixClient.createWorkOrder(dataObj.nodeId, companyId, workOrderTitle, workOrderDescription);
+        // if (workOrder == undefined) {
+        //   console.log("Work order not created as an active work order already exists");
+        // }
       }
 
       break;

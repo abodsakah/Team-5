@@ -217,6 +217,17 @@ async function setNodeASDeleted(nodeId, companyId) {
 }
 
 /**
+ * Sets node status to "REPORTED"
+ * @param {*} nodeId The node id of the device
+ * @param {*} companyId The id of the company that owns the device
+ */
+ async function setNodeAsReported(nodeId, companyId) {
+    const result = await db.query("CALL set_device_as_reported(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
+    logEvent(`Node ${nodeId} set to reported`, companyId);
+    return result;
+}
+
+/**
  * 
  * @param {*} companyId The id of the company which to find users for 
  * @returns a object with all users
@@ -268,6 +279,17 @@ async function getSpacesForBuilding(space_id) {
 }
 
 /**
+ * Gets one space from it's id
+ * @param {*} space_id the space id for the space
+ * @returns the desired space
+ */
+ async function getSpaceFromId(space_id) {
+    const result = await db.query("CALL get_space_from_id(?)", {type: QueryTypes.SELECT, replacements: [space_id]});
+    return result[0][0];
+}
+
+
+/**
  * 
  * @param {*} id The company id
  * @returns the name, support_email, support_phone, color and logo of the company
@@ -301,6 +323,16 @@ async function updateCompanyInfo(id, name, email, phone, color, logo) {
 async function getAssetsInSpace(space_id) {
     const result = await db.query("CALL get_assets_in_space(?)", {type: QueryTypes.SELECT, replacements: [space_id]});
     return result[0];
+}   
+
+/**
+ * 
+ * @param {*} asset_id the id of the asset we want to get
+ * @returns specified asset
+ */
+ async function getAssetFromId(asset_id) {
+    const result = await db.query("CALL get_asset_from_id(?)", {type: QueryTypes.SELECT, replacements: [asset_id]});
+    return result[0][0];
 }   
 
 /**
@@ -399,6 +431,7 @@ module.exports = {
     addLogicalDevice,
     getCompanySetting,
     setNodeASDeleted,
+    setNodeAsReported,
     setNodeToBeDeleted,
     getNodeStatus,
     getNodeType,
@@ -410,7 +443,9 @@ module.exports = {
     getNodeFromUid,
     getBuildingsForCompany,
     getSpacesForBuilding,
+    getSpaceFromId,
     getAssetsInSpace,
+    getAssetFromId,
     getPreloadedNode,
     createThreshold,
     updateLogicalDeviceWithThreshold,
