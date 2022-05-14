@@ -3,7 +3,7 @@
 <br>
 This is the main repository for the project of Team 5 at BTH for the course PA1416.
 
-## Setup
+### Setup
 
 Start by cloning the repository:
 ```bash
