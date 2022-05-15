@@ -348,6 +348,10 @@ async function workOrderExistsForEntity(entityId) {
     var orderList = await client.workOrders.list();
     var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
 
+    if (workOrder == undefined) {
+      return undefined;
+    }
+
     // if workOrder is 'completed' we dont count it.
     if (workOrder.state == 'completed') {
       return undefined;

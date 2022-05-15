@@ -67,6 +67,8 @@ gatewayMqttConnect.mqttClient.on('message', function(topic, message) {
 async function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
   var companyId = topic.split('/')[1];
+  companyId = parseInt(companyId);
+
   // add JSON object to queue
   queue.enqueue(dataObj);
   if (queue.length() > 50) {
@@ -81,7 +83,7 @@ async function parseMsgData(data, topic) {
     '\n');
   console.log('From topic: ' + topic + '\n');
   console.log('From companyId: ' + companyId + '\n');
-
+  console.log("company id type: " + typeof(companyId) + "\n");
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
   switch (dataObj.objectType) {
@@ -261,13 +263,17 @@ async function parseMsgData(data, topic) {
         
         nodeSpaces.forEach(space => workOrderDescription = workOrderDescription.concat(" in space " + space.name));
         
+
+        // check if work order for node doesnt already exist
+        if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId)) {
+          console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
+          return undefined;
+        }
+
         // Create work order in mobilix
         console.log("\nCreating Work Order!!");
         // Kommenterat ut detta så vi inte crashar konstant i onödan
-        // var workOrder = mobilixClient.createWorkOrder(dataObj.nodeId, companyId, workOrderTitle, workOrderDescription);
-        // if (workOrder == undefined) {
-        //   console.log("Work order not created as an active work order already exists");
-        // }
+        var workOrder = mobilixClient.createWorkOrder(dataObj.nodeId, companyId, workOrderTitle, workOrderDescription);
       }
 
       break;
