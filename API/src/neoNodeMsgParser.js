@@ -235,6 +235,18 @@ async function parseMsgData(data, topic) {
 
       // Create work order
       if (payloadToThresholdSign === thresholdActionSign) {
+        // check if workorder already exists and if so cancel operations
+        if (nodeInfo.status == "REPORTED") {
+          if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId) == undefined) {
+            console.log("Work order does not already exist despite node is flagged as reported, changing it back to active");
+            await dataBase.setNodeAsActive(dataObj.nodeId, companyId);
+          } else {
+            return console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
+          }
+        }
+
+
+
         var workOrderDescription = "Workorder created at asset ";
         var workOrderTitle = "Work order on node " + nodeInfo.name;
 
@@ -269,10 +281,10 @@ async function parseMsgData(data, topic) {
           console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
           return undefined;
         }
-
+        
         // Create work order in mobilix
         console.log("\nCreating Work Order!!");
-        // Kommenterat ut detta så vi inte crashar konstant i onödan
+        await dataBase.setNodeAsReported(dataObj.nodeId, companyId);
         var workOrder = mobilixClient.createWorkOrder(dataObj.nodeId, companyId, workOrderTitle, workOrderDescription);
       }
 
