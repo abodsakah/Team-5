@@ -162,11 +162,6 @@ async function setupMobilixClient() {
     entitySchemaId = res.id;
   }
   console.log("Mobilix setup completed!");
-  
-
-  // tests
-  // await deleteAllWorkOrders();
-  // console.log(await client.workOrders.list());
 }
 
 
