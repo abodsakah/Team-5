@@ -68,7 +68,7 @@
     "under": "Under",
     "equal": "Lika med",
     "submit": "Skicka",
-    "coudntAddDevice": "Kunde inte lägga till sensor",
+    "couldntAddDevice": "Kunde inte lägga till sensor",
     "pleaseSelectAnAction": "Välj en sensortyp",
     "edit": "Redigera",
     "delete": "Radera",
