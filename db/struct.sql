@@ -895,6 +895,14 @@ BEGIN
 END$$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS update_logical_device_threshold;
+DELIMITER $$
+CREATE PROCEDURE update_logical_device_threshold(IN n_uid INT, IN n_threshold INT)
+BEGIN
+  UPDATE `logical_devices` SET `trigger_action` = n_threshold WHERE uid = n_uid;
+END$$
+DELIMITER ;
+
 --update threshold
 DROP PROCEDURE IF EXISTS `update_threshold`;
 DELIMITER $$

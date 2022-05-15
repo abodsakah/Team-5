@@ -162,6 +162,11 @@ async function setupMobilixClient() {
     entitySchemaId = res.id;
   }
   console.log("Mobilix setup completed!");
+  
+
+  // tests
+  // await deleteAllWorkOrders();
+  // console.log(await client.workOrders.list());
 }
 
 
@@ -201,10 +206,12 @@ async function deleteAllWorkOrders() {
   try {
     var workOrders = await client.workOrders.list();
     var id = "";
-    workOrders.forEach((workOrder) => {
+
+    for (let i = 0; i < workOrders.length; i++) {
+      const workOrder = workOrders[i];
       id = workOrder.id;
-    });
-    await client.workOrders.delete(id);
+      await client.workOrders.delete(id);
+    }
   } catch (err) {
     console.error(err);
   }
@@ -347,6 +354,10 @@ async function workOrderExistsForEntity(entityId) {
   try {
     var orderList = await client.workOrders.list();
     var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
+
+    if (workOrder == undefined) {
+      return undefined;
+    }
 
     // if workOrder is 'completed' we dont count it.
     if (workOrder.state == 'completed') {

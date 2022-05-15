@@ -79,8 +79,16 @@
     "addCompany": "Lägg till företaget",
     "editCompany": "Redigera företaget",
     "scanQRAddNode": "Skanna QR-kod för att lägga till sensor", 
-    "scanQRorManually": "Skanna QR-kod eller lägg till sensor manuellt"
-
-
-
+    "scanQRorManually": "Skanna QR-kod eller lägg till sensor manuellt",
+    "firstName": "Förnamn",
+    "lastName": "Efternamn",
+    "username": "Användarnamn",
+    "email": "Email",
+    "addUser": "Lägg till användare",
+    "mostFaulty": "Mest Sönder",
+    "userInformation": "Användarinformation",
+    "role": "Roll",
+    "tractAdmin": "Tract Admin",
+    "companyAdmin": "Företagsadmin",
+    "companyWorker": "Företagsanställd"
 }

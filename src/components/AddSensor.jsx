@@ -429,7 +429,7 @@ function AddSensor({t, apiURL, user}) {
                                     <TextField id="analog" label="Analog" type='number' variant="outlined" fullWidth onChange={handleChangeAnalog} value={choosenAnalog} required/>
                                 </>
                         }
-                        <Button variant="contained" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDeviceType}>{t("Submit")}</Button>
+                        <Button variant="contained" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDeviceType}>{t("submit")}</Button>
                     </>            
     }
         </Box>

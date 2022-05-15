@@ -135,7 +135,9 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             justifyContent: 'center',
                         }}>
                             {/* <img src={`${process.env.PUBLIC_URL}/static/uploads/images/${companyLogo}`} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} /> */}
-                            <Logo src={`${apiURL}/static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `}/>
+                            <a href="/">
+                                <Logo src={`${apiURL}/static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `} />
+                            </a>
                         </div>
                         : 
                         <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>
@@ -232,7 +234,6 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* Items in the user menu */}
-                        <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>{t("profile")}</MenuItem>
                         <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>{t("logout")}</MenuItem>
                     </Menu>
                 </div>

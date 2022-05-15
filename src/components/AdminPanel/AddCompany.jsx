@@ -68,7 +68,7 @@ function AddCompany({t, color, apiURL}) {
     }).catch(err => {
       console.log(err);
     });
-    window.location = `/admin`;
+    window.location = `/admin/companies`;
   };
 
   const handleClose = () => {

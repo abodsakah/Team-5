@@ -112,9 +112,9 @@ async function getCompanies() {
  * @param {*} status The status of the device
  * @returns the id of the logical device that was created
  */
-async function addLogicalDevice(uid, name, is_part_of, type, status) {
+async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
     const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
-    logEvent(`Node ${uid} added`, null);
+    logEvent(`Node ${uid} added`, companyId);
     return result;
 }
 
@@ -217,6 +217,17 @@ async function setNodeASDeleted(nodeId, companyId) {
 }
 
 /**
+ * Sets node status to "REPORTED"
+ * @param {*} nodeId The node id of the device
+ * @param {*} companyId The id of the company that owns the device
+ */
+ async function setNodeAsReported(nodeId, companyId) {
+    const result = await db.query("CALL set_device_as_reported(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
+    logEvent(`Node ${nodeId} set to reported`, companyId);
+    return result;
+}
+
+/**
  * 
  * @param {*} companyId The id of the company which to find users for 
  * @returns a object with all users
@@ -268,6 +279,17 @@ async function getSpacesForBuilding(space_id) {
 }
 
 /**
+ * Gets one space from it's id
+ * @param {*} space_id the space id for the space
+ * @returns the desired space
+ */
+ async function getSpaceFromId(space_id) {
+    const result = await db.query("CALL get_space_from_id(?)", {type: QueryTypes.SELECT, replacements: [space_id]});
+    return result[0][0];
+}
+
+
+/**
  * 
  * @param {*} id The company id
  * @returns the name, support_email, support_phone, color and logo of the company
@@ -305,6 +327,16 @@ async function getAssetsInSpace(space_id) {
 
 /**
  * 
+ * @param {*} asset_id the id of the asset we want to get
+ * @returns specified asset
+ */
+ async function getAssetFromId(asset_id) {
+    const result = await db.query("CALL get_asset_from_id(?)", {type: QueryTypes.SELECT, replacements: [asset_id]});
+    return result[0][0];
+}   
+
+/**
+ * 
  * @param {*} action What action has to happen for a threshold to be triggered t.ex. UP, DOWN, BETWEEN
  * @param {*} threshold should be a number that is the threshold
  * @returns the id of the created threshold
@@ -321,7 +353,7 @@ async function createThreshold(action, threshold) {
  * @returns 
  */
 async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
-    const result = await db.query("CALL update_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
+    const result = await db.query("CALL update_logical_device_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
     logEvent(`Node ${deviceUid} setup is finished`, deviceUid);
     return result;
 }
@@ -399,6 +431,7 @@ module.exports = {
     addLogicalDevice,
     getCompanySetting,
     setNodeASDeleted,
+    setNodeAsReported,
     setNodeToBeDeleted,
     getNodeStatus,
     getNodeType,
@@ -410,7 +443,9 @@ module.exports = {
     getNodeFromUid,
     getBuildingsForCompany,
     getSpacesForBuilding,
+    getSpaceFromId,
     getAssetsInSpace,
+    getAssetFromId,
     getPreloadedNode,
     createThreshold,
     updateLogicalDeviceWithThreshold,

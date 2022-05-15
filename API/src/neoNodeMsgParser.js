@@ -67,6 +67,8 @@ gatewayMqttConnect.mqttClient.on('message', function(topic, message) {
 async function parseMsgData(data, topic) {
   var dataObj = JSON.parse(data);
   var companyId = topic.split('/')[1];
+  companyId = parseInt(companyId);
+
   // add JSON object to queue
   queue.enqueue(dataObj);
   if (queue.length() > 50) {
@@ -81,7 +83,7 @@ async function parseMsgData(data, topic) {
     '\n');
   console.log('From topic: ' + topic + '\n');
   console.log('From companyId: ' + companyId + '\n');
-
+  console.log("company id type: " + typeof(companyId) + "\n");
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
   switch (dataObj.objectType) {
@@ -147,8 +149,8 @@ async function parseMsgData(data, topic) {
       var nodeType = await dataBase.getNodeType(dataObj.nodeId, companyId);
       nodeType = nodeType.type;
       // get threshold id of node
-      var nodeThresholdId = await dataBase.getNodeInfo(dataObj.nodeId, companyId);
-      nodeThresholdId = nodeThresholdId.trigger_action;
+      var nodeInfo = await dataBase.getNodeInfo(dataObj.nodeId, companyId);
+      var nodeThresholdId = nodeInfo.trigger_action;
       // get the nodes threshold
       var nodeThreshold = await dataBase.getThreshold(nodeThresholdId);
 
@@ -231,9 +233,47 @@ async function parseMsgData(data, topic) {
           break;
       }
 
-      // Create report
+      // Create work order
       if (payloadToThresholdSign === thresholdActionSign) {
-        console.log("SKAPA ÄRENDE!!");
+        var workOrderDescription = "Workorder created at asset ";
+        var workOrderTitle = "Work order on node " + nodeInfo.name;
+
+        // Get asset associated with the node
+        var nodeAssetId = nodeInfo.is_part_of;
+        var asset = await dataBase.getAssetFromId(nodeAssetId);
+
+        if (asset == undefined) {
+          return console.log("Asset to node does not exist, return error");
+        }
+
+        workOrderDescription = workOrderDescription.concat(asset.name);
+
+        // Get all spaces the asset is located in
+        var space = await dataBase.getSpaceFromId(asset.located_in);
+
+        var nodeSpaces = [];
+        nodeSpaces.push(space);
+        var childSpaceId = space.is_part_of;
+
+        while (childSpaceId != undefined) {
+          var childSpace = await dataBase.getSpaceFromId(childSpaceId);
+          nodeSpaces.push(childSpace);
+          childSpaceId = childSpace.is_part_of;
+        }
+        
+        nodeSpaces.forEach(space => workOrderDescription = workOrderDescription.concat(" in space " + space.name));
+        
+
+        // check if work order for node doesnt already exist
+        if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId)) {
+          console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
+          return undefined;
+        }
+
+        // Create work order in mobilix
+        console.log("\nCreating Work Order!!");
+        // Kommenterat ut detta så vi inte crashar konstant i onödan
+        var workOrder = mobilixClient.createWorkOrder(dataObj.nodeId, companyId, workOrderTitle, workOrderDescription);
       }
 
       break;

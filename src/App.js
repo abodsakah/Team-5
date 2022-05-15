@@ -7,8 +7,8 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom';
 import Index from './components/Index';
 import Devices from './components/Devices';
 import DeviceCategory from './components/DeviceCategory';
-import AddSensor from './components/QrScan';
-import AddUser from './components/AddUser';
+import AddSensor from './components/AddSensor';
+import AddUser from './components/AdminPanel/AddUser';
 import Companies from './components/AdminPanel/Companies';
 import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
@@ -191,7 +191,7 @@ function App() {
                   <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />
                   <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
                   <Route path="/admin/users" element={<UserList t={t} apiURL={apiURL} user={cookies.get('user')}/>} />
-                  <Route path="/admin/users/add" element={<AddUser t={t} />} />
+                  <Route path="/admin/users/add" element={<AddUser t={t} apiURL={apiURL}/>} />
                   <>{ /*LÄGG HÄR*/ }</>
                 </>
               }
