@@ -46,7 +46,7 @@ const OVER = 1;
 /*
  * Functions
  */
-function getMsgQueue(){
+function getMsgQueue() {
   return queue;
 }
 
@@ -78,12 +78,12 @@ async function parseMsgData(data, topic) {
   console.log('--------------------------------');
   console.log('Incoming Data:\n' + data + '\n');
   console.log(
-      'Payload: ' +
-      '[' + dataObj.payload + ']' +
+    'Payload: ' +
+    '[' + dataObj.payload + ']' +
     '\n');
   console.log('From topic: ' + topic + '\n');
   console.log('From companyId: ' + companyId + '\n');
-  console.log("company id type: " + typeof(companyId) + "\n");
+  console.log("company id type: " + typeof (companyId) + "\n");
   // If the data is a neighborCall
   // loops and prints all neighbor node id's.
   switch (dataObj.objectType) {
@@ -134,7 +134,8 @@ async function parseMsgData(data, topic) {
       // }
 
       // Check the nodes status, unless it's "ACTIVE" we dont process it's payload.
-      // We also want to do retry removing a node if we get a message from it with status
+
+      // We also want to do a retry removing a node if we get a message from it with status
       // "DELETED" or "TBD" (to be deleted)
       var nodeStatus = await dataBase.getNodeStatus(dataObj.nodeId, companyId);
       nodeStatus = nodeStatus.status;
@@ -143,6 +144,18 @@ async function parseMsgData(data, topic) {
         console.log("Ignoring payload: node should be deleted! Will retry deleting it.");
         neoNodeMsgSender.deleteNode(dataObj.nodeId, companyId);
         return;
+      }
+      // check if node is already "REPORTED"
+      // If a active workorder already exists we can return early
+      // otherwise if no active workOrder exists we can set node status to "ACTIVE" again
+      if (nodeStatus == "REPORTED") {
+        if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId) == undefined) {
+          console.log("A active workOrder does not already exist despite",
+            "node being flagged as REPORTED, changing node status back to ACTIVE");
+          await dataBase.setNodeAsActive(dataObj.nodeId, companyId);
+        } else {
+          return console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
+        }
       }
 
       // check node type in database
@@ -159,15 +172,15 @@ async function parseMsgData(data, topic) {
 
       // Print out payload information to console
       console.log("Node type id: " + nodeType + "\n");
-      console.log( 'Incoming message: ' + '\n');
+      console.log('Incoming message: ' + '\n');
       switch (nodeType) {
         case 1:
           // temperature sensor
           var tempData =
-              dataObj.payload[1].toString(16) + dataObj.payload[2].toString(16);
+            dataObj.payload[1].toString(16) + dataObj.payload[2].toString(16);
           tempData = parseInt(tempData, 16);
           var humidityData =
-              dataObj.payload[3].toString(16) + dataObj.payload[4].toString(16);
+            dataObj.payload[3].toString(16) + dataObj.payload[4].toString(16);
           humidityData = parseInt(humidityData, 16);
 
           var celsius = convertToCelsius(tempData);
@@ -180,7 +193,7 @@ async function parseMsgData(data, topic) {
         case 2:
           // switch sensor
           var switchData =
-              dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
+            dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
           switchData = parseInt(switchData, 16);
 
           var switchStatus = "";
@@ -199,7 +212,7 @@ async function parseMsgData(data, topic) {
         case 3:
           // analog-wheel
           var analogData =
-              dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
+            dataObj.payload[5].toString(16) + dataObj.payload[6].toString(16);
           analogData = parseInt(analogData, 16);
 
           console.log('Analog value: ' + analogData);
@@ -218,7 +231,7 @@ async function parseMsgData(data, topic) {
 
       var payloadToThresholdDifferential = nodePayload - nodeThreshold.threshold;
       var payloadToThresholdSign = Math.sign(payloadToThresholdDifferential);
-      
+
       var thresholdActionSign;
       switch (nodeThreshold.action) {
         case "UNDER":
@@ -235,15 +248,6 @@ async function parseMsgData(data, topic) {
 
       // Create work order
       if (payloadToThresholdSign === thresholdActionSign) {
-        // check if workorder already exists and if so cancel operations
-        if (nodeInfo.status == "REPORTED") {
-          if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId) == undefined) {
-            console.log("Work order does not already exist despite node is flagged as reported, changing it back to active");
-            await dataBase.setNodeAsActive(dataObj.nodeId, companyId);
-          } else {
-            return console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
-          }
-        }
 
 
 
@@ -272,16 +276,16 @@ async function parseMsgData(data, topic) {
           nodeSpaces.push(childSpace);
           childSpaceId = childSpace.is_part_of;
         }
-        
+
         nodeSpaces.forEach(space => workOrderDescription = workOrderDescription.concat(" in space " + space.name));
-        
+
 
         // check if work order for node doesnt already exist
         if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId)) {
           console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
           return undefined;
         }
-        
+
         // Create work order in mobilix
         console.log("\nCreating Work Order!!");
         await dataBase.setNodeAsReported(dataObj.nodeId, companyId);
@@ -342,18 +346,18 @@ async function parseMsgData(data, topic) {
       var node = await dataBase.getNodeFromUid(uid);
       console.log("setupRequest nodeStatus: " + node.status);
 
-      if(node == null){
+      if (node == null) {
         console.log("setupRequest node uid not found, database returned NULL");
         return; // exit early if we cant find node in database.
       }
-      if (node.status == "ACTIVE"){
-        await neoNodeMsgSender.sendWesSetupResponse(node.id,uid,node.app_settings,node.company_id);
+      if (node.status == "ACTIVE") {
+        await neoNodeMsgSender.sendWesSetupResponse(node.id, uid, node.app_settings, node.company_id);
       }
-      else if(node.status == "TBD"){
-        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID,uid,DELETE_SETTINGS,node.company_id);
+      else if (node.status == "TBD") {
+        await neoNodeMsgSender.sendWesSetupResponse(DELETE_ID, uid, DELETE_SETTINGS, node.company_id);
         await dataBase.setNodeASDeleted(node.id, node.company_id);
       }
-      else if(node.status == "DELETED"){
+      else if (node.status == "DELETED") {
         console.log("Ignoring setupRequest: Node is already deleted permanently.");
       }
 
@@ -418,7 +422,7 @@ function getHumidity(data) {
  */
 function getNodes() {
   return nodes;
-}  
+}
 
 function getNodesInfo() {
   return nodeInfo;
