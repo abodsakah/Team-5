@@ -234,7 +234,7 @@ async function setNodeASDeleted(nodeId, companyId) {
  */
  async function setNodeAsActive(nodeId, companyId) {
     const result = await db.query("CALL set_device_as_active(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Node ${nodeId} set to reported`, companyId);
+    logEvent(`Node ${nodeId} set to active`, companyId);
     return result;
 }
 

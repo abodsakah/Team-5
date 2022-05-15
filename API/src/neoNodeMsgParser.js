@@ -151,7 +151,9 @@ async function parseMsgData(data, topic) {
       if (nodeStatus == "REPORTED") {
         if (await mobilixClient.workOrderExists(dataObj.nodeId, companyId) == undefined) {
           console.log("A active workOrder does not already exist despite",
-            "node being flagged as REPORTED, changing node status back to ACTIVE");
+            "node being flagged as REPORTED, assuming workOrder as resolved",
+            "and changing node status back to ACTIVE");
+          dataBase.logEvent("Node "+dataObj.nodeId+" workOrder has been resolved.", companyId);
           await dataBase.setNodeAsActive(dataObj.nodeId, companyId);
         } else {
           return console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
