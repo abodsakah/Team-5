@@ -418,6 +418,28 @@ app.post("/api/v1/addStyling", async (req, res) => {
     }
 });
 
+app.get("/api/v1/getNodeType", async (req, res) => {
+    try{
+        let apiKey = req.query.key;
+        let keyValid = await dbConnection.validateAPIKey(apiKey);
+        let nodeId = req.query.nodeId;
+        let companyId = req.query.companyId;
+
+        if (keyValid) {
+            try {
+                let node = await dbConnection.getNodeType(nodeId, companyId);
+                res.status(200).send(node);
+            } catch (e) {
+                res.status(500).send("Error getting sensor");
+            }
+        } else {
+            res.status(401).send("Invalid API key");
+        }
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+})
+
 app.get("/api/v1/getNodeInfo", async (req, res) => {
     try{
         let apiKey = req.query.key;

@@ -114,7 +114,7 @@ async function getCompanies() {
  */
 async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
     const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
-    logEvent(`Node ${uid} added`, companyId);
+    logEvent(`Sensor ${name} added`, companyId);
     return result;
 }
 
@@ -201,7 +201,7 @@ async function getNodeStatus(nodeId, companyId) {
  */
 async function setNodeToBeDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_to_be_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Node ${nodeId} set to deleted`, companyId);
+    logEvent(`Sensor ${nodeId} set to deleted`, companyId);
     return result;
 }
 
@@ -212,7 +212,7 @@ async function setNodeToBeDeleted(nodeId, companyId) {
  */
 async function setNodeASDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_as_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Node ${nodeId} set to deleted`, companyId);
+    logEvent(`Sensor ${nodeId} has been deleted`, companyId);
     return result;
 }
 
@@ -223,7 +223,7 @@ async function setNodeASDeleted(nodeId, companyId) {
  */
  async function setNodeAsReported(nodeId, companyId) {
     const result = await db.query("CALL set_device_as_reported(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Node ${nodeId} set to reported`, companyId);
+    logEvent(`Sensor ${nodeId} set to reported`, companyId);
     return result;
 }
 
@@ -234,7 +234,7 @@ async function setNodeASDeleted(nodeId, companyId) {
  */
  async function setNodeAsActive(nodeId, companyId) {
     const result = await db.query("CALL set_device_as_active(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Node ${nodeId} set to active`, companyId);
+    // logEvent(`Node ${nodeId} set to active`, companyId);
     return result;
 }
 
@@ -338,11 +338,11 @@ async function getAssetsInSpace(space_id) {
 
 /**
  * 
- * @param {*} asset_id the id of the asset we want to get
+ * @param {*} nodeId, the logical_device id that the asset hosts
  * @returns specified asset
  */
- async function getAssetFromId(asset_id) {
-    const result = await db.query("CALL get_asset_from_id(?)", {type: QueryTypes.SELECT, replacements: [asset_id]});
+ async function getAssetFromNodeId(nodeId) {
+    const result = await db.query("CALL get_asset_from_logical_device_id(?)", {type: QueryTypes.SELECT, replacements: [nodeId]});
     return result[0][0];
 }   
 
@@ -365,7 +365,7 @@ async function createThreshold(action, threshold) {
  */
 async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId) {
     const result = await db.query("CALL update_logical_device_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
-    logEvent(`Node ${deviceUid} setup is finished`, deviceUid);
+    logEvent(`Sensor ${deviceUid} setup is finished`, deviceUid);
     return result;
 }
 
@@ -457,7 +457,7 @@ module.exports = {
     getSpacesForBuilding,
     getSpaceFromId,
     getAssetsInSpace,
-    getAssetFromId,
+    getAssetFromNodeId,
     getPreloadedNode,
     createThreshold,
     updateLogicalDeviceWithThreshold,
