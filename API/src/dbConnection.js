@@ -228,6 +228,17 @@ async function setNodeASDeleted(nodeId, companyId) {
 }
 
 /**
+ * Sets node status to "ACTIVE"
+ * @param {*} nodeId The node id of the device
+ * @param {*} companyId The id of the company that owns the device
+ */
+ async function setNodeAsActive(nodeId, companyId) {
+    const result = await db.query("CALL set_device_as_active(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
+    logEvent(`Node ${nodeId} set to reported`, companyId);
+    return result;
+}
+
+/**
  * 
  * @param {*} companyId The id of the company which to find users for 
  * @returns a object with all users
@@ -432,6 +443,7 @@ module.exports = {
     getCompanySetting,
     setNodeASDeleted,
     setNodeAsReported,
+    setNodeAsActive,
     setNodeToBeDeleted,
     getNodeStatus,
     getNodeType,
