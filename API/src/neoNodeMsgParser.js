@@ -153,7 +153,7 @@ async function parseMsgData(data, topic) {
           console.log("A active workOrder does not already exist despite",
             "node being flagged as REPORTED, assuming workOrder as resolved",
             "and changing node status back to ACTIVE");
-          dataBase.logEvent("Sensor " + dataObj.nodeId + " workOrder has been resolved, sensor now set to active.", companyId);
+          dataBase.logEvent("Sensor " + dataObj.nodeId + " work order has been resolved, sensor now set to active.", companyId);
           await dataBase.setNodeAsActive(dataObj.nodeId, companyId);
           return;
         } else {
