@@ -123,9 +123,6 @@ async function setupMobilixClient() {
   var entityTypeList = await client.entityTypes.list();
   var entitySchemaList = await client.entitySchemas.list();
 
-  console.log("entityTypeList:\n", entityTypeList);
-  console.log("entitySchemaList:\n", entitySchemaList);
-
   /* Create entityType */
   // only create entityType 'neocortec-node' if it doesn't exists.
   var eType = entityTypeList.find(element => element.name === 'neocortec-node')

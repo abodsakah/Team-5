@@ -37,6 +37,7 @@
     "mdbreact": "^5.2.0",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.2",
+    "prompt-sync": "^4.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.25.3",
