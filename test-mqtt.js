@@ -8,10 +8,10 @@ const options = {
   // Authentication information
   clientId: 'NodeJs-test-client',
   username: 'flex',
-  password: '',
+  password: 'mqtt-flex',
 }
 
-const client = MQTT.connect('mqtt://mqtt.abodsakka.xyz/', options);
+const client = MQTT.connect('mqtt://localhost:8883/', options);
 // const client = MQTT.connect('ws://broker.emqx.io/mqtt:8083', options);
 
 // When passing async functions as event listeners, make sure to have a try

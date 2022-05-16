@@ -91,7 +91,8 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const getCompanyLog = () => {
         fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
-            setCompaniesLog([res]);
+            setCompaniesLog([res].sort());
+            console.log(res);
           });
         };
     
@@ -175,13 +176,14 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* HistoryLog List */}
-                        <MenuItem style={{ pointerEvents: 'none', minWidth: '290px'}}>
-                            {companiesLog.map( (company) => (
-                            <div>
-                                <List sx={{margin: "0 0.5em", width: "290px"}}>
-                                    <Typography variant="h6" >
+                            <MenuItem style={{pointerEvents: 'none', minWidth: '290px', display: 'flex', flexDirection: 'column', alignContent: 'center', paddingLeft: '2rem', paddingRight: '2rem'}}>
+                            <Typography variant="h6" >
                                         {t("latestEvents")}
                                     </Typography>
+                            {companiesLog.map( (company) => (
+                            <div>
+                                <List sx={{margin: "0 0.5em", height: '50vh'}}>
+                                    
                                     <ListItem disableGutters={true} divider light >
                                         <ListItemText style={{ padding: "1em 0.1em" }}>  
                                             <Typography variant="p" sx={{ fontSize: "16px"}}>
