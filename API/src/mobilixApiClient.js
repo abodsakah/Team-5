@@ -477,6 +477,7 @@ module.exports = {
   getActiveWorkOrder,
   getCompanyWorkOrders,
   getActiveCompanyWorkOrders,
+  deleteAllWorkOrders,
 }
 
 
