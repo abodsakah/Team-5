@@ -426,7 +426,7 @@ async function logEvent(logMsg, companyId) {
 async function updateThreshold(nodeId, action, value, companyId) {
     let node = await getNodeInfo(nodeId, companyId);
     const result = await db.query("CALL update_threshold(?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [node.trigger_action, action, value]});
-    logEvent(`Threshold ${nodeId} has been updated`, companyId);
+    logEvent(`Threshold of sensor ${nodeId} has been updated`, companyId);
     return result;
 }
 
