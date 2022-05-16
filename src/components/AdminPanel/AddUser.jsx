@@ -20,7 +20,7 @@ function AddUser({t, apiURL}) {
 
   let ValidateAndSubmit = () => {
     if (userMail === '' || firstName === '' || lastName === '' || newUser === '') {
-      alert('Please fill all the fields');
+      alert(`${t('pleaseEnter')}`);
     } else {
       //generate random password
       setLoading(true);
@@ -39,12 +39,12 @@ function AddUser({t, apiURL}) {
 
   return (
     <Box m={2}>
-        <Typography variant="h4">Add User</Typography>
+        <Typography variant="h4">{t('addUser')}</Typography>
         <br />
         <Divider />
         <br />
       <br />
-      <Typography variant="h6">{'User Information'}</Typography>
+      <Typography variant="h6">{t('userInformation')}</Typography>
       <br />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>

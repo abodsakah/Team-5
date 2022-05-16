@@ -41,10 +41,10 @@
     "errMessages": "Felmeddelanden",
     "node": "Nod",
     "nodes": "Noder",
-    "nodeTypes": "Nodetyper",
+    "nodeTypes": "Nodtyper",
     "nodeInformation": "Node information",
     "addNode": "Lägg till en Node",
-    "addNodeType": "Lägg till nodetyp",
+    "addNodeType": "Lägg till nodtyp",
     "nodeId": "Node ID",
     "nodeType": "Node typ",
     "nodeCompany": "Node företag",
@@ -84,12 +84,12 @@
     "lastName": "Efternamn",
     "username": "Användarnamn",
     "email": "Email",
-    "addUser": "Lägg till användare",
     "mostFaulty": "Mest Felaktig",
     "userInformation": "Användarinformation",
     "role": "Roll",
     "tractAdmin": "Tract Admin",
     "companyAdmin": "Företagsadmin",
     "companyWorker": "Företagsanställd",
-    "latestEvents": "Senaste händelserna"
+    "latestEvents": "Senaste händelserna",
+    "pleaseEnter": "Fyll i samtliga fält"
 }

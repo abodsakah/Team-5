@@ -12,6 +12,7 @@ import AddUser from './components/AdminPanel/AddUser';
 import Companies from './components/AdminPanel/Companies';
 import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
+import AddNodeType from './components/AdminPanel/AddNodeType';
 import Nodes from './components/AdminPanel/Nodes';
 import Navbar from './components/Navbar';
 import UserList from './components/UserList';
@@ -192,7 +193,7 @@ function App() {
                   <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
                   <Route path="/admin/users" element={<UserList t={t} apiURL={apiURL} user={cookies.get('user')}/>} />
                   <Route path="/admin/users/add" element={<AddUser t={t} apiURL={apiURL}/>} />
-                  <>{ /*LÄGG HÄR*/ }</>
+                  <Route path="/admin/add-node-type" element={<AddNodeType t={t} apiURL={apiURL}/>} />
                 </>
               }
               </>
