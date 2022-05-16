@@ -17,6 +17,7 @@
     "devices": "Sensores",
     "user": "User",
     "users": "Users",
+    "addUser": "Add user",
     "profile": "Profile",
     "logout": "Logout",
     "admin": "Admin",
@@ -76,7 +77,6 @@
     "coudntAddCompany": "Couldn't add company",
     "invalidInput": "Invalid input",
     "updateCompany": "Update Company",
-    "addCompany": "Add Company",
     "editCompany": "Edit Company",
     "mostFaulty": "Most Faulty ",
     "scanQRAddNode": "Scan Qr code to add node",
@@ -90,5 +90,6 @@
     "role": "Role",
     "tractAdmin": "Tract Admin",
     "companyAdmin": "Company Admin",
-    "companyWorker": "Company Worker"
+    "companyWorker": "Company Worker", 
+    "latestEvents": "Latest events"
 }

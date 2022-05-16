@@ -17,6 +17,7 @@
     "devices": "Sensorer",
     "user": "Användare",
     "users": "Användare",
+    "addUser": "Lägg till användare",
     "profile": "Profil",
     "logout": "Logga ut",
     "admin": "Admin",
@@ -73,11 +74,10 @@
     "edit": "Redigera",
     "delete": "Radera",
     "companyAddedSuccessfully": "Företaget har lagts till",
-    "coudntAddCompany": "Kunde inte lägga till företaget",
+    "coudntAddCompany": "Kunde inte lägga till företag",
     "invalidInput": "Ogiltig inmatning",
-    "updateCompany": "Uppdatera företaget",
-    "addCompany": "Lägg till företaget",
-    "editCompany": "Redigera företaget",
+    "updateCompany": "Uppdatera företag",
+    "editCompany": "Redigera företag",
     "scanQRAddNode": "Skanna QR-kod för att lägga till sensor", 
     "scanQRorManually": "Skanna QR-kod eller lägg till sensor manuellt",
     "firstName": "Förnamn",
@@ -90,5 +90,6 @@
     "role": "Roll",
     "tractAdmin": "Tract Admin",
     "companyAdmin": "Företagsadmin",
-    "companyWorker": "Företagsanställd"
+    "companyWorker": "Företagsanställd",
+    "latestEvents": "Senaste händelserna"
 }

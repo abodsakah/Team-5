@@ -70,7 +70,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEls, setAnchorEls] = React.useState(null);
-    const [companies, setCompanies] = React.useState([]);
+    const [companiesLog, setCompaniesLog] = React.useState([]);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -91,9 +91,9 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const getCompanyLog = () => {
         fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
-            setCompanies([res]);
+            setCompaniesLog([res]);
           });
-      };
+        };
     
       useEffect(() => {
         getCompanyLog();
@@ -175,26 +175,63 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* HistoryLog List */}
-                        <MenuItem style={{ pointerEvents: 'none' }}>
-                            {companies.map(company => (
+                        <MenuItem style={{ pointerEvents: 'none', minWidth: '290px'}}>
+                            {companiesLog.map( (company) => (
                             <div>
-                                <Typography variant="h6">
-                                    {companyName} historylog
-                                </Typography>
-                                <List sx={{width: '100%', padding: "10px 0" }}>
-                                    <ListItem disableGutters={true} divider light>
-                                        <ListItemText style={{ padding: "0.7em 0" }}>  
-                                            <Typography variant="h6">
-                                                { company.msg}
+                                <List sx={{margin: "0 0.5em", width: "290px"}}>
+                                    <Typography variant="h6" >
+                                        {t("latestEvents")}
+                                    </Typography>
+                                    <ListItem disableGutters={true} divider light >
+                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
+                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
+                                                { company[0].msg}
+                                                < br />
+                                                { company[0].report_date}
                                             </Typography>
-                                            <Typography style={{ fontSize: "14px" }}>
-                                                { company.report_date}
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem disableGutters={true} divider light>
+                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
+
+                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
+                                                { company[1].msg}
+                                                < br />
+                                                { company[1].report_date}
+                                            </Typography>
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem disableGutters={true} divider light>
+                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
+
+                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
+                                                { company[2].msg}
+                                                < br />
+                                                { company[2].report_date}
+                                            </Typography>
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem disableGutters={true} divider light>
+                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
+                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
+                                                { company[3].msg}
+                                                < br />
+                                                { company[3].report_date}
+                                            </Typography>
+                                        </ListItemText>
+                                    </ListItem>
+                                    <ListItem disableGutters={true}>
+                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
+                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
+                                                { company[4].msg}
+                                                < br />
+                                                { company[4].report_date}
                                             </Typography>
                                         </ListItemText>
                                     </ListItem>
                                 </List>
                             </div>
-                            ))}
+                            ))} 
                         </MenuItem>
                     </Menu>
                 </div>
@@ -298,7 +335,12 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             </ListItemIcon>
                             <ListItemText primary={t("nodes")} />
                             </ListItem>
-                            <>{ /*LÄGG HÄR*/ }</>
+                            <ListItem button component={Link} to="/admin/add-node-type/" onClick={toggleDrawer(anchorEl, false)}>
+                            <ListItemIcon>
+                                <MemoryIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={t("nodeTypes")} />
+                            </ListItem>
                             </>
                         }
                         <ListItem button component={Link} to="/admin/users" onClick={toggleDrawer(anchorEl, false)}>
