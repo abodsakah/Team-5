@@ -153,10 +153,12 @@ async function parseMsgData(data, topic) {
           console.log("A active workOrder does not already exist despite",
             "node being flagged as REPORTED, assuming workOrder as resolved",
             "and changing node status back to ACTIVE");
-          dataBase.logEvent("Node "+dataObj.nodeId+" workOrder has been resolved.", companyId);
+          dataBase.logEvent("Sensor " + dataObj.nodeId + " workOrder has been resolved, sensor now set to active.", companyId);
           await dataBase.setNodeAsActive(dataObj.nodeId, companyId);
+          return;
         } else {
-          return console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
+          console.log("Active workOrder already exists for node: ", dataObj.nodeId, " company: ", companyId);
+          return;
         }
       }
 
@@ -253,18 +255,17 @@ async function parseMsgData(data, topic) {
 
 
 
-        var workOrderDescription = "Workorder created at asset ";
-        var workOrderTitle = "Work order on node " + nodeInfo.name;
+        var workOrderDescription = "Workorder assigned to asset ";
+        var workOrderTitle = "Workorder for " + nodeInfo.name;
 
         // Get asset associated with the node
-        var nodeAssetId = nodeInfo.is_part_of;
-        var asset = await dataBase.getAssetFromId(nodeAssetId);
+        var asset = await dataBase.getAssetFromNodeId(dataObj.nodeId);
 
         if (asset == undefined) {
           return console.log("Asset to node does not exist, return error");
         }
 
-        workOrderDescription = workOrderDescription.concat(asset.name);
+        workOrderDescription = workOrderDescription.concat(asset.name + ",");
 
         // Get all spaces the asset is located in
         var space = await dataBase.getSpaceFromId(asset.located_in);
@@ -279,7 +280,7 @@ async function parseMsgData(data, topic) {
           childSpaceId = childSpace.is_part_of;
         }
 
-        nodeSpaces.forEach(space => workOrderDescription = workOrderDescription.concat(" in space " + space.name));
+        nodeSpaces.forEach(space => workOrderDescription = workOrderDescription.concat(" in " + space.name + ","));
 
 
         // check if work order for node doesnt already exist

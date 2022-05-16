@@ -238,7 +238,7 @@ function AddSensor({t, apiURL, user}) {
                     setStep(2);
                 }
             }).catch(error => {
-                handleError(t("coudntAddDevice"));
+                handleError(t("couldntAddDevice"));
                 setIsLoading(false);
             }
         );
