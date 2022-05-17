@@ -251,6 +251,16 @@ async function getUsersForCompany(companyId) {
 /**
  * 
  * @param {*} companyId 
+ * @returns A list with all the logical devices for a company that have status "REPORTED"
+ */
+async function getReportedLogicalDeviceForCompany(companyId) {
+    const result = await db.query("CALL reported_logical_devices_for_company(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
+    return result[0];
+}
+
+/**
+ * 
+ * @param {*} companyId 
  * @returns A list with all the logical devices for a company
  */
 async function getLogicalDeviceForCompany(companyId) {
@@ -450,6 +460,7 @@ module.exports = {
     getUsersForCompany,
     getCompanyLog,
     getLogicalDeviceForCompany,
+    getReportedLogicalDeviceForCompany,
     getAmountOfSensorTypes,
     getNodeInfo,
     getNodeFromUid,

@@ -603,6 +603,28 @@ app.get("/api/v1/getUsersForCompany", async (req, res) => {
     }
 });
 
+
+app.get("/api/v1/getReportedLogicalDeviceForCompany", async (req, res) => {
+    try {
+        let apiKey = req.query.key;
+        let keyValid = await dbConnection.validateAPIKey(apiKey);
+        let companyId = req.query.companyId;
+
+        if (keyValid) {
+            try {
+                let devices = await dbConnection.getReportedLogicalDeviceForCompany(companyId);
+                res.status(200).send(devices);
+            } catch (e) {
+                res.status(500).send("Error getting devices");
+            }
+        } else {
+            res.status(401).send("Invalid API key");
+        }
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+})
+
 app.get("/api/v1/getLogicalDeviceForCompany", async (req, res) => {
     try {
         let apiKey = req.query.key;
