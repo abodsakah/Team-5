@@ -113,13 +113,19 @@ async function getCompanies() {
  * @returns the id of the logical device that was created
  */
 async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
-    // check if a logical_device with the same uid already exists 
-    // and delete it if it has status "DELETED"
-    var node = await getNodeFromUid(uid);
-    if (node.status == "DELETED") {
-        // delete logical_device
-        await db.query("CALL delete_logical_device_from_uid(?)",
-            {type: QueryTypes.DELETE, replacements: [uid]});
+    try{
+        // check if a logical_device with the same uid already exists 
+        // and delete it if it has status "DELETED"
+        var node = await getNodeFromUid(uid);
+        if (node.status == "DELETED") {
+            // delete logical_device
+            console.log("node is deleted, deleting...");
+            await db.query("CALL delete_logical_device_from_uid(?)",
+                {type: QueryTypes.DELETE, replacements: [uid]});
+        }
+    }
+    catch (err) {
+        console.log(err);
     }
 
     // add logical_device
