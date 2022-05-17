@@ -113,11 +113,11 @@ function AddUser({t, apiURL}) {
         </Grid>
       </Grid>
       <br />
-      <Button variant="contained" style={{width: '100%'}} color="primary" onClick={() => ValidateAndSubmit()}>
+      <Button variant="outlined" style={{ marginBottom: '1rem', justifyContent: "center" }} color="primary" onClick={() => ValidateAndSubmit()}>
         {t("addUser")}
       </Button>
     </Box>
   )
 }
 
-  export default AddUser
+export default AddUser

@@ -1,4 +1,4 @@
-import {Box, Button, TextField, Typography} from '@mui/material'
+import {Box, Button, Divider, TextField, Typography} from '@mui/material'
 import React, {useState} from 'react'
 
 function AddNodeType({t, apiURL}) {
@@ -18,6 +18,9 @@ function AddNodeType({t, apiURL}) {
     return (
       <Box m={2}>
           <Typography variant="h4">{t("addNodeType")}</Typography>
+        <br />
+        < Divider />
+        <br />
         <br />
           <TextField
             id="outlined-basic"

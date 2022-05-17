@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom';
 
 /* ----------------------------------- MUI ---------------------------------- */
 import { DataGrid } from '@mui/x-data-grid';
-import { Avatar, Box, Fab, Typography } from '@mui/material';
+import { Avatar, Divider, Box, Fab, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 const columns = [
@@ -71,6 +71,10 @@ const UserList = ({t, apiURL, user}) => {
       <Typography variant="h4">
         {user.company_name} {t("users")}
       </Typography>
+      <br />
+      <Divider />
+      <br />
+      <Typography variant="h6">{t('registeredUsers')}</Typography>
       < br />
       <Box style={{height: '550px', width: '100%'}} className="mt-7">
         <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 10}} sx={{ '& > :not(style)': { m: 3 } }}>

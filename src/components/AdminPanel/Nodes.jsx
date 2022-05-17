@@ -2,7 +2,7 @@
 import React from 'react'
 
 /* ----------------------------------- MUI ---------------------------------- */
-import {Box, Typography, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Button} from '@mui/material'
+import {Box, Typography, Paper, Divider, Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Button} from '@mui/material'
 
 /* ------------------------------ React router ------------------------------ */
 import {Link} from 'react-router-dom'
@@ -21,15 +21,15 @@ function Nodes({t, apiURL}) {
     }
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-        }}>
+        <Box m={2}>
             <Typography variant="h4" gutterBottom>{t('nodes')}</Typography>
+            <Divider />
             < br />
-            <Button variant="outlined" style={{marginBottom: '1rem'}} component={Link} to="/admin/add-node">{t('addNode')}</Button>
+
+            <Button variant="outlined" style={{ float: 'left',
+              marginBottom: '2rem',
+              marginTop: '1rem',
+              }} component={Link} to="/admin/add-node">{t('addNode')}</Button>
             {nodes.length > 0 ? 
                 <>
                 <TableContainer component={Paper}>

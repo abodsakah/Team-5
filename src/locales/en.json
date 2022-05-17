@@ -95,5 +95,8 @@
     "name": "Name",
     "sensorPosition": "Sensor position",
     "sensorName": "Sensor name",
-    "position": "position"
+    "position": "position",
+    "registeredCompany": "Registered company",
+    "registeredUsers": "Registered users"  
+
 }
