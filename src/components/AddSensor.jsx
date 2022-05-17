@@ -298,19 +298,20 @@ function AddSensor({t, apiURL, user}) {
             <Scanners getDeviceId={getDeviceId}/>
                 </QrContainers>
                 <div>
-                    <Typography variant="h5" gutterBottom>Sensor name</Typography>
+                    <Typography variant="h5" gutterBottom>{t('sensorName')}</Typography>
                     <TextField
                         id="name"
-                        label="Name"
+                        label={t('name')}
                         variant="outlined"
                         fullWidth
                         onChange={handleDeviceNameChange}
                         value={deviceName}
                     />
-                    
-                    <Typography variant="h5" gutterBottom>Sensor position</Typography>
+                    <br />
+                    <br />
+                    <Typography variant="h5" gutterBottom>{t('sensorPosition')}</Typography>
                     <FormControl fullWidth>
-                        <InputLabel style={{backgroundColor: "white"}} id="node-type">Building</InputLabel>
+                        <InputLabel style={{ backgroundColor: "white", textTransform: "capitalize" }} id="node-type">{t('position')}</InputLabel>
                         <Select
                             labelId='node-type'
                             id='node-type'
