@@ -21,6 +21,7 @@ import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import MemoryIcon from '@mui/icons-material/Memory';
 import StyleIcon from '@mui/icons-material/Style';
 import HistoryIcon from '@mui/icons-material/History';
+import { minHeight } from '@mui/system';
 
 
 const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName, apiURL, user}) => {
@@ -176,65 +177,71 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* HistoryLog List */}
-                            <MenuItem style={{pointerEvents: 'none', minWidth: '290px', display: 'flex', flexDirection: 'column', alignContent: 'center', paddingLeft: '2rem', paddingRight: '2rem'}}>
-                            <Typography variant="h6" >
-                                        {t("latestEvents")}
-                                    </Typography>
-                            {companiesLog.map( (company) => (
-                            <div>
-                                <List sx={{margin: "0 0.5em", height: '50vh'}}>
-                                    
-                                    <ListItem disableGutters={true} divider light >
-                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
-                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
-                                                { company[0].msg}
-                                                < br />
-                                                { company[0].report_date}
-                                            </Typography>
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem disableGutters={true} divider light>
-                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
-
-                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
-                                                { company[1].msg}
-                                                < br />
-                                                { company[1].report_date}
-                                            </Typography>
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem disableGutters={true} divider light>
-                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
-
-                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
-                                                { company[2].msg}
-                                                < br />
-                                                { company[2].report_date}
-                                            </Typography>
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem disableGutters={true} divider light>
-                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
-                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
-                                                { company[3].msg}
-                                                < br />
-                                                { company[3].report_date}
-                                            </Typography>
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem disableGutters={true}>
-                                        <ListItemText style={{ padding: "1em 0.1em" }}>  
-                                            <Typography variant="p" sx={{ fontSize: "16px"}}>
-                                                { company[4].msg}
-                                                < br />
-                                                { company[4].report_date}
-                                            </Typography>
-                                        </ListItemText>
-                                    </ListItem>
-                                </List>
+                            <div style={{ padding: "1em", minHeight: "580px" }}>
+                                <Typography variant="h6" >
+                                    {t("latestEvents")}
+                                </Typography>
+                                {companiesLog.map( (company) => (
+                                    <List sx={{ height: '50vh'}}>
+                                        
+                                        <ListItem disableGutters={true} divider light >
+                                        <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                <Typography>
+                                                    { company[0].msg}
+                                                    < br />
+                                                </Typography>
+                                                <Typography sx={{ fontSize: "14px"}}>
+                                                    { company[0].report_date}
+                                                </Typography>
+                                            </ListItemText>
+                                        </ListItem>
+                                        <ListItem disableGutters={true} divider light>
+                                        <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                <Typography>
+                                                    { company[1].msg}
+                                                    < br />
+                                                </Typography>
+                                                <Typography sx={{ fontSize: "14px"}}>
+                                                    { company[1].report_date}
+                                                </Typography>
+                                            </ListItemText>
+                                        </ListItem>
+                                        <ListItem disableGutters={true} divider light>
+                                            <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                <Typography>
+                                                    { company[2].msg}
+                                                    < br />
+                                                </Typography>
+                                                <Typography sx={{ fontSize: "14px"}}>
+                                                    { company[2].report_date}
+                                                </Typography>
+                                            </ListItemText>
+                                        </ListItem>
+                                        <ListItem disableGutters={true} divider light>
+                                            <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                <Typography>
+                                                    { company[3].msg}
+                                                    < br />
+                                                </Typography>
+                                                <Typography sx={{ fontSize: "14px"}}>
+                                                    { company[3].report_date}
+                                                </Typography>
+                                            </ListItemText>
+                                        </ListItem>
+                                        <ListItem disableGutters={true}>
+                                            <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                <Typography>
+                                                    { company[4].msg}
+                                                    < br />
+                                                </Typography>
+                                                <Typography sx={{ fontSize: "14px"}}>
+                                                    { company[4].report_date}
+                                                </Typography>
+                                            </ListItemText>
+                                        </ListItem>
+                                    </List>
+                                ))} 
                             </div>
-                            ))} 
-                        </MenuItem>
                     </Menu>
                 </div>
                 {/* End HistoryLog Button */}
