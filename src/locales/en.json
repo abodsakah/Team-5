@@ -97,5 +97,7 @@
     "sensorName": "Sensor name",
     "position": "position",
     "registeredUsers": "Registered users",
-    "registeredCompany": "Registered companies"
+    "registeredCompany": "Registered companies",
+    "nodeTypeCreated" : "Node type created",
+    "errorOccuredWhileCreatingNode" : "Error occured while creating node type"
 }

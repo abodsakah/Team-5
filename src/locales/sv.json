@@ -97,5 +97,8 @@
     "name": "Namn",
     "sensorPosition": "Sensors position",
     "position": "position",
-    "registeredUsers": "Registrerade användare"  
+    "registeredUsers": "Registrerade användare",
+    "nodeTypeCreated" : "Nodtyp skapades",
+    "errorOccuredWhileCreatingNode" : "Ett fel uppstod när nodtypen skulle skapas"
+
 }
