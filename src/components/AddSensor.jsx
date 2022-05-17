@@ -290,27 +290,30 @@ function AddSensor({t, apiURL, user}) {
             justifyContent: 'center',
             }}>
         { step === 1 ?
-                    <>
-              <QrContainers>
-            <Typography variant="h5" style={{
-                textAlign: 'center',
-            }} gutterBottom>{t('scanQRAddNode')}</Typography>
+            <>
+            <QrContainers>
+                <Typography variant="h5" style={{
+                    textAlign: 'center',
+                }} gutterBottom>{t('scanQRAddNode')}
+                </Typography>
             <Scanners getDeviceId={getDeviceId}/>
-                </QrContainers>
-                <div>
+            </QrContainers>
+                <div >
                     <Typography variant="h5" gutterBottom>{t('sensorName')}</Typography>
                     <TextField
                         id="name"
                         label={t('name')}
                         variant="outlined"
-                        fullWidth
                         onChange={handleDeviceNameChange}
                         value={deviceName}
+                        style={{
+                            marginBottom: '1rem',
+                            minWidth: '18em'
+                        }}
                     />
                     <br />
-                    <br />
                     <Typography variant="h5" gutterBottom>{t('sensorPosition')}</Typography>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth >
                         <InputLabel style={{ backgroundColor: "white", textTransform: "capitalize" }} id="node-type">{t('position')}</InputLabel>
                         <Select
                             labelId='node-type'
@@ -376,7 +379,7 @@ function AddSensor({t, apiURL, user}) {
                             {t('addNode')}
                         </Button>
                     }
-                        </div>  
+                </div>  
                     </>
                     :
                     <>

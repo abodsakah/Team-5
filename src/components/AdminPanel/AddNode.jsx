@@ -171,7 +171,7 @@ function AddNode({t, apiURL}) {
                 <Typography variant="h5" gutterBottom>{t('nodeId')}</Typography>
                 <TextField
                     id="outlined-basic"
-                    label="uid"
+                    label={t('nodeId')}
                     variant="outlined"
                     value={deviceId}
                     onChange={onUidTextChange}
@@ -183,7 +183,7 @@ function AddNode({t, apiURL}) {
                 
                 <Typography variant="h5" gutterBottom>{t('nodeType')}</Typography>
                 <FormControl fullWidth>
-                    <InputLabel style={{backgroundColor: "white"}} id="node-type">Node type</InputLabel>
+                    <InputLabel style={{backgroundColor: "white"}} id="node-type">{t('nodeType')}</InputLabel>
                     <Select
                         labelId='node-type'
                         id='node-type'
@@ -196,11 +196,11 @@ function AddNode({t, apiURL}) {
                     </Select>
                 </FormControl>
                 <br /><br />
-                <Typography variant="h5" gutterBottom>{t('nodeCompany')}</Typography>
+                <Typography variant="h5" gutterBottom>{t('company')}</Typography>
                 <FormControl fullWidth>
                     {companies.length > 0 ?
                         <>
-                            <InputLabel style={{backgroundColor: "white"}} id='company-id'>Company</InputLabel>
+                            <InputLabel style={{backgroundColor: "white"}} id='company-id'>{t('company')}</InputLabel>
                             <Select
                                 labelId='company-id'
                                 id='company-id'
