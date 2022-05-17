@@ -106,10 +106,10 @@ async function getCompanies() {
  *  Used to add a new logical device to the database
  * @param {*} uid The unique id of the device
  * @param {*} name The display name of the logical device
- * @param {*}    The action that triggers a warning from the devices data
- * @param {*} install_date The install date of the device
  * @param {*} is_part_of What asset the device is part of
+ * @param {*} type The type of node
  * @param {*} status The status of the device
+ * @param {*} companyId The company id the node belongs to
  * @returns the id of the logical device that was created
  */
 async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
