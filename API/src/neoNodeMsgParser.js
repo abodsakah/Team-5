@@ -347,12 +347,14 @@ async function parseMsgData(data, topic) {
       // if node is not null
       var uid = dataObj.uidHex;
       var node = await dataBase.getNodeFromUid(uid);
-      console.log("setupRequest nodeStatus: " + node.status);
 
       if (node == null) {
         console.log("setupRequest node uid not found, database returned NULL");
         return; // exit early if we cant find node in database.
       }
+
+      console.log("setupRequest nodeStatus: " + node.status);
+
       if (node.status == "ACTIVE") {
         await neoNodeMsgSender.sendWesSetupResponse(node.id, uid, node.app_settings, node.company_id);
       }
