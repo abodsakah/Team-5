@@ -36,7 +36,7 @@
     "adminPanel": "Admin Panel",
     "companiesInformation": "Companies Information",
     "companyAdminInformation": "Company Admin Information",
-    "failing": "Failing",
+    "reported": "Reported",
     "errMessage": "Error message",
     "errMessages": "Error messages",
     "node": "Node",
@@ -85,18 +85,11 @@
     "lastName": "Last name",
     "username": "Username",
     "email": "Email",
+    "addUser": "Add User",
     "userInformation": "User Information",
     "role": "Role",
     "tractAdmin": "Tract Admin",
     "companyAdmin": "Company Admin",
     "companyWorker": "Company Worker", 
-    "latestEvents": "Latest events",
-    "pleaseEnter": "Please fill all the fields",
-    "name": "Name",
-    "sensorPosition": "Sensor position",
-    "sensorName": "Sensor name",
-    "position": "position",
-    "registeredCompany": "Registered company",
-    "registeredUsers": "Registered users"  
-
+    "latestEvents": "Latest events"
 }

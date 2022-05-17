@@ -77,20 +77,12 @@ const Index = ({text, cookies, t}) => {
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} style={{padding: '1rem'}}>
                         <Typography variant="h4" component="h2">
-                            {t('failing')}
+                            {t('reported')}
                         </Typography>
                         <DeviceTable devices={rows} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={4} style={{padding: '1rem', marginBottom: '1rem'}}>
-                        <Typography variant="h4" component="h2">
-                            {t('errMessages')}
-                        </Typography>
-                        <ErrTable errors={errors} />
-                    </Paper>
-                </Grid>
-                <Grid item xs={12} md={13}>
                     <Paper elevation={5} style={{padding: '1rem', marginBottom: '1rem'}}>
                         <Typography variant="h4" component="h2">
                             {t('mostFaulty')}
