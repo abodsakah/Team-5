@@ -113,7 +113,18 @@ async function getCompanies() {
  * @returns the id of the logical device that was created
  */
 async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
-    const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)", {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
+    // check if a logical_device with the same uid already exists 
+    // and delete it if it has status "DELETED"
+    var node = await getNodeFromUid(uid);
+    if (node.status == "DELETED") {
+        // delete logical_device
+        await db.query("CALL delete_logical_device_from_uid(?)",
+            {type: QueryTypes.DELETE, replacements: [uid]});
+    }
+
+    // add logical_device
+    const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)",
+        {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
     logEvent(`Sensor ${name} added`, companyId);
     return result;
 }
