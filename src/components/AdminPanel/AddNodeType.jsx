@@ -1,17 +1,32 @@
 import {Box, Button, Divider, TextField, Typography} from '@mui/material'
 import React, {useState} from 'react'
+import axios from 'axios';
 
 function AddNodeType({t, apiURL}) {
     const [name, setName] = React.useState('');
-    const [settingID, setSettings] = React.useState('');
+    const [appSetting, setAppSetting] = React.useState('');
     const [setLoading] = React.useState(false);
 
 
     let ValidateAndSubmitNodeType = () => {
-        if ( name === '' || settingID === '') {
+        if ( name === '' || appSetting === '') {
             alert(`${t('pleaseEnter')}`);
         } else {
-            setLoading(true);
+          let data = new FormData();
+          data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+          data.append('typeName', name);
+          data.append('appSetting', appSetting);
+
+          axios.post(`${apiURL}/createNodeType`, data)
+            .then(res => {
+                console.log(res);
+                alert(`${t('nodeTypeCreated')}`);
+            })
+            .catch(err => {
+                console.log(err);
+                alert(`${t('errorOccuredWhileCreatingNode')}`);
+            });
+          
         }
     }
   
@@ -36,7 +51,7 @@ function AddNodeType({t, apiURL}) {
             label={'SettingsID'}
             variant="outlined"
             style={{width: '100%'}}
-            onChange={(e) => setSettings(e.target.value)}
+            onChange={(e) => setAppSetting(e.target.value)}
           />
         <br />
         <br />

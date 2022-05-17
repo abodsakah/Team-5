@@ -809,6 +809,25 @@ app.post('/api/v1/getNodesOfType', async (req, res) => {
     }
 });
 
+app.post('/api/v1/createNodeType', async (req, res) => { 
+    try {
+        let apiKey = req.body.key;
+        let keyValid = await dbConnection.validateAPIKey(apiKey);
+        let typeName = req.body.typeName;
+        let appSetting = req.body.appSetting;
+
+        if (keyValid) {
+            await dbConnection.createNodeType(typeName, appSetting);
+            res.status(200).send({"status": "Success"});
+        } else {
+            res.status(401).send("Invalid API key");
+        }
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send(err.message);
+    }
+})
+
 app.get("*", (req, res) => {
     res.status(404).send("Not found");
 });

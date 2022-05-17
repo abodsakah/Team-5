@@ -440,6 +440,16 @@ async function updateThreshold(nodeId, action, value, companyId) {
     return result;
 }
 
+/**
+ * 
+ * @param {*} typeName The name of the node
+ * @param {*} appSetting The application setting of the node
+ */
+async function createNodeType(typeName, appSetting) {
+    let result = await db.query("INSERT INTO `node_types` (`name`, `app_settings`) VALUES (?, ?); ", {type: QueryTypes.INSERT, replacements: [typeName, appSetting]});
+    return result;
+}
+
 module.exports = {
     getApiKeys,
     validateAPIKey,
@@ -479,6 +489,7 @@ module.exports = {
     updateCompanyInfo,
     logEvent,
     updateThreshold,
-    getThresholdForNode
+    getThresholdForNode,
+    createNodeType
 }
 
