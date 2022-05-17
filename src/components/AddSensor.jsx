@@ -372,11 +372,11 @@ function AddSensor({t, apiURL, user}) {
                     }
                     {formIsValid ?
                         <Button variant="outlined" color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDevice}>
-                            {t('addNode')}
+                            {t('addSensor')}
                         </Button>
                         :
                         <Button variant="outlined" disabled color="primary" style={{width: '100%', marginTop: '1rem', marginBottom: '1rem'}} onClick={sendDevice}>
-                            {t('addNode')}
+                            {t('addSensor')}
                         </Button>
                     }
                 </div>  
