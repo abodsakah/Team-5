@@ -102,7 +102,9 @@ const DeviceCategory = ({user, t, apiURL}) => {
 
   return ( 
     <main>
-      <h1 style={{ textTransform: 'capitalize' }}>{category}</h1>
+      <Typography variant="h4">
+        {category}
+      </Typography>
       {/* Add sensor Icon */}
       <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ fontSize: 25, padding: '1rem', marginBottom: '1rem', '& > :not(style)': { m: 1 } }}>
         <Fab variant="extended" size="large" color="primary"  aria-label="add" component={Link} to={'/devices/add-sensor'} >

@@ -91,5 +91,9 @@
     "companyAdmin": "Company Admin",
     "companyWorker": "Company Worker", 
     "latestEvents": "Latest events",
-    "pleaseEnter": "Please fill all the fields"
+    "pleaseEnter": "Please fill all the fields",
+    "name": "Name",
+    "sensorPosition": "Sensor position",
+    "sensorName": "Sensor name",
+    "position": "position"
 }

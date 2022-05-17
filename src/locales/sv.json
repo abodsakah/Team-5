@@ -91,5 +91,9 @@
     "companyAdmin": "Företagsadmin",
     "companyWorker": "Företagsanställd",
     "latestEvents": "Senaste händelserna",
-    "pleaseEnter": "Fyll i samtliga fält"
+    "pleaseEnter": "Fyll i samtliga fält",
+    "sensorName": "Namn för sensor",
+    "name": "Namn",
+    "sensorPosition": "Sensors position",
+    "position": "position"
 }
