@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography, Snackbar, Alert} from '@mui/material';
 import { QrReader } from 'react-qr-reader'
 import LoadingOverlay from '../LoadingOverlay';
+import axios from 'axios';
 
 const Scanner = ({getDeviceId}) => {
     const [data, setData] = useState('');
@@ -74,6 +75,8 @@ function AddNode({t, apiURL}) {
     const [isLoading, setIsLoading] = React.useState(false); // is the loading indicator visible
     const [errors, setErrors] = React.useState([]); // the errors that are returned from the server
 
+    const [nodeTypes, setNodeTypes] = React.useState([]); // the node types that are available
+
     // get data from qr code
     const [deviceId, setDeviceId] = React.useState('');
     const [snackBarstatus, setSnackBarstatus] = React.useState(false);
@@ -108,6 +111,16 @@ function AddNode({t, apiURL}) {
         setcompany(event.target.value); 
     }
 
+    const getNodeTypes = async () => { // get the node types
+        axios.get(`${apiURL}/nodeTypes?key=${process.env.REACT_APP_TRACT_API_KEY}`)
+        .then(res => {
+            setNodeTypes(res.data);
+        })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     if (companies.length === 0) {
         fetch(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`)
             .then(res => res.json())
@@ -120,6 +133,10 @@ function AddNode({t, apiURL}) {
                 }
             )
     }
+
+    useEffect(() => {
+        getNodeTypes();
+    }, []);
     
     const sendDevice = () => {
         setIsLoading(true);
@@ -189,10 +206,10 @@ function AddNode({t, apiURL}) {
                         id='node-type'
                         value={nodeType}
                         onChange={handleNodeTypeChange}
-                    >
-                        <MenuItem value={1}>Temperature and Humidity</MenuItem>
-                        <MenuItem value={2}>Switch</MenuItem>
-                        <MenuItem value={3}>Analog wheel</MenuItem>
+                        >
+                        {nodeTypes.map((nodeType, index) => (
+                            <MenuItem key={nodeType.id} value={nodeType.type_number}>{nodeType.name}</MenuItem>
+                            ))}
                     </Select>
                 </FormControl>
                 <br /><br />
