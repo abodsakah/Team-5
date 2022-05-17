@@ -138,6 +138,13 @@ async function parseMsgData(data, topic) {
       // We also want to do a retry removing a node if we get a message from it with status
       // "DELETED" or "TBD" (to be deleted)
       var nodeStatus = await dataBase.getNodeStatus(dataObj.nodeId, companyId);
+
+      // return early if database query returns nothing.
+      if (nodeStatus == null) {
+        console.log("Node " + dataObj.nodeId + " not found, returning.");
+        return;
+      }
+
       nodeStatus = nodeStatus.status;
       console.log("Status: " + nodeStatus);
       if (nodeStatus == "DELETED" || nodeStatus == "TBD") {
