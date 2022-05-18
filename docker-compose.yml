@@ -44,9 +44,6 @@ services:
   eclipse-mosquitto:
     image: eclipse-mosquitto
     ports:
-      - '1883:1883'
-      - '9001:9001'
-      - '8083:8083'
       - '8883:8883'
     volumes:
       - './Docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf'

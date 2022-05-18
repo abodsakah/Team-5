@@ -6,13 +6,12 @@ const MQTT = require('async-mqtt');
 const options = {
   clean: true,           // retain session
   // Authentication information
-  clientId: 'NodeJs-test-client',
-  username: 'flex',
-  password: 'mqtt-flex',
+  clientId: 'NodeJs-test-client123',
+  username: 'tract',
+  password: 'mqtt-tract',
 }
 
-const client = MQTT.connect('mqtt://noahhakansson.com:8883/', options);
-// const client = MQTT.connect('ws://broker.emqx.io/mqtt:8083', options);
+const client = MQTT.connect('mqtt://localhost:8883/', options);
 
 // When passing async functions as event listeners, make sure to have a try
 // catch block
