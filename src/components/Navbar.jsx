@@ -53,6 +53,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
     }),
     }));
     
+    const n = 5; 
     const drawerWidth = 240;
 
     const theme = useTheme(); // Get the theme from the context
@@ -178,67 +179,25 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                     >
                         {/* HistoryLog List */}
                             <div style={{ padding: "1em", minHeight: "580px" }}>
-                                <Typography variant="h6" >
-                                    {t("latestEvents")}
-                                </Typography>
                                 {companiesLog.map( (company) => (
                                     <List sx={{ height: '50vh'}}>
-                                        
-                                        <ListItem disableGutters={true} divider light >
-                                        <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
-                                                <Typography>
-                                                    { company[0].msg}
-                                                    < br />
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "14px"}}>
-                                                    { company[0].report_date}
-                                                </Typography>
-                                            </ListItemText>
-                                        </ListItem>
-                                        <ListItem disableGutters={true} divider light>
-                                        <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
-                                                <Typography>
-                                                    { company[1].msg}
-                                                    < br />
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "14px"}}>
-                                                    { company[1].report_date}
-                                                </Typography>
-                                            </ListItemText>
-                                        </ListItem>
-                                        <ListItem disableGutters={true} divider light>
-                                            <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
-                                                <Typography>
-                                                    { company[2].msg}
-                                                    < br />
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "14px"}}>
-                                                    { company[2].report_date}
-                                                </Typography>
-                                            </ListItemText>
-                                        </ListItem>
-                                        <ListItem disableGutters={true} divider light>
-                                            <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
-                                                <Typography>
-                                                    { company[3].msg}
-                                                    < br />
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "14px"}}>
-                                                    { company[3].report_date}
-                                                </Typography>
-                                            </ListItemText>
-                                        </ListItem>
-                                        <ListItem disableGutters={true}>
-                                            <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
-                                                <Typography>
-                                                    { company[4].msg}
-                                                    < br />
-                                                </Typography>
-                                                <Typography sx={{ fontSize: "14px"}}>
-                                                    { company[4].report_date}
-                                                </Typography>
-                                            </ListItemText>
-                                        </ListItem>
+                                        <Typography variant="h6" >
+                                            {(Object.keys(company).length)} {t("latestEvents")}
+                                        </Typography>
+                                        { company.length }
+                                        {Array.apply(null, { length: (Object.keys(company).length) }).map((e, i) => (
+                                            <ListItem disableGutters={true} divider light >
+                                                <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                    <Typography>
+                                                        { company[i].msg}
+                                                        < br />
+                                                    </Typography>
+                                                    <Typography sx={{ fontSize: "14px"}}>
+                                                        { company[i].report_date}
+                                                    </Typography>
+                                                </ListItemText>
+                                            </ListItem>
+                                        ))}
                                     </List>
                                 ))} 
                             </div>
