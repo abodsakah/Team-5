@@ -3,7 +3,6 @@
 const neoNodeMsgSender = require("./neoNodeMsgSender");
 const mqttGateway = require('./gatewayMqttConnect');
 const dataBase = require('./dbConnection');
-const gatewayMqttConnect = require("./gatewayMqttConnect");
 const mobilixClient = require("./mobilixApiClient");
 
 // Module with functions for handling
@@ -51,7 +50,7 @@ function getMsgQueue() {
 }
 
 // event will trigger when a message comes in on a topic we are subscribed too.
-gatewayMqttConnect.mqttClient.on('message', function(topic, message) {
+mqttGateway.mqttClient.on('message', function(topic, message) {
   // call parser function.
   parseMsgData(message, topic);
 })
@@ -352,6 +351,7 @@ async function parseMsgData(data, topic) {
 
       // Gets node info from database using UID and sends a setupResponse
       // if node is not null
+      console.log("wesSetupRequest:",dataObj);
       var uid = dataObj.uidHex;
       var node = await dataBase.getNodeFromUid(uid);
 

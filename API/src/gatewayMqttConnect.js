@@ -15,8 +15,8 @@ const options = {
   password: 'mqtt-flex',
 }
 
-const IN_TOPIC = 'In/';
-const OUT_TOPIC = 'Out/#';
+const IN_TOPIC = 'In/'; // to gateways
+const OUT_TOPIC = 'Out/#'; // from gateways
 
 const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
 // const client = MQTT.connect('mqtt://localhost:8883', options);
@@ -28,11 +28,17 @@ const setupSubs =
   console.log('Connecting to MQTT topic...');
   try {
     // Subscribe to the Out/# wildcard topic
+    console.log("MQTT: subscribing...");
     await client.subscribe(OUT_TOPIC);
     console.log('Connected = ' + client.connected);
-  } catch (e) {
-    // Do something about it!
-    console.log(e.stack);
+
+    // send a command to start WES server on wildcard topic to all gateways
+    var startWesCmd = '{"objectType": "wesCmd","cmd": 1}';
+    console.log("MQTT: Sending startWesCmd...");
+    await publishMsg(startWesCmd, "all");
+  }
+  catch (err) {
+    console.log(err.stack);
     process.exit();
   }
 }
