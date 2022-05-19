@@ -7,8 +7,14 @@ services:
       - './db:/docker-entrypoint-initdb.d'
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_ROOT_PASSWORD=123456789
       - MYSQL_ROOT_HOST=%
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_USER=tractteam
+      - MYSQL_PASSWORD=12345678
+      - MYSQL_DATABASE=tract
+    ports:
+      - '3310:3306'
     healthcheck:
       test:
         - CMD

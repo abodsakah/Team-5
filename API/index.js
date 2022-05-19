@@ -815,10 +815,9 @@ app.post('/api/v1/createNodeType', async (req, res) => {
         let keyValid = await dbConnection.validateAPIKey(apiKey);
         let typeName = req.body.typeName;
         let appSetting = req.body.appSetting;
-        let typeNumber = req.body.typeNumber;
 
         if (keyValid) {
-            await dbConnection.createNodeType(typeName, appSetting, typeNumber);
+            await dbConnection.createNodeType(typeName, appSetting);
             res.status(200).send({"status": "Success"});
         } else {
             res.status(401).send("Invalid API key");
