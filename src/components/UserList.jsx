@@ -102,8 +102,6 @@ const UserList = ({t, apiURL, user}) => {
           rows={rows}
           loading = {rows.length === 0}
           columns={columns}
-          
-          checkboxSelection
         />
       </Box>
     </main>
