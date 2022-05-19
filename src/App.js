@@ -130,10 +130,6 @@ function App() {
         }
         return data; // return the user data to update the DOM
       });
-
-      // fetch(`${apiURL}/getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
-        
-      // });
     }
   }
 

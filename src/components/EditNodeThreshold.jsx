@@ -52,8 +52,6 @@ const EditNodeThreshhold  = ({t, apiURL, user}) => {
     data.append('value', threshold);
     data.append('companyid', user.company_id);
 
-    console.log(data);
-
     axios.post(`${apiURL}/updateThreshold`, data).then(res => {
       if (res.data.status === 'success') {
         setIsLoadingOverlay(false);
