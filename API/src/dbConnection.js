@@ -5,6 +5,7 @@ const dotenv = require('dotenv').config();
 
 
 // init db
+console.log("Connecting to db with login: ", dotenv.parsed);
 const db = new Sequelize(dotenv.parsed.DB_NAME, dotenv.parsed.DB_LOGIN, dotenv.parsed.DB_PASSWORD, {
     host: dotenv.parsed.DB_HOST,
     dialect: 'mysql',
@@ -462,8 +463,8 @@ async function updateThreshold(nodeId, action, value, companyId) {
  * @param {*} typeName The name of the node
  * @param {*} appSetting The application setting of the node
  */
-async function createNodeType(typeName, appSetting, typeNumber) {
-    let result = await db.query("INSERT INTO `node_types` (`name`, `app_settings`) VALUES (?, ?, ?); ", {type: QueryTypes.INSERT, replacements: [typeName, appSetting]});
+async function createNodeType(typeName, appSetting) {
+    let result = await db.query("INSERT INTO `node_types` (`name`, `app_settings`) VALUES (?, ?); ", {type: QueryTypes.INSERT, replacements: [typeName, appSetting]});
     return result;
 }
 

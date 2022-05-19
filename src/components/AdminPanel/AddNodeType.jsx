@@ -5,8 +5,6 @@ import axios from 'axios';
 function AddNodeType({t, apiURL}) {
     const [name, setName] = React.useState('');
     const [appSetting, setAppSetting] = React.useState('');
-    const [setLoading] = React.useState(false);
-    const [typeNumber, setTypeNumber] = React.useState('');
 
     let ValidateAndSubmitNodeType = () => {
         if ( name === '' || appSetting === '') {
@@ -16,7 +14,6 @@ function AddNodeType({t, apiURL}) {
           data.append('key', process.env.REACT_APP_TRACT_API_KEY);
           data.append('typeName', name);
           data.append('appSetting', appSetting);
-          data.append('typeNumber', typeNumber);
 
           axios.post(`${apiURL}/createNodeType`, data)
             .then(res => {

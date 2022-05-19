@@ -1,52 +1,24 @@
 import * as React from 'react';
-
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams  } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
-import {Card, CardContent, Grid, Typography, Paper} from '@mui/material';
+import {Card, CardContent, Grid, Typography, Paper, CircularProgress} from '@mui/material';
 import DeviceTable from './DeviceTable';
 import ErrTable from './ErrTable';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import MostFaulty from './MostFaulty';
+import axios from 'axios';
 
 
 
 
 
-const Index = ({text, cookies, t}) => {
+const Index = ({t, apiURL, user}) => {
 
-    // Tablecontent
-    function createData(name, calories, status, carbs, protein) {
-        return { name, calories, status, carbs, protein };
-    }
-
-    let rows = [
-        createData('hiss Entré 1', 18, 'status', 24, 4.0),
-        createData('temperatursensor 3', 18, 'status', 24, 4.0),
-        createData('dörr 3', 237, 'status', 37, 4.3),
-    ]
-
-    let errors = [
-        {
-            name: 'hiss Entré 1',
-            msg: 'Error 1',
-            status: 'error',
-            dateAndTime: '2020-01-01 12:00:00'
-        },
-        {
-            name: 'hiss Entré 2',
-            msg: 'Error 2',
-            status: 'Warning',
-            dateAndTime: '2020-01-01 12:00:00'
-        },
-        {
-            name: 'hiss Entré 3',
-            msg: 'Error 3',
-            status: 'error',
-            dateAndTime: '2020-01-01 12:00:00'
-        },
-    ]
+    const [reportedDevicesLoading, setReportedDevicesLoading] = React.useState(true);
+    const [reportedDevices, setReportedDevices] = React.useState([]);
 
     let mostF = [
         {
@@ -63,7 +35,23 @@ const Index = ({text, cookies, t}) => {
         },
     ]
         
-    
+    const getReportedDevices = () => {
+        setReportedDevicesLoading(true);
+        setReportedDevices([]);
+        axios.get(`${apiURL}/getReportedLogicalDeviceForCompany?key=${process.env.REACT_APP_TRACT_API_KEY}&companyId=${user.company_id}`).then(res => {
+            // convert object of objects to array of objects
+
+            let rdArray = Object.keys(res.data).map(function(k) { return res.data[k] });
+            setReportedDevices(rdArray);
+            setReportedDevicesLoading(false);
+        }).catch(err => {
+            alert(err.message)
+        });
+    }
+
+    useEffect(() => {
+        getReportedDevices();
+    }, []);
 
     return (
         <>
@@ -79,7 +67,9 @@ const Index = ({text, cookies, t}) => {
                         <Typography variant="h4" component="h2">
                             {t('reported')}
                         </Typography>
-                        <DeviceTable devices={rows} />
+                        {reportedDevicesLoading ? <CircularProgress /> : 
+                            reportedDevices.length > 0 ? <DeviceTable devices={reportedDevices} /> : <Typography variant="h5">{t('noReportedDevices')}</Typography>
+                        }
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>

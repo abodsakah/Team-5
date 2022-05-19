@@ -94,7 +94,6 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
     const getCompanyLog = () => {
         fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
             setCompaniesLog([res]);
-            console.log(res);
           });
         };
     
