@@ -163,7 +163,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         { row.name }
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                          Lite info <b>{ row.installed }</b>
+                          < br/><b>{ row.installed }</b>
                         </Typography>
                       </CardContent>
                     </Box>
