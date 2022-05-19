@@ -739,7 +739,6 @@ app.post("/api/v1/addLogicalDevice", async (req, res) => {
         let deviceUid = req.body.deviceUid;
         let deviceName = req.body.deviceName;
         let is_part_of = req.body.is_part_of;
-        console.log(companyId)
         let node = await dbConnection.getPreloadedNode(deviceUid, companyId);
         node = node[0][0]
 
@@ -760,6 +759,7 @@ app.post("/api/v1/addLogicalDevice", async (req, res) => {
             res.status(401).send("Invalid API key");
         }
     } catch (err) {
+        console.log(err.message)
         res.status(500).send(err.message);
     }
 });
