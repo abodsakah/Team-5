@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: frontend
+    spec:
+      containers:
+        - args:
+            - bash
+            - -c
+            - cd home/node/app && yarn && yarn global add serve && yarn run start-serve
+          image: node
+          name: nodejs
+          ports:
+            - containerPort: 3000
+            - containerPort: 9000
+          resources: {}
+          volumeMounts:
+            - mountPath: /home/node/app
+              name: frontend-claim0
+            - mountPath: /home/node/app/node_modules
+              name: node-modules
+      restartPolicy: Always
+      volumes:
+        - name: frontend-claim0
+          persistentVolumeClaim:
+            claimName: frontend-claim0
+        - name: node-modules
+          persistentVolumeClaim:
+            claimName: node-modules
+status: {}
