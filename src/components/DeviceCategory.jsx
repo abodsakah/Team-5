@@ -143,6 +143,9 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         {row.status === "ACTIVE" ? 
                           <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'green', padding: "0 0.45em"}} />
                           :
+                          row.status === "REPORTED" ?
+                            <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'red', padding: "0 0.45em"}} />
+                            :
                           row.status === "SETUP" ?
                             <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'orange', padding: "0 0.45em"}} />
                             :
