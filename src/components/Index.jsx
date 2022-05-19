@@ -65,7 +65,7 @@ const Index = ({t, apiURL, user}) => {
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} style={{padding: '1rem'}}>
                         <Typography variant="h4" component="h2">
-                            {t('reported')}
+                            {t('reported')} ({ reportedDevices.length })
                         </Typography>
                         {reportedDevicesLoading ? <CircularProgress /> : 
                             reportedDevices.length > 0 ? <DeviceTable devices={reportedDevices} /> : <Typography variant="h5">{t('noReportedDevices')}</Typography>
