@@ -91,11 +91,11 @@ function AddSensor({t, apiURL, user}) {
 
     const [deviceType, setDeviceType] = React.useState(null);
 
-    const [choosenTemp, setChoosenTemp] = React.useState(0);
-    const [choosenSwitch, setChoosenSwitch] = React.useState(0);
-    const [choosenAnalog, setChoosenAnalog] = React.useState(0);
-    const [action, setAction] = React.useState('');
-    const [threshold, setThreshold] = React.useState('');
+    const [choosenTemp, setChoosenTemp] = React.useState(10);
+    const [choosenSwitch, setChoosenSwitch] = React.useState(1);
+    const [choosenAnalog, setChoosenAnalog] = React.useState(1000);
+    const [action, setAction] = React.useState('UP');
+    const [threshold, setThreshold] = React.useState('1');
 
     const [formIsValid, setFormIsValid] = React.useState(false);
     const [error, setError] = React.useState('');
@@ -246,7 +246,7 @@ function AddSensor({t, apiURL, user}) {
     }
 
     const sendDeviceType = () => {
-        if (action && action != '0' && action !== threshold) {
+        if (action && action != '' && threshold && threshold != '') { 
             setIsLoading(true);
             let data = new FormData();
             data.append('key', process.env.REACT_APP_TRACT_API_KEY);
