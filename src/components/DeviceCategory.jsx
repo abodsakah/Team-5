@@ -127,7 +127,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         { row.name }
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                          Lite info <b>{ row.installed }</b>
+                          < br/><b>{ row.installed }</b>
                         </Typography>
                       </CardContent>
                     </Box>
@@ -143,6 +143,9 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         {row.status === "ACTIVE" ? 
                           <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'green', padding: "0 0.45em"}} />
                           :
+                          row.status === "REPORTED" ?
+                            <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'red', padding: "0 0.45em"}} />
+                            :
                           row.status === "SETUP" ?
                             <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'orange', padding: "0 0.45em"}} />
                             :
