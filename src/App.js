@@ -176,7 +176,7 @@ function App() {
           <h1>{error}</h1>
           {/* The application router */}
           <Routes>
-            <Route path="/" element={<Index cookies={cookies} t={t}  />} />
+            <Route path="/" element={<Index apiURL={apiURL} user={cookies.get("user")} cookies={cookies} t={t}  />} />
             <Route path="/login" element={<Login t={t} />} />
             <Route path="/devices" element={<Devices t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
             <Route path="/devices/:category" element={<DeviceCategory t={t} user={cookies.get("user")} apiURL={apiURL}/>} />

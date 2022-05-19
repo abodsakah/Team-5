@@ -99,5 +99,6 @@
     "registeredUsers": "Registered users",
     "registeredCompany": "Registered companies",
     "nodeTypeCreated" : "Node type created",
-    "errorOccuredWhileCreatingNode" : "Error occured while creating node type"
+    "errorOccuredWhileCreatingNode" : "Error occured while creating node type",
+    "noReportedDevices" : "No reported devices"
 }

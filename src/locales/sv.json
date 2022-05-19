@@ -99,6 +99,7 @@
     "position": "position",
     "registeredUsers": "Registrerade användare",
     "nodeTypeCreated" : "Nodtyp skapades",
-    "errorOccuredWhileCreatingNode" : "Ett fel uppstod när nodtypen skulle skapas"
+    "errorOccuredWhileCreatingNode" : "Ett fel uppstod när nodtypen skulle skapas",
+    "noReportedDevices": "Inga rapporterade sensorer"
 
 }
