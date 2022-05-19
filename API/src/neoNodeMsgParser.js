@@ -362,7 +362,7 @@ async function parseMsgData(data, topic) {
 
       console.log("setupRequest nodeStatus: " + node.status);
 
-      if (node.status == "ACTIVE") {
+      if (node.status == "ACTIVE" && node.status == "REPORTED") {
         await neoNodeMsgSender.sendWesSetupResponse(node.id, uid, node.app_settings, node.company_id);
       }
       else if (node.status == "TBD") {
