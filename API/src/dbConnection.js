@@ -105,15 +105,15 @@ async function getCompanies() {
 
 /**
  *  Used to add a new logical device to the database
- * @param {String} uid The unique id of the device
- * @param {String} name The display name of the logical device
- * @param {Int} assetId What asset the device is part of
- * @param {Int} type The type of node
- * @param {String} status The status of the device
- * @param {Int} companyId The company id the node belongs to
+ * @param {*} uid The unique id of the device
+ * @param {*} name The display name of the logical device
+ * @param {*} is_part_of What asset the device is part of
+ * @param {*} type The type of node
+ * @param {*} status The status of the device
+ * @param {*} companyId The company id the node belongs to
  * @returns the id of the logical device that was created
  */
-async function addLogicalDevice(uid, name, assetId, type, status, companyId) {
+async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) {
     try{
         // check if a logical_device with the same uid already exists 
         // and delete it if it has status "DELETED"
@@ -131,7 +131,7 @@ async function addLogicalDevice(uid, name, assetId, type, status, companyId) {
 
     // add logical_device
     const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)",
-        {type: QueryTypes.INSERT, replacements: [uid, name, assetId, type, status]});
+        {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
     logEvent(`Sensor ${name} added`, companyId);
     return result;
 }
@@ -144,17 +144,6 @@ async function addLogicalDevice(uid, name, assetId, type, status, companyId) {
 async function getCompanySetting(companyId) {
     const result = await db.query("CALL get_company_settings(?)", {type: QueryTypes.SELECT, replacements: [companyId]});
     return result;
-}
-
-/**
- * 
- * @param {*} assetId The id of the device
- * @returns all info for the asset
- */
-async function getAssetInfo(assetId) {
-    // TODO: fix this function and sql procedure to also take company_id, (view exists that has company_id already)
-    const result = await db.query("CALL get_asset_from_id(?)", {type: QueryTypes.SELECT, replacements: [assetId]});
-    return result[0][0];
 }
 
 /**
@@ -466,9 +455,6 @@ async function updateThreshold(nodeId, action, value, companyId) {
     let node = await getNodeInfo(nodeId, companyId);
     const result = await db.query("CALL update_threshold(?, ?, ?)", {type: QueryTypes.UPDATE, replacements: [node.trigger_action, action, value]});
     logEvent(`Threshold of sensor ${nodeId} has been updated`, companyId);
-    if(node.status == "SETUP"){
-        await setNodeAsActive(nodeId, companyId);
-    }
     return result;
 }
 
@@ -520,7 +506,6 @@ module.exports = {
     getSpaceFromId,
     getAssetsInSpace,
     getAssetFromNodeId,
-    getAssetInfo,
     getPreloadedNode,
     createThreshold,
     updateLogicalDeviceWithThreshold,
