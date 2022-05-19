@@ -22,15 +22,15 @@ const Index = ({t, apiURL, user}) => {
 
     let mostF = [
         {
-            name: 'Sensor 4512-Q4',
+            name: 'Glödlampa ikea 121-T ',
             msg:'Total: 23',
         },
         { 
-            name: 'Sensor 55654-A13',
+            name: 'Temp Sensor 55654-A13',
             msg:'Total: 15',
         },
         {
-            name: 'Sensor 112554-T334',
+            name: 'Dörr Sensor 4512-Q4',
             msg:'Total: 7',
         },
     ]
