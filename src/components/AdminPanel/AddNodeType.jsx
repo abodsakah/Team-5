@@ -55,16 +55,6 @@ function AddNodeType({t, apiURL}) {
           onChange={(e) => setAppSetting(e.target.value)}
         /><br />
         <br />
-        <TextField
-          id="outlined-basic"
-          label={'type Number'}
-          variant="outlined"
-          style={{width: '100%'}}
-          type="number"
-          onChange={(e) => setTypeNumber(e.target.value)}
-        />
-        <br />
-        <br />
         <Button variant="outlined" style={{ marginBottom: '1rem' }} onClick={() => ValidateAndSubmitNodeType()}>
             {t('addNodeType')}
         </Button>
