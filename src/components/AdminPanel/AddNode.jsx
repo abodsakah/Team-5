@@ -207,8 +207,8 @@ function AddNode({t, apiURL}) {
                         value={nodeType}
                         onChange={handleNodeTypeChange}
                         >
-                        {nodeTypes.map((nodeType, index) => (
-                            <MenuItem key={nodeType.id} value={nodeType.type_number}>{nodeType.name}</MenuItem>
+                        {nodeTypes.map(nodeType => (
+                            <MenuItem key={nodeType.id} value={nodeType.app_settings}>{nodeType.name}</MenuItem>
                             ))}
                     </Select>
                 </FormControl>
