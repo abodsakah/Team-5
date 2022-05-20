@@ -2,12 +2,16 @@
 import React from 'react'
 
 /* ----------------------------------- MUI ---------------------------------- */
-import {Typography, Box, Fab, TableContainer, Table, Paper, TableBody, TableRow, TableCell, CardContent, IconButton, Card } from '@mui/material'
+import {Typography, Box, Fab, TableContainer, Table, Paper, TableBody, TableRow, TableCell, Card } from '@mui/material'
 
 /* -------------------------------- MUI Icons ------------------------------- */
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
+import ToggleOnIcon from '@mui/icons-material/ToggleOn';
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
+import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
+
 
 function DeviceTable({devices}) {
 
@@ -27,22 +31,30 @@ function DeviceTable({devices}) {
                                 <TableRow key={row.id}>
                                     <TableCell component="th" scope="row" style={{border: 'none', padding: '0'}} >
                                         {/* Card */}
-                                        <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', boxShadow: 'none', margin: '0.8em 0 0.1em 0'}} >
+                                        <Card sx={{ display: 'flex', border: '1px solid #e0e0e0', textDecoration: 'none', boxShadow: 'none', margin: '0.75em 0 0.1em 0', padding: '0', flexDirection: 'column', }} >
                                             {/* Sensor title */}
-                                            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%'}}>
-                                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                                <Typography component="div" variant="h5" sx={{ textTransform: 'capitalize' }} >
-                                                { row.name }
-                                                </Typography>
-                                                < br />
-                                            </CardContent>
+                                            <Box sx={{ display: 'flex', flexDirection: 'row', padding: '1em', flexWrap: 'wrap'}}>
+                                                <Box sx={{ display: 'flex' }}>
+                                                    {row.type == "1" ? 
+                                                        < DeviceThermostatIcon sx={{ display: 'flex', marginRight: '0.5em', height: '100%' }}/>
+                                                    :
+                                                    row.type == "2" ?
+                                                        < ToggleOnIcon sx={{ display: 'flex', marginRight: '0.5em', height: '100%' }}/>
+                                                        :
+                                                        row.type == "3" &&
+                                                        < CandlestickChartIcon sx={{  display: 'flex', marginRight: '0.5em', height: '100%' }}/>
+                                                    }
+                                                    <Typography variant="h5" sx={{ textTransform: 'capitalize', display: 'flex' }}>
+                                                        { row.name }
+                                                    </Typography>
+                                                </Box>
                                             </Box>
                                             {/* status */}
-                                            <Box style={{ display: 'flex', flexDirection: 'row', margin: '1.2em auto', textTransform: 'capitalize', alignSelf: 'flex-end'}} >
-                                                <Typography variant="subtitle2" color="text.secondary" component="div">
+                                            <Box style={{ display: 'flex', justifyContent: 'flex-end', padding: '1em' }} >
+                                                <Typography variant="subtitle2" color="text.secondary" component="div" sx={{ flexDirection: 'row', margin: 'auto 0', display: 'flex'}}>
                                                 { row.status }
+                                                <CircleRoundedIcon sx={{ fontSize: 20, color: 'red', marginLeft: '0.5em'}} />
                                                 </Typography>
-                                                <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'red', padding: "0 0.45em"}} />
                                             </Box>
                                         </Card>
                                     </TableCell>

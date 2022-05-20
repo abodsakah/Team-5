@@ -67,6 +67,7 @@ const Index = ({t, apiURL, user}) => {
                         <Typography variant="h4" component="h2">
                             {t('reported')} ({ reportedDevices.length })
                         </Typography>
+                        < br />
                         {reportedDevicesLoading ? <CircularProgress /> : 
                             reportedDevices.length > 0 ? <DeviceTable devices={reportedDevices} /> : <Typography variant="h5">{t('noReportedDevices')}</Typography>
                         }
@@ -77,6 +78,7 @@ const Index = ({t, apiURL, user}) => {
                         <Typography variant="h4" component="h2">
                             {t('mostFaulty')}
                         </Typography>
+                        < br />
                         <MostFaulty mostF={mostF} />
                     </Paper>
                 </Grid>
