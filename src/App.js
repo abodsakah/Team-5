@@ -38,7 +38,7 @@ import axios from 'axios';
 
 function App() {
   
-  let apiURL = "http://tract.allbin.se:9000/api/v1"; // The url where the api is going to be called (server)
+  let apiURL = "http://tract.allbin.se:9000/api/api/v1"; // The url where the api is going to be called (server)
 //  let apiURL = "http://localhost:9000/api/v1"; // The url where the api is going to be called (local)
 
   const drawerWidth = 240; // the width of the drawer
