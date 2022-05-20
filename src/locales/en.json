@@ -100,5 +100,8 @@
     "registeredCompany": "Registered companies",
     "nodeTypeCreated" : "Node type created",
     "errorOccuredWhileCreatingNode" : "Error occured while creating node type",
-    "noReportedDevices" : "No reported devices"
+    "noReportedDevices" : "No reported devices",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "passwordNotMatch": "Passwords don't match"
 }

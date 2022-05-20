@@ -1,8 +1,11 @@
 import {Box, Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography} from '@mui/material'
 import axios from 'axios';
 import React, {useEffect} from 'react'
+import {useNavigate} from 'react-router-dom'
 
 function AddUser({t, apiURL}) {
+  
+  const navigate = useNavigate()
 
   const [userMail, setuserMail] = React.useState('');
   const [firstName, setfirstName] = React.useState('');
@@ -12,22 +15,34 @@ function AddUser({t, apiURL}) {
   const [loading, setLoading] = React.useState(false);
   const [companies, setCompanies] = React.useState([]);
   const [selectedCompany, setSelectedCompany] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [passwordMatch, setPasswordMatch] = React.useState(true);
 
   let getAllCompanies = async () => {
     let res = await axios.get(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`);
     setCompanies(res.data);
   }
 
+  const confirmPasswordMatch = () => {
+    if(password !== '' && confirmPassword !== '') {
+      if(password === confirmPassword) {
+        setPasswordMatch(true);
+      } else {
+        setPasswordMatch(false);
+      }
+    }
+  }
+
   let ValidateAndSubmit = () => {
-    if (userMail === '' || firstName === '' || lastName === '' || newUser === '') {
+    if (userMail === '' || firstName === '' || lastName === '' || newUser === '' && password !== '' && confirmPassword !== '' && passwordMatch) {
       alert(`${t('pleaseEnter')}`);
     } else {
       //generate random password
       setLoading(true);
-      let password = Math.random().toString(36).slice(-8);
 
       fetch(`${apiURL}/createUser?key=${process.env.REACT_APP_TRACT_API_KEY}&email=${userMail}&password=${password}&firstname=${firstName}&lastname=${lastName}&nickname=${newUser}&role=${userRole}&companyid=${selectedCompany}`)
-      window.location.href = '/admin/users';
+      navigate('/admin/users')
       setLoading(true);
 
     }
@@ -36,6 +51,10 @@ function AddUser({t, apiURL}) {
   useEffect(() => {
     getAllCompanies();
   }, []);
+
+  useEffect(() => {
+    confirmPasswordMatch()
+  }, [password, confirmPassword]);
 
   return (
     <Box m={2}>
@@ -110,6 +129,13 @@ function AddUser({t, apiURL}) {
               ))}
               </Select>
           </FormControl>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField id="outlined-basic" onChange={event => setPassword(event.target.value)} label={t('Password')} type={"password"} variant="outlined" style={{width: '100%'}} value={password} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField id="outlined-basic" onChange={event => setConfirmPassword(event.target.value)} label={t('confirmPassword')} type={"password"} variant="outlined" color={passwordMatch ? 'primary' : 'error'} style={{width: '100%'}} value={confirmPassword} />
+          {!passwordMatch && <Typography variant="caption" style={{color: 'red'}}>{t('passwordNotMatch')}</Typography>}
         </Grid>
       </Grid>
       <br />

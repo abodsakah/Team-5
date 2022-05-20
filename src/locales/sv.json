@@ -100,6 +100,8 @@
     "registeredUsers": "Registrerade användare",
     "nodeTypeCreated" : "Nodtyp skapades",
     "errorOccuredWhileCreatingNode" : "Ett fel uppstod när nodtypen skulle skapas",
-    "noReportedDevices": "Inga rapporterade sensorer"
-
+    "noReportedDevices": "Inga rapporterade sensorer",
+    "Password": "Lösenord",
+    "confirmPassword": "Bekräfta lösenord",
+    "passwordNotMatch": "Lösenorden matchar inte"
 }
