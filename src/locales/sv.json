@@ -103,5 +103,6 @@
     "noReportedDevices": "Inga rapporterade sensorer",
     "Password": "Lösenord",
     "confirmPassword": "Bekräfta lösenord",
-    "passwordNotMatch": "Lösenorden matchar inte"
+    "passwordNotMatch": "Lösenorden matchar inte",
+    "installedSensors": "Antal installerade sensorer"
 }

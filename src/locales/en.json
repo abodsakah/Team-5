@@ -103,5 +103,6 @@
     "noReportedDevices" : "No reported devices",
     "password": "Password",
     "confirmPassword": "Confirm password",
-    "passwordNotMatch": "Passwords don't match"
+    "passwordNotMatch": "Passwords don't match",
+    "installedSensors": "Installed sensors"
 }

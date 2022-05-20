@@ -87,7 +87,7 @@ const Devices = ({t, apiURL, user}) => {
                               { row.category }
                               </Typography>
                               <Typography variant="subtitle1" color="text.secondary" component="div" sx={{ color: 'black'  }}>
-                                Antal installerade sensorer: <b>{ row.amount }</b>
+                                {t('installedSensors')}: <b>{ row.amount }</b>
                               </Typography>
                             </CardContent>
                           </Box>
