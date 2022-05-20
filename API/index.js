@@ -18,7 +18,7 @@ app.use(fileupload({
 
 app.use('/api/v1', mainRoute);
 
-app.use("/static", express.static(path.join(__dirname, 'public'))); // listen for the /static/api url to get static files
+app.use("/api/v1/static", express.static(path.join(__dirname, 'public'))); // listen for the /static/api url to get static files
 app.use(express.static(path.join(__dirname, 'public'))); // fallback
 
 
