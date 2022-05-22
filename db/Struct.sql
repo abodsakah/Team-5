@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: localhost:3306
--- Tid vid skapande: 19 maj 2022 kl 12:30
+-- Tid vid skapande: 22 maj 2022 kl 19:53
 -- Serverversion: 10.1.48-MariaDB-0+deb9u2
 -- PHP-version: 7.0.33-0+deb9u11
 
@@ -34,10 +34,16 @@ INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `comp_id`,
 END$$
 
 DROP PROCEDURE IF EXISTS `add_node_no_trigger_action`$$
-CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node_no_trigger_action` (IN `n_node_uid` VARCHAR(255), IN `n_node_name` VARCHAR(255), IN `n_is_part_of` INT, IN `n_node_type` INT, IN `n_node_status` VARCHAR(255))  begin
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node_no_trigger_action` (IN `n_node_uid` VARCHAR(255), IN `n_node_name` VARCHAR(255), IN `n_asset_id` INT(11), IN `n_node_type` INT(11), IN `n_node_status` VARCHAR(255))  BEGIN
+SELECT @is_part_of := located_in FROM assets WHERE id = n_asset_id;
+
   INSERT INTO logical_devices (uid, name, trigger_action, install_date, is_part_of, type, status)
-  VALUES (n_node_uid, n_node_name, 1, CURRENT_DATE(), n_is_part_of, n_node_type, n_node_status);
-end$$
+  VALUES (n_node_uid, n_node_name, 1, CURRENT_DATE(), @is_part_of, n_node_type, n_node_status);
+  
+SELECT @device_id := id FROM logical_devices WHERE uid = n_node_uid;
+  
+CALL set_asset_hosts(n_asset_id, @device_id);
+END$$
 
 DROP PROCEDURE IF EXISTS `add_styling`$$
 CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `add_styling` (IN `n_comp_id` INT, IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))  BEGIN
@@ -95,12 +101,20 @@ end$$
 
 DROP PROCEDURE IF EXISTS `get_amount_type_of_sensor`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_amount_type_of_sensor` (IN `n_sensor_type` VARCHAR(255), IN `n_company_id` INT)  BEGIN
-  SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = n_sensor_type AND `company_id` = n_company_id;
+  SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = n_sensor_type AND `company_id` = n_company_id AND `status` != "DELETED";
 END$$
 
 DROP PROCEDURE IF EXISTS `get_assets_in_space`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_assets_in_space` (IN `space_id` INT)  BEGIN
-  SELECT * FROM assets WHERE located_in = space_id;
+  SELECT * FROM assets
+  WHERE located_in = space_id
+  AND `hosts` IS null;
+END$$
+
+DROP PROCEDURE IF EXISTS `get_asset_from_id`$$
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_asset_from_id` (IN `p_id` INT(11))  NO SQL
+BEGIN
+  SELECT * FROM assets WHERE p_id = `id`;
 END$$
 
 DROP PROCEDURE IF EXISTS `get_asset_from_logical_device_id`$$
@@ -153,7 +167,11 @@ END$$
 
 DROP PROCEDURE IF EXISTS `get_nodes_for_type`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_nodes_for_type` (IN `n_company_id` INT, IN `n_sensor_type` INT)  BEGIN
-  SELECT * FROM `logical_devices_all` WHERE `type` = n_sensor_type AND `company_id` = n_company_id;
+  SELECT *
+  FROM `logical_devices_all`
+  WHERE `type` = n_sensor_type
+  AND `company_id` = n_company_id
+  AND `status` != "DELETED";
 END$$
 
 DROP PROCEDURE IF EXISTS `get_node_from_uid`$$
@@ -166,7 +184,7 @@ WHERE p_uid=uid;
 END$$
 
 DROP PROCEDURE IF EXISTS `get_preloaded_node`$$
-CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_preloaded_node` (IN `n_uid` INT(11), IN `n_company_id` INT)  NO SQL
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_preloaded_node` (IN `n_uid` VARCHAR(255), IN `n_company_id` INT(11))  NO SQL
 SELECT * FROM node_preloaded WHERE uid = n_uid AND company_id = n_company_id$$
 
 DROP PROCEDURE IF EXISTS `get_spaces_for_building`$$
@@ -203,6 +221,13 @@ BEGIN
   *
   FROM `logical_devices_all`
   WHERE `company_id` = company_id AND `status` = "REPORTED";
+END$$
+
+DROP PROCEDURE IF EXISTS `set_asset_hosts`$$
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_asset_hosts` (IN `p_id` INT(11), IN `hosts_id` INT(11))  NO SQL
+BEGIN
+  UPDATE `assets` SET `hosts` = hosts_id
+  WHERE `id` = p_id;
 END$$
 
 DROP PROCEDURE IF EXISTS `set_device_as_active`$$
@@ -244,6 +269,11 @@ BEGIN
     WHERE l.id = p_id AND s.agent = p_company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `set_node_as_active`$$
+CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `set_node_as_active` (IN `node_id` INT)  BEGIN
+  UPDATE `logical_devices` SET `status` = 'ACTIVE' WHERE `logical_devices`.`id` = node_id;
+END$$
+
 DROP PROCEDURE IF EXISTS `update_company_info`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_info` (IN `n_comp_id` INT, IN `n_name` VARCHAR(255), IN `n_email` VARCHAR(255), IN `n_phone` VARCHAR(255), IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))  BEGIN
   UPDATE `companies` SET `name` = n_name, `support_email` = n_email, `support_phone` = n_phone WHERE `id` = n_comp_id;
@@ -261,6 +291,7 @@ END$$
 DROP PROCEDURE IF EXISTS `update_logical_device_threshold`$$
 CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `update_logical_device_threshold` (IN `n_uid` INT, IN `n_threshold` INT)  BEGIN
   UPDATE `logical_devices` SET `trigger_action` = n_threshold WHERE uid = n_uid;
+  UPDATE `logical_devices` SET `status` = 'ACTIVE' WHERE `logical_devices`.`uid` = n_uid;
 END$$
 
 DROP PROCEDURE IF EXISTS `update_threshold`$$
@@ -324,9 +355,9 @@ CREATE TABLE `assets` (
 
 INSERT INTO `assets` (`id`, `name`, `artic_num`, `located_in`, `hosts`) VALUES
 (1, 'Chair 1', '1234567', 1, 16),
-(3, 'Chair 2', '231242', 4, 42),
-(16, 'test asset', '123123123', 2, 50),
-(17, 'test-hiss', '0000000', 2, 77),
+(3, 'Chair 2', '231242', 4, 108),
+(16, 'test asset', '123123123', 2, 109),
+(17, 'test-hiss', '0000000', 2, NULL),
 (18, 'test_asset', '123543', 3, NULL);
 
 -- --------------------------------------------------------
@@ -350,7 +381,8 @@ CREATE TABLE `companies` (
 INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 (1, 'Tract', 'info@abodsakka.xyz', '0721282737'),
 (24, 'Test old', 'test@new.com', '12345678'),
-(25, 'Hello world', 'hello@world.com', '0232312312');
+(25, 'Hello world', 'hello@world.com', '0232312312'),
+(26, 'gustaf vasa', 'test@gmail.com', '0767853696');
 
 -- --------------------------------------------------------
 
@@ -393,7 +425,110 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (47, '2022-05-17 19:01:52', 'Sensor another_name added', 1),
 (48, '2022-05-19 11:39:43', 'Sensor 16 set to reported', 1),
 (49, '2022-05-19 11:39:43', 'Sensor 16 set to reported', 1),
-(50, '2022-05-19 12:26:46', 'Sensor 50 set to deleted', 1);
+(50, '2022-05-19 12:26:46', 'Sensor 50 set to deleted', 1),
+(51, '2022-05-19 13:02:56', 'Sensor 42 set to deleted', 1),
+(52, '2022-05-19 13:02:56', 'Sensor 42 set to deleted', 1),
+(53, '2022-05-19 13:02:58', 'Sensor 42 set to deleted', 1),
+(54, '2022-05-19 13:02:59', 'Sensor 42 set to deleted', 1),
+(55, '2022-05-19 13:02:59', 'Sensor 42 set to deleted', 1),
+(56, '2022-05-19 13:03:05', 'Sensor 77 set to deleted', 1),
+(57, '2022-05-19 13:03:36', 'Sensor 77 has been deleted', 1),
+(58, '2022-05-19 13:10:27', 'Sensor analog sensor added', 1),
+(59, '2022-05-19 13:11:04', 'Sensor ACB914A4BD setup is finished', 0),
+(60, '2022-05-19 13:16:47', 'Sensor 79 set to deleted', 1),
+(61, '2022-05-19 13:21:03', 'Sensor 79 has been deleted', 1),
+(62, '2022-05-19 13:21:03', 'Sensor 79 has been deleted', 1),
+(63, '2022-05-19 13:22:43', 'Sensor analog test added', 1),
+(64, '2022-05-19 13:22:52', 'Sensor ACB914A4BD setup is finished', 0),
+(65, '2022-05-19 13:22:53', 'Sensor ACB914A4BD setup is finished', 0),
+(66, '2022-05-19 13:28:30', 'Sensor 80 set to deleted', 1),
+(67, '2022-05-19 13:28:39', 'Sensor 80 has been deleted', 1),
+(68, '2022-05-19 13:30:06', 'Sensor analog test added', 1),
+(69, '2022-05-19 13:30:09', 'Sensor ACB914A4BD setup is finished', 0),
+(70, '2022-05-19 13:33:06', 'Sensor 81 set to deleted', 1),
+(71, '2022-05-19 13:33:29', 'Sensor 81 has been deleted', 1),
+(72, '2022-05-19 13:33:29', 'Sensor 81 has been deleted', 1),
+(73, '2022-05-19 13:33:58', 'Sensor analog test added', 1),
+(74, '2022-05-19 13:42:13', 'Sensor test added', 1),
+(75, '2022-05-19 13:42:26', 'Sensor 88A904A4BD setup is finished', 88),
+(76, '2022-05-19 13:45:42', 'Sensor 86 set to deleted', 1),
+(77, '2022-05-19 13:48:46', 'Sensor test sensor added', 1),
+(78, '2022-05-19 13:49:37', 'Threshold of sensor 82 has been updated', 1),
+(79, '2022-05-19 13:49:49', 'Threshold of sensor 82 has been updated', 1),
+(80, '2022-05-19 13:49:55', 'Threshold of sensor 82 has been updated', 1),
+(81, '2022-05-19 13:50:02', 'Threshold of sensor 82 has been updated', 1),
+(82, '2022-05-19 13:50:06', 'Threshold of sensor 82 has been updated', 1),
+(83, '2022-05-19 13:50:18', 'Threshold of sensor 82 has been updated', 1),
+(84, '2022-05-19 13:50:22', 'Threshold of sensor 82 has been updated', 1),
+(85, '2022-05-19 13:50:55', 'Threshold of sensor 82 has been updated', 1),
+(86, '2022-05-19 13:53:36', 'Sensor test added', 1),
+(87, '2022-05-19 13:53:39', 'Sensor 88A904A4BD setup is finished', 88),
+(88, '2022-05-19 13:54:59', 'Sensor test senor added', 1),
+(89, '2022-05-19 13:55:02', 'Sensor 88A904A4BD setup is finished', 88),
+(90, '2022-05-19 14:14:49', 'User 22 created', 26),
+(91, '2022-05-19 14:32:31', 'Company information and/or styling updated', 26),
+(92, '2022-05-19 14:32:35', 'Company information and/or styling updated', 26),
+(93, '2022-05-19 14:32:59', 'Company information and/or styling updated', 1),
+(94, '2022-05-19 14:33:05', 'Company information and/or styling updated', 1),
+(95, '2022-05-19 14:33:41', 'User 23 created', 24),
+(96, '2022-05-19 14:36:36', 'User 24 created', 26),
+(97, '2022-05-19 15:00:24', 'Sensor test-name added', 1),
+(98, '2022-05-19 15:02:03', 'Sensor test-name added', 1),
+(99, '2022-05-19 15:03:13', 'Sensor test-name added', 1),
+(100, '2022-05-19 15:03:41', 'Sensor test-name added', 1),
+(101, '2022-05-19 15:05:08', 'Sensor test-name added', 1),
+(102, '2022-05-19 15:12:51', 'Sensor test-name added', 1),
+(103, '2022-05-19 15:13:39', 'Sensor test-name added', 1),
+(104, '2022-05-19 15:14:47', 'Sensor test-name added', 1),
+(105, '2022-05-19 15:18:20', 'Sensor 82 set to deleted', 1),
+(106, '2022-05-19 15:18:51', 'Sensor 82 has been deleted', 1),
+(107, '2022-05-19 15:19:12', 'Sensor analog test added', 1),
+(108, '2022-05-19 15:19:16', 'Sensor ACB914A4BD setup is finished', 0),
+(109, '2022-05-19 15:30:00', 'Sensor test-name added', 1),
+(110, '2022-05-19 15:30:38', 'Sensor test-name added', 1),
+(111, '2022-05-19 15:35:28', 'Sensor test-name added', 1),
+(112, '2022-05-19 15:43:25', 'Sensor 105 set to deleted', 1),
+(113, '2022-05-19 15:43:54', 'Sensor 105 has been deleted', 1),
+(114, '2022-05-19 15:43:54', 'Sensor 105 has been deleted', 1),
+(115, '2022-05-19 15:44:33', 'Sensor analog test added', 1),
+(116, '2022-05-19 15:44:36', 'Sensor ACB914A4BD setup is finished', 0),
+(117, '2022-05-19 15:45:00', 'Sensor 109 set to reported', 1),
+(118, '2022-05-19 15:45:00', 'Sensor 109 set to reported', 1),
+(119, '2022-05-19 15:48:58', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(120, '2022-05-19 15:48:58', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(121, '2022-05-19 15:48:59', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(122, '2022-05-19 15:49:07', 'Sensor 109 work order has been resolved, sensor now set to active.', 1),
+(123, '2022-05-19 15:49:07', 'Sensor 109 work order has been resolved, sensor now set to active.', 1),
+(124, '2022-05-19 15:49:08', 'Sensor 109 work order has been resolved, sensor now set to active.', 1),
+(125, '2022-05-19 15:49:12', 'Sensor 16 set to reported', 1),
+(126, '2022-05-19 15:49:12', 'Sensor 16 set to reported', 1),
+(127, '2022-05-19 15:50:08', 'Sensor 109 set to reported', 1),
+(128, '2022-05-19 15:50:08', 'Sensor 109 set to reported', 1),
+(129, '2022-05-19 15:51:45', 'Sensor 109 set to deleted', 1),
+(130, '2022-05-19 15:52:18', 'Sensor 109 has been deleted', 1),
+(131, '2022-05-19 15:52:18', 'Sensor 109 has been deleted', 1),
+(132, '2022-05-19 15:52:18', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(133, '2022-05-19 15:52:18', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(134, '2022-05-19 15:52:18', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(135, '2022-05-19 16:08:39', 'Sensor 16 set to reported', 1),
+(136, '2022-05-19 16:08:39', 'Sensor 16 set to reported', 1),
+(137, '2022-05-19 16:16:23', 'Threshold of sensor 108 has been updated', 1),
+(138, '2022-05-19 16:16:46', 'Threshold of sensor 108 has been updated', 1),
+(139, '2022-05-19 16:21:14', 'Sensor 109 set to reported', 1),
+(140, '2022-05-19 16:55:19', 'Company information and/or styling updated', 26),
+(141, '2022-05-19 16:55:38', 'Company information and/or styling updated', 26),
+(142, '2022-05-20 06:59:40', 'User 25 created', 25),
+(143, '2022-05-20 07:01:35', 'User 26 created', 1),
+(144, '2022-05-20 07:02:46', 'User 27 created', 1),
+(145, '2022-05-20 17:04:36', 'User 28 created', 1),
+(146, '2022-05-21 14:26:11', 'Sensor 16 set to deleted', 1),
+(147, '2022-05-21 14:27:00', 'Sensor 16 set to deleted', 1),
+(148, '2022-05-21 14:28:02', 'Sensor 16 set to deleted', 1),
+(149, '2022-05-21 14:29:03', 'Sensor 16 set to deleted', 1),
+(150, '2022-05-21 14:30:05', 'Sensor 16 set to deleted', 1),
+(151, '2022-05-21 14:33:55', 'Sensor 16 set to deleted', 1),
+(152, '2022-05-22 13:22:07', 'Sensor 16 set to deleted', 1),
+(153, '2022-05-22 18:02:49', 'Sensor 16 set to deleted', 1);
 
 -- --------------------------------------------------------
 
@@ -448,11 +583,11 @@ CREATE TABLE `logical_devices` (
 --
 
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES
-(10, '123456', 'another_name', 1, '2022-05-17', 2, 2, 'DELETED'),
-(16, '89390484BD', 'switch-sensor', 4, '2022-04-07', 1, 2, 'REPORTED'),
-(42, 'ACB904843D', 'temp-sensor', 3, '2022-04-05', 4, 1, 'ACTIVE'),
-(50, '88A904A4BD', 'test', 29, '2022-05-14', 1, 3, 'TBD'),
-(77, 'ACB914A4BD', 'analog-wheel-sensor', 24, '2022-04-07', 2, 3, 'REPORTED');
+(10, '123456', 'another_name', 1, '2022-05-17', 2, 2, 'SETUP'),
+(16, '89390484BD', 'switch-sensor', 4, '2022-04-07', 1, 2, 'TBD'),
+(91, '88A904A4BD', 'test senor', 37, '2022-05-19', 1, 3, 'ACTIVE'),
+(108, '22222222', 'test-name', 1, '2022-05-19', 4, 1, 'SETUP'),
+(109, 'ACB914A4BD', 'analog test', 39, '2022-05-19', 2, 3, 'REPORTED');
 
 -- --------------------------------------------------------
 
@@ -552,8 +687,7 @@ INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES
 ('88A904A4BD', 3, 1),
 ('89390484BD', 2, 1),
 ('A83910B471', 2, 1),
-('ACB904843D', 1, 1),
-('ACB914A4BD', 3, 1);
+('ACB904843D', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -573,7 +707,7 @@ CREATE TABLE `node_thresholds` (
 --
 
 INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
-(1, 'OVER', 1000),
+(1, 'SAME', 0),
 (3, 'UNDER', 37),
 (4, 'SAME', 0),
 (21, 'UNDER', 0),
@@ -583,7 +717,17 @@ INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
 (26, 'SAME', 5),
 (27, 'DOWN', 100),
 (28, 'SAME', 100),
-(29, 'SAME', 100);
+(29, 'SAME', 100),
+(30, 'SAME', 0),
+(31, 'SAME', 0),
+(32, 'SAME', 0),
+(33, 'SAME', 1),
+(34, 'DOWN', 0),
+(35, 'DOWN', 0),
+(36, 'DOWN', 0),
+(37, 'DOWN', 11000),
+(38, 'UP', 10000),
+(39, 'UP', 10000);
 
 -- --------------------------------------------------------
 
@@ -691,18 +835,8 @@ INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, 
 (1, 'abodsakka2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 1),
 (3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
 (4, 'info@abodsakka.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
-(6, 'eeefwfwe@erpgre.com', '$2b$12$.KUyeoLNrkvlRM5XVIPHA.uCcI426VeUNQ03Nc4.8d2uiFIVW4dqy', 'pifwe', 'grergreg', 'egregerge', 0, 1, 4),
-(7, 'efwfwef', '$2b$12$EPEYgAfVlbTbOPIkCOQQIuxs52bKp225R/1Uje9gKsXRnMnQpEwM6', 'efwefwefewf', 'ewfwefewfw', 'efwefwef', 0, 1, 5),
-(8, 'ewfwfewf', '$2b$12$fjpZVjJPzjwGIfvw8HTtYOzDLFIT/LW668xaysxeYtgRHhB6ff24.', 'wefwefewf', 'ewfwefw', 'wffwefweflb', 0, 1, 6),
-(9, 'admin@inc.com', '$2b$12$w5jMUPF.SAW045ybULVd8.Woy1799ibXJ76S0zOSMDcNlAf4/hMbe', 'big', 'boss', 'bigboss', 0, 1, 19),
-(10, 'big.b@comp.com', '$2b$12$ao7j0P7zs0RHIk1BdNxO5ucx5oXGGaGvPwhhGchwNzpjSncU8drNO', 'big', 'boss', 'bigboss', 0, 1, 20),
-(11, 'big.b@comp.com', '$2b$12$CylUW8HXA/PgWVA0NYA9d.xnEK5BXgFfFvtersTU..rXz1c2vmfTm', 'big', 'boss', 'bigboss', 0, 1, 21),
-(12, 'big.b@comp.com', '$2b$12$RdJU/aCWaA1l..dLLN8YNeAJDFK7d.ry2JAd7Jx6bUny/InQeTrGK', 'big', 'boss', 'bigboss', 0, 1, 22),
-(13, 'bog.b@comp.se', '$2b$12$z2fTrJ9m9J2rfIOgmfYLD.dUQGuxJdCBv1gIxs1S7PhvvTK6DMIK2', 'big', 'boss', 'bigboss', 0, 1, 23),
-(14, 'big.m@inco.se', '$2b$12$gFIQ1M352rey517uIPdnr.bNS6FO66kH15Wspcw2PzOpKYs7DNy7m', 'big', 'boss man', 'big boss man', 0, 1, 24),
-(19, 'abodsakka123123@13123.com', '$2b$12$tdYMf08qnrbrZJAS/TG37.zpUzEu/ld0gcJRNUXCUUsqf/TVBxZu2', 'Abod', 'Saka', 'abodsakka', 0, 1, 25),
-(20, 'ewfwefew', '$2b$12$bONg6eEMp0t0RoypYye9fOrHsSn7sgXgGrVzElZop71OBHVMfUQEK', 'fefwef', 'fwefew', 'efef', 0, 1, 25),
-(21, 'wefwef', '$2b$12$wBKpeEsCJN545OcCU/FkIu7jq5jfycIWPsFOD1o/8qPFfTxKTwova', 'fweef', 'ewfewf', 'wefewf', 0, 0, 24);
+(27, 'tester@email.com', '$2a$12$wLaXfuCMOh1C0oG.e.5p.eJCW6gTggU46HAtKzQtsH5aGoJA6Swpy', 'Test', 'user', 'testerUser', 0, 2, 1),
+(28, 'tract@allbin.se', '$2b$12$Icmyi609phYu.GjT9Nd37OHcBJLP/H.yXufxW2W5N4oMElaol0gRK', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -744,9 +878,10 @@ CREATE TABLE `website_settings` (
 --
 
 INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
-(1, '6f7da5', 'Asset 1.png'),
+(1, '00aaff', 'Asset 1.png'),
 (24, '7bb15d', 'ICA-logotyp.png'),
-(25, '448bc9', 'tract_icon_1024.png');
+(25, '448bc9', 'tract_icon_1024.png'),
+(26, 'ffb700', '');
 
 -- --------------------------------------------------------
 
@@ -829,8 +964,8 @@ ALTER TABLE `logical_devices`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uid` (`uid`),
   ADD KEY `trigger_action` (`trigger_action`),
-  ADD KEY `logical_devices_ibfk_2` (`is_part_of`),
-  ADD KEY `logical_devices_ibfk_3` (`type`);
+  ADD KEY `logical_devices_ibfk_3` (`type`),
+  ADD KEY `logical_devices_ibfk_2` (`is_part_of`);
 
 --
 -- Index för tabell `nc_evolutions`
@@ -869,7 +1004,7 @@ ALTER TABLE `shared_log`
 ALTER TABLE `spaces`
   ADD PRIMARY KEY (`id`),
   ADD KEY `agent` (`agent`),
-  ADD KEY `is_part_of` (`is_part_of`);
+  ADD KEY `spaces_ibfk_2` (`is_part_of`);
 
 --
 -- Index för tabell `user_log`
@@ -915,17 +1050,17 @@ ALTER TABLE `assets`
 -- AUTO_INCREMENT för tabell `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
 --
 ALTER TABLE `logical_devices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 --
 -- AUTO_INCREMENT för tabell `nc_evolutions`
 --
@@ -935,12 +1070,12 @@ ALTER TABLE `nc_evolutions`
 -- AUTO_INCREMENT för tabell `node_thresholds`
 --
 ALTER TABLE `node_thresholds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 --
 -- AUTO_INCREMENT för tabell `node_types`
 --
 ALTER TABLE `node_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT för tabell `spaces`
 --
@@ -955,7 +1090,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT för tabell `users`
 --
@@ -985,7 +1120,7 @@ ALTER TABLE `assets`
 --
 ALTER TABLE `logical_devices`
   ADD CONSTRAINT `logical_devices_ibfk_1` FOREIGN KEY (`trigger_action`) REFERENCES `node_thresholds` (`id`),
-  ADD CONSTRAINT `logical_devices_ibfk_2` FOREIGN KEY (`is_part_of`) REFERENCES `spaces` (`id`),
+  ADD CONSTRAINT `logical_devices_ibfk_2` FOREIGN KEY (`is_part_of`) REFERENCES `spaces` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `logical_devices_ibfk_3` FOREIGN KEY (`type`) REFERENCES `node_types` (`id`);
 
 --
@@ -999,7 +1134,7 @@ ALTER TABLE `node_preloaded`
 --
 ALTER TABLE `spaces`
   ADD CONSTRAINT `spaces_ibfk_1` FOREIGN KEY (`agent`) REFERENCES `companies` (`id`),
-  ADD CONSTRAINT `spaces_ibfk_2` FOREIGN KEY (`is_part_of`) REFERENCES `spaces` (`id`);
+  ADD CONSTRAINT `spaces_ibfk_2` FOREIGN KEY (`is_part_of`) REFERENCES `spaces` (`id`) ON UPDATE CASCADE;
 
 --
 -- Restriktioner för tabell `users`

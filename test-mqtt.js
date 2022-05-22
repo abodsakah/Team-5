@@ -11,7 +11,7 @@ const options = {
   password: 'mqtt-tract',
 }
 
-const client = MQTT.connect('mqtt://localhost:8883/', options);
+const client = MQTT.connect('mqtt://tract.allbin.se:8883/', options);
 
 // When passing async functions as event listeners, make sure to have a try
 // catch block
