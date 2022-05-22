@@ -11,15 +11,14 @@ const options = {
   clean: true,  // retain session
   // Authentication information
   clientId: clientId,
-  username: 'flex',
-  password: 'mqtt-flex',
+  username: 'tract',
+  password: 'mqtt-tract',
 }
 
 const IN_TOPIC = 'In/'; // to gateways
 const OUT_TOPIC = 'Out/#'; // from gateways
 
-const client = MQTT.connect('mqtt://139.162.146.61:8883', options);
-// const client = MQTT.connect('mqtt://localhost:8883', options);
+const client = MQTT.connect('mqtt://localhost:8883', options);
 
 // Called on sucessfull connection to setup subscriptions.
 const setupSubs =
