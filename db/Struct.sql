@@ -101,7 +101,7 @@ end$$
 
 DROP PROCEDURE IF EXISTS `get_amount_type_of_sensor`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_amount_type_of_sensor` (IN `n_sensor_type` VARCHAR(255), IN `n_company_id` INT)  BEGIN
-  SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = n_sensor_type AND `company_id` = n_company_id AND `status` != "DELETED" AND `status` != "TBD";
+  SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = n_sensor_type AND `company_id` = n_company_id AND `status` != "DELETED";
 END$$
 
 DROP PROCEDURE IF EXISTS `get_assets_in_space`$$
@@ -171,8 +171,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_nodes_for_type` (IN `n_company_id`
   FROM `logical_devices_all`
   WHERE `type` = n_sensor_type
   AND `company_id` = n_company_id
-  AND `status` != "DELETED"
-  AND `status` != "TBD";
+  AND `status` != "DELETED";
 END$$
 
 DROP PROCEDURE IF EXISTS `get_node_from_uid`$$
