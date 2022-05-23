@@ -548,6 +548,8 @@ router.post("/deleteNode", async (req, res) => {
       let nodeId = req.body.nodeId;
       let companyId = req.body.companyId;
 
+      console.log("COMPANY ID: ", companyId);
+
       if (keyValid) {
           try {
               await neoNodeMsgSender.deleteNode(nodeId,companyId);
