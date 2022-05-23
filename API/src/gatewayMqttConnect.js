@@ -18,7 +18,7 @@ const options = {
 const IN_TOPIC = 'In/'; // to gateways
 const OUT_TOPIC = 'Out/#'; // from gateways
 
-const client = MQTT.connect('mqtt://localhost:8883', options);
+const client = MQTT.connect('mqtt://eclipse-mosquitto:8883', options);
 
 // Called on sucessfull connection to setup subscriptions.
 const setupSubs =
