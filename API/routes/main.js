@@ -102,7 +102,6 @@ router.get("/createCompany", async (req, res) => {
               }
               res.status(200).send(JSON.stringify(status));
           } catch (e) {
-                  console.log(e);
               console.log(e);
               res.status(500).send("Error creating company");
           }
@@ -384,7 +383,7 @@ router.post("/addStyling", async (req, res) => {
           if (req.files) { // if there is a file we will set the path
               logo = req.files.logo;
               logoName = logo.name;
-              path = __dirname + "/public/uploads/logo/" + logo.name;
+              path = __dirname + "../public/uploads/logo/" + logo.name;
           }
 
           if(logo.name != '') { // if there is a file and the logo is not empty then we move it to our path
@@ -403,7 +402,6 @@ router.post("/addStyling", async (req, res) => {
                   message: "Company updated"
               });
           } catch (e) {
-                  console.log(e);
               console.log(e);
               res.status(500).send("Error getting company");
           }
