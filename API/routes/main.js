@@ -744,7 +744,6 @@ router.get("/getAssetsForSpace", async (req, res) => {
               let assets = await dbConnection.getAssetsInSpace(spaceId);
               res.status(200).send(assets);
           } catch (e) {
-                  console.log(e);
               console.log(e);
               res.status(500).send("Error getting assets");
           }
@@ -795,13 +794,14 @@ router.post("/updateSensorThreshold", async (req, res) => {
   try {
       let apiKey = req.body.key;
       let keyValid = await dbConnection.validateAPIKey(apiKey);
+      let companyId = req.body.companyId;
       let deviceUid = req.body.deviceUid;
       let threshold = req.body.threshold;
       let thresholdAction = req.body.thresholdAction;
       if (keyValid) {
           try {
               let thresholdId = await dbConnection.createThreshold(thresholdAction, threshold);
-              await dbConnection.updateLogicalDeviceWithThreshold(deviceUid, thresholdId.id);
+              await dbConnection.updateLogicalDeviceWithThreshold(deviceUid, thresholdId.id, companyId);
               res.status(200).send({"status": "Success"});
           } catch (e) {
                   console.log(e);

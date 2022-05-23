@@ -253,6 +253,8 @@ function AddSensor({t, apiURL, user}) {
             data.append('deviceUid', deviceId);
             data.append('threshold', threshold);
             data.append('thresholdAction', action);
+            data.append('companyId', user.company_id);
+            
             console.log(data);
             fetch(`${apiURL}/updateSensorThreshold`, {
                 method: 'POST',
