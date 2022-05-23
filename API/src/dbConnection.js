@@ -114,6 +114,7 @@ async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) 
         // check if a logical_device with the same uid already exists 
         // and delete it if it has status "DELETED"
         var node = await getNodeFromUid(uid);
+        console.log(node)
         if (node.status == "DELETED") {
             // delete logical_device
             console.log("node is deleted, deleting...");
