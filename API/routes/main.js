@@ -31,6 +31,7 @@ router.get("/user", async (req, res) => {
           res.status(404).send("User not found");
       }
   } catch (err) {
+      console.log(err.message);
       res.status(500).send(err.message);
   }
 });
@@ -61,7 +62,8 @@ router.get("/createUser", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -107,7 +109,8 @@ router.get("/createCompany", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -128,7 +131,8 @@ router.get("/getCompnies", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -145,7 +149,8 @@ router.get("/getCompanyLog", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -162,7 +167,8 @@ router.get("/getCompany", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -231,7 +237,8 @@ router.post("/updateCompany", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -247,7 +254,8 @@ router.get("/getNodes", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -272,7 +280,8 @@ router.get("/addNode", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -285,7 +294,8 @@ router.get("/nodes/neighborreq", async (req, res) => {
       console.log(await neoNodeMsgParser.nodes);
       res.send(await neoNodeMsgParser.nodes);
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -298,7 +308,8 @@ router.get("/nodes/nodeinfo", async (req, res) => {
       let nodeInfo = await neoNodeMsgParser.getNodesInfo();
       res.send(nodeInfo);
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -318,7 +329,8 @@ router.post("/getCompanySettings", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -343,7 +355,8 @@ router.post("/updateThreshold", async (req, res) => {
           res.status(401).send({status: "error", message: "Invalid API key"});
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -391,7 +404,8 @@ router.post("/addStyling", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -413,7 +427,8 @@ router.get("/getNodeType", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -435,7 +450,8 @@ router.get("/getNodeInfo", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -462,7 +478,8 @@ router.get("/getThreshold", async (req, res) => {
           res.status(401).send({status: "error", message: "Invalid API key"});
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -484,7 +501,8 @@ router.get("/getNodeStatus", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -508,7 +526,8 @@ router.post("/forceWesMode", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -532,7 +551,8 @@ router.post("/deleteNode", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -556,7 +576,8 @@ router.post("/setNodeDeleted", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -576,7 +597,8 @@ router.get("/getUsersForCompany", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -598,7 +620,8 @@ router.get("/getReportedLogicalDeviceForCompany", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -619,7 +642,8 @@ router.get("/getLogicalDeviceForCompany", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -641,7 +665,8 @@ router.get("/getLogicalDeviceTypeAmount", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
@@ -661,7 +686,8 @@ router.get("/getBuildings", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -682,7 +708,8 @@ router.get("/getSpaces", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -704,7 +731,8 @@ router.get("/getAssetsForSpace", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -736,8 +764,8 @@ router.post("/addLogicalDevice", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      console.log(err.message)
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -761,7 +789,8 @@ router.post("/updateSensorThreshold", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -782,7 +811,8 @@ router.post('/getNodesOfType', async (req, res) => {
       res.status(401).send("Invalid API key");
   }
   } catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 });
 
@@ -816,7 +846,8 @@ router.get("/nodeTypes", async (req, res) => {
           res.status(401).send("Invalid API key");
       }
   }catch (err) {
-      res.status(500).send(err.message);
+    console.log(err.message);
+    res.status(500).send(err.message);
   }
 })
 
