@@ -289,7 +289,7 @@ async function getLogicalDeviceForCompany(companyId) {
  * @returns A json object with the amount
  */
 async function getAmountOfSensorTypes(sensorType, companyId) {
-    const result = await db.query("CALL get_amount_type_of_sensor(?, ?)", {type: QueryTypes.SELECT, replacements: [sensorType, companyId]});
+    const result = await db.query("CALL get_amount_type_of_sensor(?, ?)", {type: QueryTypes.SELECT, replacements: [sensorType, parseInt(companyId)]});
     return result[0][0];
 }
     
