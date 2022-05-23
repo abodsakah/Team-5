@@ -110,7 +110,7 @@ function EditCompany({t, apiURL}) {
       <br />
       <Divider />
       <br />
-      <Typography variant="h6">{t('websiteStyling')}</Typography>
+      <Typography variant="h6">{t('companiesInformation')}</Typography>
       <br />
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
@@ -145,7 +145,7 @@ function EditCompany({t, apiURL}) {
         </Grid>
       </Grid>
       <br />
-      <Typography variant="h6">{t('companyAdminInformation')}</Typography>
+      <Typography variant="h6">{t('websiteStyling')}</Typography>
       <br />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, styled, TextField, Typography, Snackbar, Alert} from '@mui/material';
 import { QrReader } from 'react-qr-reader'
 import LoadingOverlay from '../LoadingOverlay';
+import axios from 'axios';
 
 const Scanner = ({getDeviceId}) => {
     const [data, setData] = useState('');
@@ -74,6 +75,8 @@ function AddNode({t, apiURL}) {
     const [isLoading, setIsLoading] = React.useState(false); // is the loading indicator visible
     const [errors, setErrors] = React.useState([]); // the errors that are returned from the server
 
+    const [nodeTypes, setNodeTypes] = React.useState([]); // the node types that are available
+
     // get data from qr code
     const [deviceId, setDeviceId] = React.useState('');
     const [snackBarstatus, setSnackBarstatus] = React.useState(false);
@@ -108,6 +111,16 @@ function AddNode({t, apiURL}) {
         setcompany(event.target.value); 
     }
 
+    const getNodeTypes = async () => { // get the node types
+        axios.get(`${apiURL}/nodeTypes?key=${process.env.REACT_APP_TRACT_API_KEY}`)
+        .then(res => {
+            setNodeTypes(res.data);
+        })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     if (companies.length === 0) {
         fetch(`${apiURL}/getCompnies?key=${process.env.REACT_APP_TRACT_API_KEY}`)
             .then(res => res.json())
@@ -120,6 +133,10 @@ function AddNode({t, apiURL}) {
                 }
             )
     }
+
+    useEffect(() => {
+        getNodeTypes();
+    }, []);
     
     const sendDevice = () => {
         setIsLoading(true);
@@ -163,44 +180,44 @@ function AddNode({t, apiURL}) {
             <QrContainer>
                 <Typography variant="h5" style={{
                     textAlign: 'center',
-                }} gutterBottom>Scan Qr to add node</Typography>
+                }} gutterBottom>{t('scanQRAddNode')}</Typography>
                 <Scanner getDeviceId={getDeviceId}/>
             </QrContainer>
             <div>
                 
-                <Typography variant="h5" gutterBottom>Node Uid</Typography>
+                <Typography variant="h5" gutterBottom>{t('nodeId')}</Typography>
                 <TextField
                     id="outlined-basic"
-                    label="uid"
+                    label={t('nodeId')}
                     variant="outlined"
                     value={deviceId}
                     onChange={onUidTextChange}
-                    helperText="Scan the QR code or enter the uid manually"
+                    helperText={t('scanQRorManually')}
                     style={{
                         marginBottom: '1rem',
                     }}
                 />
                 
-                <Typography variant="h5" gutterBottom>Node sensor type</Typography>
+                <Typography variant="h5" gutterBottom>{t('nodeType')}</Typography>
                 <FormControl fullWidth>
-                    <InputLabel style={{backgroundColor: "white"}} id="node-type">Node type</InputLabel>
+                    <InputLabel style={{backgroundColor: "white"}} id="node-type">{t('nodeType')}</InputLabel>
                     <Select
                         labelId='node-type'
                         id='node-type'
                         value={nodeType}
                         onChange={handleNodeTypeChange}
-                    >
-                        <MenuItem value={1}>Temperature and Humidity</MenuItem>
-                        <MenuItem value={2}>Switch</MenuItem>
-                        <MenuItem value={3}>Analog wheel</MenuItem>
+                        >
+                        {nodeTypes.map(nodeType => (
+                            <MenuItem key={nodeType.id} value={nodeType.id}>{nodeType.name}</MenuItem>
+                            ))}
                     </Select>
                 </FormControl>
                 <br /><br />
-                <Typography variant="h5" gutterBottom>Company of node</Typography>
+                <Typography variant="h5" gutterBottom>{t('company')}</Typography>
                 <FormControl fullWidth>
                     {companies.length > 0 ?
                         <>
-                            <InputLabel style={{backgroundColor: "white"}} id='company-id'>Company</InputLabel>
+                            <InputLabel style={{backgroundColor: "white"}} id='company-id'>{t('company')}</InputLabel>
                             <Select
                                 labelId='company-id'
                                 id='company-id'

@@ -7,11 +7,12 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom';
 import Index from './components/Index';
 import Devices from './components/Devices';
 import DeviceCategory from './components/DeviceCategory';
-import AddSensor from './components/QrScan';
-import AddUser from './components/AddUser';
+import AddSensor from './components/AddSensor';
+import AddUser from './components/AdminPanel/AddUser';
 import Companies from './components/AdminPanel/Companies';
 import AddCompany from './components/AdminPanel/AddCompany';
 import AddNode from './components/AdminPanel/AddNode';
+import AddNodeType from './components/AdminPanel/AddNodeType';
 import Nodes from './components/AdminPanel/Nodes';
 import Navbar from './components/Navbar';
 import UserList from './components/UserList';
@@ -37,8 +38,8 @@ import axios from 'axios';
 
 function App() {
   
-  // let apiURL = "https://api.abodsakka.xyz/api/v1"; // The url where the api is going to be called (server)
-  let apiURL = "http://localhost:9000/api/v1"; // The url where the api is going to be called (local)
+  let apiURL = "https://tract.allbin.se/api/v1"; // The url where the api is going to be called (server)
+//  let apiURL = "http://localhost:9000/api/v1"; // The url where the api is going to be called (local)
 
   const drawerWidth = 240; // the width of the drawer
 
@@ -129,10 +130,6 @@ function App() {
         }
         return data; // return the user data to update the DOM
       });
-
-      // fetch(`${apiURL}/getCompanySettings?key=${process.env.REACT_APP_TRACT_API_KEY}&id=${cookies.get('user').company_id}`).then(res => res.json()).then(data => {
-        
-      // });
     }
   }
 
@@ -160,7 +157,7 @@ function App() {
 
 
   // if the application is loading or the user is not authenticated, render the login page
-  if (isLoading || !isAuthenticated) {
+  if (cookies.get("user") === undefined || cookies.get("user").company_id === undefined || isLoading || !isAuthenticated) {
     return <Login loading={isLoading} cookies={cookies}/>
   }
 
@@ -175,7 +172,7 @@ function App() {
           <h1>{error}</h1>
           {/* The application router */}
           <Routes>
-            <Route path="/" element={<Index cookies={cookies} t={t}  />} />
+            <Route path="/" element={<Index apiURL={apiURL} user={cookies.get("user")} cookies={cookies} t={t}  />} />
             <Route path="/login" element={<Login t={t} />} />
             <Route path="/devices" element={<Devices t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
             <Route path="/devices/:category" element={<DeviceCategory t={t} user={cookies.get("user")} apiURL={apiURL}/>} />
@@ -191,8 +188,8 @@ function App() {
                   <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />
                   <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
                   <Route path="/admin/users" element={<UserList t={t} apiURL={apiURL} user={cookies.get('user')}/>} />
-                  <Route path="/admin/users/add" element={<AddUser t={t} />} />
-                  <>{ /*LÄGG HÄR*/ }</>
+                  <Route path="/admin/users/add" element={<AddUser t={t} apiURL={apiURL}/>} />
+                  <Route path="/admin/add-node-type" element={<AddNodeType t={t} apiURL={apiURL}/>} />
                 </>
               }
               </>
@@ -209,4 +206,3 @@ function App() {
 }
 
 export default App;
-

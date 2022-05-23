@@ -123,9 +123,6 @@ async function setupMobilixClient() {
   var entityTypeList = await client.entityTypes.list();
   var entitySchemaList = await client.entitySchemas.list();
 
-  console.log("entityTypeList:\n", entityTypeList);
-  console.log("entitySchemaList:\n", entitySchemaList);
-
   /* Create entityType */
   // only create entityType 'neocortec-node' if it doesn't exists.
   var eType = entityTypeList.find(element => element.name === 'neocortec-node')
@@ -201,10 +198,12 @@ async function deleteAllWorkOrders() {
   try {
     var workOrders = await client.workOrders.list();
     var id = "";
-    workOrders.forEach((workOrder) => {
+
+    for (let i = 0; i < workOrders.length; i++) {
+      const workOrder = workOrders[i];
       id = workOrder.id;
-    });
-    await client.workOrders.delete(id);
+      await client.workOrders.delete(id);
+    }
   } catch (err) {
     console.error(err);
   }
@@ -348,6 +347,10 @@ async function workOrderExistsForEntity(entityId) {
     var orderList = await client.workOrders.list();
     var workOrder = orderList.find(element => element.entities.find(e => e === entityId));
 
+    if (workOrder == undefined) {
+      return undefined;
+    }
+
     // if workOrder is 'completed' we dont count it.
     if (workOrder.state == 'completed') {
       return undefined;
@@ -474,6 +477,7 @@ module.exports = {
   getActiveWorkOrder,
   getCompanyWorkOrders,
   getActiveCompanyWorkOrders,
+  deleteAllWorkOrders,
 }
 
 

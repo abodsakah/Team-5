@@ -206,6 +206,7 @@ async function deleteNode(nodeId, companyId) {
     return false;
   }
 
+  console.log(" BEFORE ForceWesMode");
   // Send ForceWesMode to Node.
   if (sendForceWesMode(nodeId, companyId)){
     return true;

@@ -17,7 +17,7 @@ import Button from '@mui/material/Button';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import IconButton from '@mui/material/IconButton'
-import { Popover } from '@mui/material';
+import { Alert, Popover, Snackbar } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import TextField from '@mui/material/TextField';
@@ -27,6 +27,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import LoadingOverlay from './LoadingOverlay';
+import axios from 'axios';
 
 
  
@@ -46,6 +48,14 @@ const DeviceCategory = ({user, t, apiURL}) => {
   }
 
   const [rows, setRows] = React.useState([]);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [titleDialog, setTitleDialog] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [title, setTitle] = React.useState(null);
+  const [nodeId, setNodeId] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [snackbar, setSnackbar] = React.useState(false);
 
   // Tablecontent
   function createData(name, calories, status, carbs, protein) {
@@ -53,6 +63,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
   }
 
   const getData = () => {
+    setIsLoading(true);
     const params = new FormData();
     params.append('key', process.env.REACT_APP_TRACT_API_KEY);
     params.append('companyId', user.company_id);
@@ -64,8 +75,9 @@ const DeviceCategory = ({user, t, apiURL}) => {
     }).then(res => res.json()).then(res => {
       setRows(Object.values(res))
     }).catch(err => {
-      console.log(err)
+      alert(err.message)
     })
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -73,28 +85,42 @@ const DeviceCategory = ({user, t, apiURL}) => {
   }, [])
 
 
-   // Dialog 
-   const [openDialog, setOpenDialog] = React.useState(false);
-   const [titleDialog, setTitleDialog] = React.useState(null);
-   const handleOpenDialog = (event) => {
-     setTitleDialog(event.currentTarget.title)
-     setOpenDialog(true);
-     setAnchorEl(null);
-   };
-   const handleCloseDialog = () => {
-     setOpenDialog(false);
-   };
+  const handleOpenDialog = (event) => {
+    setTitleDialog(event.currentTarget.title)
+    setOpenDialog(true);
+    setAnchorEl(null);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
-
-  // Popover
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [title, setTitle] = React.useState(null);
-  const [nodeId, setNodeId] = React.useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setTitle(event.currentTarget.title)
-    setNodeId(event.currentTarget.id)
+    setNodeId(event.currentTarget.id);
   };
+
+  const delteNode = () => {
+    setIsLoading(true);
+    const data = new FormData();
+    data.append('key', process.env.REACT_APP_TRACT_API_KEY);
+    data.append('companyId', user.company_id);
+    data.append('nodeId', nodeId);
+
+    axios.post(`${apiURL}/deleteNode`, data).then(res => {
+      getData();
+      handleCloseDialog();
+    }).catch(err => {
+      setError("Could not delete Sensor");
+      setSnackbar(true);
+    })
+    setIsLoading(false);
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(false);
+  };
+
   const handleClose = () => setAnchorEl(null);
   const openPopover = Boolean(anchorEl);
 
@@ -102,11 +128,23 @@ const DeviceCategory = ({user, t, apiURL}) => {
 
   return ( 
     <main>
-      <h1 style={{ textTransform: 'capitalize' }}>{category}</h1>
+      <LoadingOverlay loading={isLoading} />
+
+      {error !== "" && (
+        <Snackbar open={snackbar} autoHideDuration={6000} key={'topright'} onClose={handleCloseSnackbar}>
+          <Alert onClose={handleCloseSnackbar} severity={'error'} sx={{width: '100%'}}>
+              {error}
+          </Alert>
+        </Snackbar>
+      )}
+
+      <Typography variant="h4">
+        {category}
+      </Typography>
       {/* Add sensor Icon */}
-      <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 2 }} sx={{ '& > :not(style)': { m: 3 } }}>
-        <Fab size="large" color="primary" aria-label="add" component={Link} to={'/adminpanel'}>
-          <AddIcon />
+      <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ fontSize: 25, padding: '1rem', marginBottom: '1rem', '& > :not(style)': { m: 1 } }}>
+        <Fab variant="extended" size="large" color="primary"  aria-label="add" component={Link} to={'/devices/add-sensor'} >
+          <AddIcon />{t("addSensor")}
         </Fab>
       </Box>
       {/* Table */}
@@ -125,13 +163,13 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         { row.name }
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                          Lite info <b>{ row.installed }</b>
+                          < br/><b>{ row.installed }</b>
                         </Typography>
                       </CardContent>
                     </Box>
                     {/* Icons more/status */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', margin: 'auto',  gap: '1em', alignItems:"flex-start"}}>
-                      <IconButton title={ row.name } variant="contained" onClick={handleClick} id={row.id} sx={{ width: "fit-content", alignSelf: 'flex-end' }}>
+                      <IconButton title={row.name} id={row.id} variant="contained" onClick={handleClick} sx={{width: "fit-content", alignSelf: 'flex-end'}}>
                         <MoreVertRoundedIcon />
                       </IconButton>
                       <Box style={{ display: 'flex', flexDirection: 'row', margin: '0 auto', textTransform: 'capitalize', alignSelf: 'flex-end'}} >
@@ -141,12 +179,14 @@ const DeviceCategory = ({user, t, apiURL}) => {
                         {row.status === "ACTIVE" ? 
                           <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'green', padding: "0 0.45em"}} />
                           :
+                          row.status === "REPORTED" ?
+                            <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'red', padding: "0 0.45em"}} />
+                            :
                           row.status === "SETUP" ?
                             <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'orange', padding: "0 0.45em"}} />
                             :
                             row.status === "INACTIVE" &&
                             <CircleRoundedIcon sx={{fontSize: 20, margin: 'auto', color: 'red', padding: "0 0.45em"}} />
-                          
                         }
                       </Box>
                     </Box>
@@ -163,7 +203,7 @@ const DeviceCategory = ({user, t, apiURL}) => {
           <Button component={Link} to={"/devices/editNodeThreshold/" + nodeId} title={ title } startIcon={<EditIcon />} sx={{ textTransform: 'none' }}>
             {t("edit")} { title }
           </Button>
-          <Button startIcon={<DeleteIcon />} sx={{ textTransform: 'none', color: '#EB4440' }}>
+          <Button startIcon={<DeleteIcon />} onClick={delteNode} sx={{ textTransform: 'none', color: '#EB4440' }}>
             {t("delete")} { title }
           </Button>
         </Box>

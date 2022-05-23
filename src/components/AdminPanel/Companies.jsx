@@ -1,5 +1,5 @@
 import React from 'react'
-import {styled, Typography, Button, Box, Grid, Card, CardMedia, CardContent} from '@mui/material';
+import {styled, Typography, Divider, Button, Box, Grid, Card, CardMedia, CardContent} from '@mui/material';
 import {Link} from 'react-router-dom'
 import LoadingOverlay from '../LoadingOverlay';
 
@@ -25,7 +25,9 @@ const Companies = ({cookies, t, apiURL, color}) => {
         <Box m={2}>
           <Typography variant="h4">{t('tractAdminPanel')}</Typography>
           <br />
-          <Typography variant="h6">{t('companies')}</Typography>
+          <Divider />
+          <br />
+          <Typography variant="h6">{t('registeredCompany')}</Typography>
           <Actions>
             <Button style={{
               float: 'left',

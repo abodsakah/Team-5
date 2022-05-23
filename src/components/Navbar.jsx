@@ -21,6 +21,7 @@ import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import MemoryIcon from '@mui/icons-material/Memory';
 import StyleIcon from '@mui/icons-material/Style';
 import HistoryIcon from '@mui/icons-material/History';
+import { minHeight } from '@mui/system';
 
 
 const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyName, apiURL, user}) => {
@@ -52,6 +53,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
     }),
     }));
     
+    const n = 5; 
     const drawerWidth = 240;
 
     const theme = useTheme(); // Get the theme from the context
@@ -70,7 +72,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorEls, setAnchorEls] = React.useState(null);
-    const [companies, setCompanies] = React.useState([]);
+    const [companiesLog, setCompaniesLog] = React.useState([]);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -91,9 +93,9 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
 
     const getCompanyLog = () => {
         fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
-            setCompanies([res]);
+            setCompaniesLog([res]);
           });
-      };
+        };
     
       useEffect(() => {
         getCompanyLog();
@@ -135,7 +137,9 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             justifyContent: 'center',
                         }}>
                             {/* <img src={`${process.env.PUBLIC_URL}/static/uploads/images/${companyLogo}`} width={"10%"} alt={companyName} sx={{height: '40px', width: '40px', borderRadius: '50%'}} /> */}
-                            <Logo src={`${apiURL}/static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `}/>
+                            <a href="/">
+                                <Logo src={`${apiURL}/static/uploads/logo/${companyLogo}`} alt={companyName} onerror={`if(this.src != '${companyLogo}') this.src = '${process.env.PUBLIC_URL}/static/images/Asset 1.png'} `} />
+                            </a>
                         </div>
                         : 
                         <Typography variant="h6" sx={{flexGrow: 1}}>{companyName}</Typography>
@@ -173,27 +177,29 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* HistoryLog List */}
-                        <MenuItem style={{ pointerEvents: 'none' }}>
-                            {companies.map(company => (
-                            <div>
-                                <Typography variant="h6">
-                                    {companyName} historylog
-                                </Typography>
-                                <List sx={{width: '100%', padding: "10px 0" }}>
-                                    <ListItem disableGutters={true} divider light>
-                                        <ListItemText style={{ padding: "0.7em 0" }}>  
-                                            <Typography variant="h6">
-                                                { company.msg}
-                                            </Typography>
-                                            <Typography style={{ fontSize: "14px" }}>
-                                                { company.report_date}
-                                            </Typography>
-                                        </ListItemText>
-                                    </ListItem>
-                                </List>
+                            <div style={{ padding: "1em", minHeight: "580px" }}>
+                                {companiesLog.map( (company) => (
+                                    <List sx={{ height: '50vh'}}>
+                                        <Typography variant="h6" >
+                                            {(Object.keys(company).length)} {t("latestEvents")}
+                                        </Typography>
+                                        { company.length }
+                                        {Array.apply(null, { length: (Object.keys(company).length) }).map((e, i) => (
+                                            <ListItem disableGutters={true} divider light >
+                                                <ListItemText style={{ padding: "1em 0.1em", fontSize: "16px" }}>  
+                                                    <Typography>
+                                                        { company[i].msg}
+                                                        < br />
+                                                    </Typography>
+                                                    <Typography sx={{ fontSize: "14px"}}>
+                                                        { company[i].report_date}
+                                                    </Typography>
+                                                </ListItemText>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                ))} 
                             </div>
-                            ))}
-                        </MenuItem>
                     </Menu>
                 </div>
                 {/* End HistoryLog Button */}
@@ -232,7 +238,6 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                         }}
                     >
                         {/* Items in the user menu */}
-                        <MenuItem style={{paddingRight: '4rem'}} onClick={handleClose}>{t("profile")}</MenuItem>
                         <MenuItem style={{paddingRight: '4rem'}} onClick={handleLogout}>{t("logout")}</MenuItem>
                     </Menu>
                 </div>
@@ -297,7 +302,12 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                             </ListItemIcon>
                             <ListItemText primary={t("nodes")} />
                             </ListItem>
-                            <>{ /*LÄGG HÄR*/ }</>
+                            <ListItem button component={Link} to="/admin/add-node-type/" onClick={toggleDrawer(anchorEl, false)}>
+                            <ListItemIcon>
+                                <MemoryIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={t("nodeTypes")} />
+                            </ListItem>
                             </>
                         }
                         <ListItem button component={Link} to="/admin/users" onClick={toggleDrawer(anchorEl, false)}>

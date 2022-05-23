@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom';
 
 /* ----------------------------------- MUI ---------------------------------- */
 import { DataGrid } from '@mui/x-data-grid';
-import { Avatar, Box, Fab } from '@mui/material';
+import { styled, Avatar, Divider, Button, Box, Fab, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 const columns = [
@@ -59,6 +59,11 @@ const UserList = ({t, apiURL, user}) => {
       }
     }
   }
+  const Actions = styled('div')`
+      display: flex;
+      justify-content: end;
+      align-items: center;
+    `
 
   useEffect(() => {
     setRows([]);
@@ -68,13 +73,25 @@ const UserList = ({t, apiURL, user}) => {
   
   return (
     <main>
-      <h1>'Företaget's adminpanel</h1>
-      <Box style={{height: '550px', width: '100%'}} className="mt-7">
-        <Box style = {{ position: 'fixed', bottom: 0, right: 0, zIndex: 10}} sx={{ '& > :not(style)': { m: 3 } }}>
-          <Fab size="large" color="primary" aria-label="add" component={Link} to={'/admin/users/add'} >
-            <AddIcon />
-          </Fab>
+         <Box m={2}>
+        <Typography variant="h4">{t('users')}</Typography>
+            <br />
+          <Divider />
+          <br />
+          <Typography variant="h6">{t('registeredUsers')}</Typography>
+          <Actions>
+            <Button style={{
+              float: 'right',
+              // marginBottom: '0.5rem',
+              marginTop: '1rem',
+            }}
+              variant="outlined"
+              component={Link}
+              to="/admin/users/add">
+              {t('addUser')}</Button>
+          </Actions>
         </Box>
+      <Box style={{height: '550px', width: '100%'}} className="mt-7">
         <DataGrid
           {...rows}
           sx={{
@@ -85,8 +102,6 @@ const UserList = ({t, apiURL, user}) => {
           rows={rows}
           loading = {rows.length === 0}
           columns={columns}
-          
-          checkboxSelection
         />
       </Box>
     </main>
@@ -95,5 +110,3 @@ const UserList = ({t, apiURL, user}) => {
 
 
 export default UserList;
-
-

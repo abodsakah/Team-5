@@ -7,8 +7,14 @@ services:
       - './db:/docker-entrypoint-initdb.d'
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_ROOT_PASSWORD=123456789
       - MYSQL_ROOT_HOST=%
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_USER=tractteam
+      - MYSQL_PASSWORD=12345678
+      - MYSQL_DATABASE=tract
+    ports:
+      - '3306:3306'
     healthcheck:
       test:
         - CMD
@@ -30,7 +36,7 @@ services:
       - '8080:80'
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_ROOT_PASSWORD: 123456789
   frontend:
     image: node
     container_name: nodejs
@@ -39,19 +45,15 @@ services:
       - 'node_modules:/home/node/app/node_modules'
     ports:
       - '4500:3000'
-      - 9000:9000
+      - '9000:9000'
     command: bash -c "cd home/node/app && yarn && yarn global add serve && yarn run start-serve"
   eclipse-mosquitto:
     image: eclipse-mosquitto
     ports:
-      - '1883:1883'
-      - '9001:9001'
-      - 8083:8083
-      - 8883:8883
+      - '8883:8883'
     volumes:
-      - './Docker/mosquitto/:/mosquitto/config/'
-      - './Docker/mosquitto/passwordFile/:/etc/mosquitto/'
-    # command: mosquitto_passwd -c /etc/mosquitto/passwd tractteam
+      - './Docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf'
+      - './Docker/mosquitto/passwordFile/passwd:/etc/mosquitto/passwd'
 volumes:
   db_data: null
   node_modules: null

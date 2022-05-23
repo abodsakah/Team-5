@@ -53,12 +53,14 @@ const Devices = ({t, apiURL, user}) => {
     <>
       {rows !== undefined ? (
       <main>
-          <h1>{t("sensors")}</h1>
+          <Typography variant="h4">
+              {t('sensors')}
+          </Typography>
         {/* Add sensor Icon */}
-        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ '& > :not(style)': { m: 3 } }}>
-          <Fab size="large" color="primary" aria-label="add" component={Link} to={'/devices/add-sensor'} >
-            <AddIcon />
-          </Fab>
+        <Box style = {{ position: 'fixed', bottom: 0, right: 0 }} sx={{ fontSize: 25, padding: '1rem', marginBottom: '1rem', '& > :not(style)': { m: 1 } }}>
+            <Fab variant="extended" size="large" color="primary"  aria-label="add" component={Link} to={'/devices/add-sensor'} >
+            <AddIcon />{t("addSensor")}
+            </Fab>
         </Box>
 
         {/* Table */}
@@ -85,7 +87,7 @@ const Devices = ({t, apiURL, user}) => {
                               { row.category }
                               </Typography>
                               <Typography variant="subtitle1" color="text.secondary" component="div" sx={{ color: 'black'  }}>
-                                Antal installerade sensorer: <b>{ row.amount }</b>
+                                {t('installedSensors')}: <b>{ row.amount }</b>
                               </Typography>
                             </CardContent>
                           </Box>

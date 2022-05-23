@@ -17,10 +17,6 @@ function WebsiteStyler({t, apiURL, choosenColor, setChoosenColor, updateStyling,
         }
     }
 
-    // useEffect(() => {
-    //     setMainColorInput(`${MainColor}`);
-    // }, [MainColor]);
-
     const ColorSample = styled('div')`
         background-color: ${mainColorInput};
         width: 1rem;

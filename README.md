@@ -7,12 +7,12 @@ This is the main repository for the project of Team 5 at BTH for the course PA14
 
 Start by cloning the repository:
 ```bash
-git clone https://github.com/abodsakah/Team-5
+git clone https://github.com/abodsakah/Tract
 ```
 
 Go into the directory:
 ```bash
-cd Team-5
+cd Tract
 ```
 
 And from there you can start by installing the dependencies by running the `yarn` command, if you dont have yarn already installed, you can install it by running the following command:
@@ -44,6 +44,7 @@ included in the docker-compose.yml file:
 - nodejs
 - mysql
 - phpmyadmin
+- eclipse-mosquitto
 
 You can access phpmyadmin to manpulate the database by going to the following url `http://localhost:8080/`.
 

@@ -58,4 +58,38 @@ To add a new language just copy the `_SAMPLE.json` file and name it as your lang
 
 Make sure the json file is in the `src/locales/` directory.
 
-Later to be able to use your new language you can add a new `case` to the `switch` statement in the `translator.js` file in the `setLang()` function, the function takes in a lanuage code parameter and that code is going to be used to find the language file in the `src/locales` directory.
+Later we have to add the file to our `src/translator.js` file so that we can use it, we add the new language in the `setLang()` function:
+
+```js
+function setLang(lang) { // gets the language code and sets the language
+    switch (lang) {
+        case "en":
+        case "en-US":
+        case "en-GB":
+            language = getLanguageFile("en");
+            break;
+        case "sv":
+        case "sv-SE":
+            language = getLanguageFile("sv");
+            break;
+        default:
+            language = getLanguageFile("en");
+            break;
+    }
+}
+```
+
+Here we can see that we have multible cases for each language and that is to be able to that is becuase we auto detect the user's default browser language and the different browsers have different language codes.
+
+## Styling
+The websites colors and logo are all modular meaning that for each company we have diffrent colors and logos and that is being fetched from the database when the website loads. The colors are set in the `src/App.js` file:
+
+```js
+const theme = createTheme({
+    palette: {
+        primary: {
+        main: `#${MainColor}`,
+        }
+    },
+});
+```
