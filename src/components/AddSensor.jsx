@@ -170,6 +170,7 @@ function AddSensor({t, apiURL, user}) {
 
     const handleChangeTemp = (event) => {
         setChoosenTemp(event.value);
+        setThreshold(event.value);
     }
 
     const handleChangeSwitch = (event) => {
@@ -252,7 +253,7 @@ function AddSensor({t, apiURL, user}) {
             data.append('deviceUid', deviceId);
             data.append('threshold', threshold);
             data.append('thresholdAction', action);
-
+            console.log(data);
             fetch(`${apiURL}/updateSensorThreshold`, {
                 method: 'POST',
                 body: data
