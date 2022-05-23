@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: db
--- Tid vid skapande: 23 maj 2022 kl 13:31
+-- Tid vid skapande: 23 maj 2022 kl 13:35
 -- Serverversion: 5.7.38
 -- PHP-version: 8.0.19
 
@@ -480,7 +480,8 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (161, '2022-05-23 13:27:21', 'Threshold of sensor 108 has been updated', 1),
 (162, '2022-05-23 13:27:57', 'Threshold of sensor 112 has been updated', 1),
 (163, '2022-05-23 13:28:16', 'Threshold of sensor 10 has been updated', 1),
-(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1);
+(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1),
+(165, '2022-05-23 13:33:37', 'User 29 created', 1);
 
 -- --------------------------------------------------------
 
@@ -799,7 +800,8 @@ INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, 
 (3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
 (4, 'info@tractteam.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
 (27, 'tester@email.com', '$2a$12$wLaXfuCMOh1C0oG.e.5p.eJCW6gTggU46HAtKzQtsH5aGoJA6Swpy', 'Test', 'user', 'testerUser', 0, 2, 1),
-(28, 'tract@allbin.se', '$2a$12$nEVRPmmK.JnrKPYVGntvrevzlWanxBgTAIJSDseEtY4jA4BkihruW', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1);
+(28, 'tract@allbin.se', '$2a$12$nEVRPmmK.JnrKPYVGntvrevzlWanxBgTAIJSDseEtY4jA4BkihruW', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1),
+(29, 'dennis@gmail.com', '$2b$12$kuGYfVQYe.9FOs5veFYZT.MOhUBXtHAyFlutPSwdTh1nDpTI3.fbe', 'dennis', 'andersson', 'dennisA', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -998,7 +1000,7 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
 
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
@@ -1046,7 +1048,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Restriktioner för dumpade tabeller
