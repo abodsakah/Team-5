@@ -845,7 +845,7 @@ router.post('/createNodeType', async (req, res) => {
       let apiKey = req.body.key;
       let keyValid = await dbConnection.validateAPIKey(apiKey);
       let typeName = req.body.typeName;
-      let routeSetting = req.body.routeSetting;
+      let routeSetting = req.body.appSetting;
 
       if (keyValid) {
           await dbConnection.createNodeType(typeName, routeSetting);
