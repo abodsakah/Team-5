@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: localhost:3306
--- Tid vid skapande: 22 maj 2022 kl 19:53
+-- Tid vid skapande: 23 maj 2022 kl 08:58
 -- Serverversion: 10.1.48-MariaDB-0+deb9u2
 -- PHP-version: 7.0.33-0+deb9u11
 
@@ -46,16 +46,19 @@ CALL set_asset_hosts(n_asset_id, @device_id);
 END$$
 
 DROP PROCEDURE IF EXISTS `add_styling`$$
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `add_styling` (IN `n_comp_id` INT, IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))  BEGIN
+CREATE DEFINER=`tractteam`@`localhost` PROCEDURE `add_styling` (IN `n_comp_id` INT, IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))  BEGIN
   INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES (n_comp_id, n_color, n_logo);
 END$$
 
 DROP PROCEDURE IF EXISTS `add_test_logical_device_base`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_test_logical_device_base` ()  BEGIN
--- node thresholdINSERT INTO `node_thresholds` (`id`, `action`, `trigger_action`) VALUES (NULL, 'test action', 'test trigger action');
--- spaceINSERT INTO `spaces` (`id`, `type`, `name`, `agent`, `has_capability`, `is_part_of`)
+-- node threshold
+INSERT INTO `node_thresholds` (`id`, `action`, `trigger_action`) VALUES (NULL, 'test action', 'test trigger action');
+-- space
+INSERT INTO `spaces` (`id`, `type`, `name`, `agent`, `has_capability`, `is_part_of`)
 VALUES (NULL, 'test', 'test space', '1', '123', NULL);
--- logical deviceINSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `status`)
+-- logical device
+INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `status`)
 VALUES (NULL, '123456', 'test logical device', '1', CURRENT_DATE(), '1', 'ACTIVE');
 END$$
 
@@ -73,7 +76,8 @@ END$$
 DROP PROCEDURE IF EXISTS `create_threshold`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `create_threshold` (IN `n_action` VARCHAR(10), IN `n_treshold` INT(255))  begin
   INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
-  -- select the id of the last inserted row  SELECT LAST_INSERT_ID() as id;
+  -- select the id of the last inserted row
+  SELECT LAST_INSERT_ID() as id;
 end$$
 
 DROP PROCEDURE IF EXISTS `delete_logical_device_from_uid`$$
@@ -271,7 +275,7 @@ BEGIN
 END$$
 
 DROP PROCEDURE IF EXISTS `set_node_as_active`$$
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `set_node_as_active` (IN `node_id` INT)  BEGIN
+CREATE DEFINER=`tractteam`@`localhost` PROCEDURE `set_node_as_active` (IN `node_id` INT)  BEGIN
   UPDATE `logical_devices` SET `status` = 'ACTIVE' WHERE `logical_devices`.`id` = node_id;
 END$$
 
@@ -290,7 +294,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_settings` (IN `company_
 END$$
 
 DROP PROCEDURE IF EXISTS `update_logical_device_threshold`$$
-CREATE DEFINER=`abodsakka`@`localhost` PROCEDURE `update_logical_device_threshold` (IN `n_uid` INT, IN `n_threshold` INT)  BEGIN
+CREATE DEFINER=`tractteam`@`localhost` PROCEDURE `update_logical_device_threshold` (IN `n_uid` INT, IN `n_threshold` INT)  BEGIN
   UPDATE `logical_devices` SET `trigger_action` = n_threshold WHERE uid = n_uid;
   UPDATE `logical_devices` SET `status` = 'ACTIVE' WHERE `logical_devices`.`uid` = n_uid;
 END$$
@@ -380,7 +384,7 @@ CREATE TABLE `companies` (
 --
 
 INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
-(1, 'Tract', 'info@abodsakka.xyz', '0721282737'),
+(1, 'Tract', 'info@tractteam.xyz', '0721282737'),
 (24, 'Test old', 'test@new.com', '12345678'),
 (25, 'Hello world', 'hello@world.com', '0232312312'),
 (26, 'gustaf vasa', 'test@gmail.com', '0767853696');
@@ -529,7 +533,8 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (150, '2022-05-21 14:30:05', 'Sensor 16 set to deleted', 1),
 (151, '2022-05-21 14:33:55', 'Sensor 16 set to deleted', 1),
 (152, '2022-05-22 13:22:07', 'Sensor 16 set to deleted', 1),
-(153, '2022-05-22 18:02:49', 'Sensor 16 set to deleted', 1);
+(153, '2022-05-22 18:02:49', 'Sensor 16 set to deleted', 1),
+(154, '2022-05-22 20:01:59', 'Sensor 16 set to deleted', 1);
 
 -- --------------------------------------------------------
 
@@ -833,9 +838,9 @@ CREATE TABLE `user_login` (
 --
 
 INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, `nickname`, `email_Verified`, `role`, `company_id`) VALUES
-(1, 'abodsakka2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 1),
+(1, 'tractteam2001@gmail.com', '$2a$12$gFm.o6d8we7jugAYottmcOfZTFUJ5aE9qHgialKOtH1yBK99fC5HC', 'Abdulrahman', 'Sakah', 'tractteam', 1, 0, 1),
 (3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
-(4, 'info@abodsakka.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
+(4, 'info@tractteam.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
 (27, 'tester@email.com', '$2a$12$wLaXfuCMOh1C0oG.e.5p.eJCW6gTggU46HAtKzQtsH5aGoJA6Swpy', 'Test', 'user', 'testerUser', 0, 2, 1),
 (28, 'tract@allbin.se', '$2b$12$Icmyi609phYu.GjT9Nd37OHcBJLP/H.yXufxW2W5N4oMElaol0gRK', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1);
 
@@ -891,7 +896,7 @@ INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
 --
 DROP TABLE IF EXISTS `company_settings`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`abodsakka`@`localhost` SQL SECURITY DEFINER VIEW `company_settings`  AS  select `ws`.`color` AS `color`,`ws`.`logo` AS `logo`,`ws`.`comp_id` AS `comp_id`,`c`.`name` AS `name` from (`website_settings` `ws` join `companies` `c` on((`ws`.`comp_id` = `c`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`localhost` SQL SECURITY DEFINER VIEW `company_settings`  AS  select `ws`.`color` AS `color`,`ws`.`logo` AS `logo`,`ws`.`comp_id` AS `comp_id`,`c`.`name` AS `name` from (`website_settings` `ws` join `companies` `c` on((`ws`.`comp_id` = `c`.`id`))) ;
 
 -- --------------------------------------------------------
 
@@ -900,7 +905,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`abodsakka`@`localhost` SQL SECURITY DEFINER 
 --
 DROP TABLE IF EXISTS `company_website_settings`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`abodsakka`@`localhost` SQL SECURITY DEFINER VIEW `company_website_settings`  AS  select `companies`.`id` AS `id`,`companies`.`name` AS `name`,`companies`.`support_email` AS `support_email`,`companies`.`support_phone` AS `support_phone`,`website_settings`.`color` AS `color`,`website_settings`.`logo` AS `logo` from (`companies` left join `website_settings` on((`companies`.`id` = `website_settings`.`comp_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`localhost` SQL SECURITY DEFINER VIEW `company_website_settings`  AS  select `companies`.`id` AS `id`,`companies`.`name` AS `name`,`companies`.`support_email` AS `support_email`,`companies`.`support_phone` AS `support_phone`,`website_settings`.`color` AS `color`,`website_settings`.`logo` AS `logo` from (`companies` left join `website_settings` on((`companies`.`id` = `website_settings`.`comp_id`))) ;
 
 -- --------------------------------------------------------
 
@@ -1056,7 +1061,7 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
 --
