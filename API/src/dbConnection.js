@@ -5,11 +5,7 @@ const dotenv = require('dotenv').config();
 
 
 // init db
-console.log("Connecting to db with login: ", dotenv.parsed);
-const db = new Sequelize(dotenv.parsed.DB_NAME, dotenv.parsed.DB_LOGIN, dotenv.parsed.DB_PASSWORD, {
-    host: dotenv.parsed.DB_HOST,
-    dialect: 'mysql',
-});
+const db = new Sequelize(`mysql://${dotenv.parsed.DB_LOGIN}:${dotenv.parsed.DB_PASSWORD}@${dotenv.parsed.DB_HOST}/${dotenv.parsed.DB_NAME}`);
 
 /**
  *
