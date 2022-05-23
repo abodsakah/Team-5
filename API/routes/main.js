@@ -55,6 +55,7 @@ router.get("/createUser", async (req, res) => {
               let user = await dbConnection.createUser(email, passHash, firstName, lastName, nickname, role, companyId);
               res.send(user);
           } catch (e) {
+                console.log(e);
               res.status(500).send("Error creating user");
           }
 
@@ -101,6 +102,7 @@ router.get("/createCompany", async (req, res) => {
               }
               res.status(200).send(JSON.stringify(status));
           } catch (e) {
+                  console.log(e);
               console.log(e);
               res.status(500).send("Error creating company");
           }
@@ -124,6 +126,7 @@ router.get("/getCompnies", async (req, res) => {
               let companies = await dbConnection.getCompanies();
               res.status(200).send(companies);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting companies");
           }
 
@@ -273,6 +276,7 @@ router.get("/addNode", async (req, res) => {
               let device = await dbConnection.addPreloadedNode(deviceId, deviceType, companyId);
               res.status(200).send(device);
           } catch (e) {
+                  console.log(e);
               console.log(e);
               res.status(500).send("Error creating device");
           }
@@ -323,6 +327,7 @@ router.post("/getCompanySettings", async (req, res) => {
               let company = await dbConnection.getCompanySetting(companyId);
               res.status(200).send(company[0][0]);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting company");
           }
       } else {
@@ -348,6 +353,7 @@ router.post("/updateThreshold", async (req, res) => {
               await dbConnection.updateThreshold(nodeId, action, value, companyId);
               res.status(200).send({status: "success", message: "Threshold updated"});
           } catch (e) {
+                  console.log(e);
               console.log(e);
               res.status(500).send({status: "error", message: "Error updating threshold"});
           }
@@ -397,6 +403,7 @@ router.post("/addStyling", async (req, res) => {
                   message: "Company updated"
               });
           } catch (e) {
+                  console.log(e);
               console.log(e);
               res.status(500).send("Error getting company");
           }
@@ -421,6 +428,7 @@ router.get("/getNodeType", async (req, res) => {
               let node = await dbConnection.getNodeType(nodeId, companyId);
               res.status(200).send(node);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting sensor");
           }
       } else {
@@ -444,6 +452,7 @@ router.get("/getNodeInfo", async (req, res) => {
               let node = await dbConnection.getNodeInfo(nodeId,companyId);
               res.status(200).send(node);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting sensor");
           }
       } else {
@@ -472,6 +481,7 @@ router.get("/getThreshold", async (req, res) => {
                   device: node
               });
           } catch (e) {
+                  console.log(e);
               res.status(500).send({status: "error", message: "Error getting threshold"});
           }
       } else {
@@ -495,6 +505,7 @@ router.get("/getNodeStatus", async (req, res) => {
               let node = await dbConnection.getNodeStatus(nodeId,companyId);
               res.status(200).send(node);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting sensor");
           }
       } else {
@@ -520,6 +531,7 @@ router.post("/forceWesMode", async (req, res) => {
               });
               console.log("sendForceWesMode success!");
           } catch (e) {
+                  console.log(e);
               res.status(500).send(e);
           }
       } else {
@@ -545,6 +557,7 @@ router.post("/deleteNode", async (req, res) => {
                   status: "success",
               });
           } catch (e) {
+                  console.log(e);
               res.status(500).send(e);
           }
       } else {
@@ -570,6 +583,7 @@ router.post("/setNodeDeleted", async (req, res) => {
                   status: "success",
               });
           } catch (e) {
+                  console.log(e);
               res.status(500).send(e);
           }
       } else {
@@ -591,6 +605,7 @@ router.get("/getUsersForCompany", async (req, res) => {
               let users = await dbConnection.getUsersForCompany(companyId);
               res.status(200).send(users);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting users");
           }
       } else {
@@ -614,6 +629,7 @@ router.get("/getReportedLogicalDeviceForCompany", async (req, res) => {
               let devices = await dbConnection.getReportedLogicalDeviceForCompany(companyId);
               res.status(200).send(devices);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting devices");
           }
       } else {
@@ -636,6 +652,7 @@ router.get("/getLogicalDeviceForCompany", async (req, res) => {
               let devices = await dbConnection.getLogicalDeviceForCompany(companyId);
               res.status(200).send(devices);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting devices");
           }
       } else {
@@ -659,6 +676,7 @@ router.get("/getLogicalDeviceTypeAmount", async (req, res) => {
               let devices = await dbConnection.getAmountOfSensorTypes(`${type}`, companyId);
               res.status(200).send(devices);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting devices");
           }
       } else {
@@ -680,6 +698,7 @@ router.get("/getBuildings", async (req, res) => {
               let spaces = await dbConnection.getBuildingsForCompany(companyId);
               res.status(200).send(spaces);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting spaces");
           }
       } else {
@@ -702,6 +721,7 @@ router.get("/getSpaces", async (req, res) => {
               let spaces = await dbConnection.getSpacesForBuilding(parentSpaceId);
               res.status(200).send(spaces);
           } catch (e) {
+                  console.log(e);
               res.status(500).send("Error getting spaces");
           }
       } else {
@@ -724,6 +744,7 @@ router.get("/getAssetsForSpace", async (req, res) => {
               let assets = await dbConnection.getAssetsInSpace(spaceId);
               res.status(200).send(assets);
           } catch (e) {
+                  console.log(e);
               console.log(e);
               res.status(500).send("Error getting assets");
           }
@@ -753,6 +774,7 @@ router.post("/addLogicalDevice", async (req, res) => {
                   let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, is_part_of, node.type, "SETUP", companyId);
                   res.status(200).send(node);
               } catch (e) {
+                  console.log(e);
                   // TODO: getting error when adding device
                   console.log(e);
                   res.status(500).send("Error adding device");
@@ -782,6 +804,7 @@ router.post("/updateSensorThreshold", async (req, res) => {
               await dbConnection.updateLogicalDeviceWithThreshold(deviceUid, thresholdId.id);
               res.status(200).send({"status": "Success"});
           } catch (e) {
+                  console.log(e);
               console.log(e.message);
               res.status(500).send("Error updating device");
           }
@@ -805,6 +828,7 @@ router.post('/getNodesOfType', async (req, res) => {
           let nodes = await dbConnection.getNodesOfType(type, companyId);
           res.status(200).send(nodes);
       } catch (e) {
+                  console.log(e);
           res.status(500).send("Error getting nodes");
       }
   } else {
