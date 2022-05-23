@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: db
--- Tid vid skapande: 23 maj 2022 kl 13:25
+-- Tid vid skapande: 23 maj 2022 kl 13:31
 -- Serverversion: 5.7.38
 -- PHP-version: 8.0.19
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Databas: `tract`
 --
-CREATE DATABASE IF NOT EXISTS `tract` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `tract`;
 
 DELIMITER $$
 --
@@ -478,7 +476,11 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (157, '2022-05-23 13:20:24', 'Sensor 16 has been deleted', 1),
 (158, '2022-05-23 13:21:07', 'Sensor test added', 1),
 (159, '2022-05-23 13:23:32', 'Sensor test added', 1),
-(160, '2022-05-23 13:23:35', 'Sensor 88A904A4BD setup is finished', 1);
+(160, '2022-05-23 13:23:35', 'Sensor 88A904A4BD setup is finished', 1),
+(161, '2022-05-23 13:27:21', 'Threshold of sensor 108 has been updated', 1),
+(162, '2022-05-23 13:27:57', 'Threshold of sensor 112 has been updated', 1),
+(163, '2022-05-23 13:28:16', 'Threshold of sensor 10 has been updated', 1),
+(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1);
 
 -- --------------------------------------------------------
 
@@ -649,7 +651,7 @@ CREATE TABLE `node_thresholds` (
 --
 
 INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
-(1, 'SAME', 0),
+(1, 'SAME', 1),
 (3, 'UNDER', 37),
 (4, 'SAME', 0),
 (21, 'UNDER', 0),
@@ -672,7 +674,7 @@ INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
 (39, 'UP', 10000),
 (40, 'UP', 121000),
 (41, 'UP', 100012),
-(42, 'UP', 1000123);
+(42, 'SAME', 100012);
 
 -- --------------------------------------------------------
 
@@ -783,7 +785,7 @@ CREATE TABLE `user_login` (
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `nickname` varchar(255) NOT NULL,
-  `email_Verified` tinyint(1) NOT NULL,
+  `email_Verified` tinyint(1) NOT NULL DEFAULT '1',
   `role` int(11) NOT NULL,
   `company_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -996,7 +998,7 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
 
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
@@ -1020,7 +1022,7 @@ ALTER TABLE `node_thresholds`
 -- AUTO_INCREMENT för tabell `node_types`
 --
 ALTER TABLE `node_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT för tabell `spaces`
