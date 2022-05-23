@@ -40,7 +40,6 @@ const EditNodeThreshhold  = ({t, apiURL, user}) => {
 
   const handleChangeAction = (event) => {
       setAction(event.target.value);
-      setThreshold(event.target.value);
   }
 
   const updateThreshold = () => {
