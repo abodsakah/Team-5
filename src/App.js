@@ -157,7 +157,7 @@ function App() {
 
 
   // if the application is loading or the user is not authenticated, render the login page
-  if (isLoading || !isAuthenticated) {
+  if (cookies.get("user") === undefined || cookies.get("user").company_id === undefined || isLoading || !isAuthenticated) {
     return <Login loading={isLoading} cookies={cookies}/>
   }
 
