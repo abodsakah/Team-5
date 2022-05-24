@@ -176,24 +176,19 @@ function App() {
             <Route path="/login" element={<Login t={t} />} />
             <Route path="/devices" element={<Devices t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
             <Route path="/devices/:category" element={<DeviceCategory t={t} user={cookies.get("user")} apiURL={apiURL}/>} />
-            <Route path="/devices/add-sensor" element={<AddSensor t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
             <Route path="/devices/editNodeThreshold/:id" element={<EditNodeThreshhold t={t} apiURL={apiURL} user={cookies.get("user")}/>} />
-            {cookies.get("user") && cookies.get("user").role <= 1 &&
-              <>
-                {cookies.get("user") && cookies.get("user").role === 0 &&
-                <>
-                  <Route path="/admin/companies" element={<Companies t={t} apiURL={apiURL} />} />
-                  <Route path="/admin/edit-company/:id" element={<EditCompany t={t} apiURL={apiURL} />} />
-                  <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL} />} />
-                  <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />
-                  <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
-                  <Route path="/admin/users" element={<UserList t={t} apiURL={apiURL} user={cookies.get('user')}/>} />
-                  <Route path="/admin/users/add" element={<AddUser t={t} apiURL={apiURL}/>} />
-                  <Route path="/admin/add-node-type" element={<AddNodeType t={t} apiURL={apiURL}/>} />
-                </>
-              }
-              </>
-            } 
+            {cookies.get("user") && cookies.get("user").role === 0 &&
+            <>
+              <Route path="/admin/companies" element={<Companies t={t} apiURL={apiURL} />} />
+              <Route path="/admin/edit-company/:id" element={<EditCompany t={t} apiURL={apiURL} />} />
+              <Route path="/admin/add-node" element={<AddNode t={t} apiURL={apiURL} />} />
+              <Route path="/admin/nodes" element={<Nodes t={t} apiURL={apiURL} />} />
+              <Route path="/admin/add-company" element={<AddCompany t={t} apiURL={apiURL} />} />
+              <Route path="/admin/users" element={<UserList t={t} apiURL={apiURL} user={cookies.get('user')}/>} />
+              <Route path="/admin/users/add" element={<AddUser t={t} apiURL={apiURL}/>} />
+              <Route path="/admin/add-node-type" element={<AddNodeType t={t} apiURL={apiURL}/>} />
+            </>
+            }
             {/* If there is a "user" cookie and if the user is admin */}
             {/* 404 Page */}
             <Route path="*" element={<Typography variant="h1">404</Typography>} />

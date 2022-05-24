@@ -290,32 +290,33 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                     <List>
                         {cookies.get("user").role === 0 &&
                             <>
-                            <ListItem button component={Link} to="/admin/companies" onClick={toggleDrawer(anchorEl, false)}>
+                                <ListItem button component={Link} to="/admin/companies" onClick={toggleDrawer(anchorEl, false)}>
+                                    <ListItemIcon>
+                                        <FeaturedPlayListIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={t("companies")} />
+                                </ListItem>
+                                <ListItem button component={Link} to="/admin/nodes/" onClick={toggleDrawer(anchorEl, false)}>
                                 <ListItemIcon>
-                                    <FeaturedPlayListIcon />
+                                    <MemoryIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={t("companies")} />
-                            </ListItem>
-                            <ListItem button component={Link} to="/admin/nodes/" onClick={toggleDrawer(anchorEl, false)}>
-                            <ListItemIcon>
-                                <MemoryIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={t("nodes")} />
-                            </ListItem>
-                            <ListItem button component={Link} to="/admin/add-node-type/" onClick={toggleDrawer(anchorEl, false)}>
-                            <ListItemIcon>
-                                <MemoryIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={t("nodeTypes")} />
-                            </ListItem>
+                                <ListItemText primary={t("nodes")} />
+                                </ListItem>
+                                <ListItem button component={Link} to="/admin/add-node-type/" onClick={toggleDrawer(anchorEl, false)}>
+                                <ListItemIcon>
+                                    <MemoryIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={t("nodeTypes")} />
+                                </ListItem>
+                                <ListItem button component={Link} to="/admin/users" onClick={toggleDrawer(anchorEl, false)}>
+                                <ListItemIcon>
+                                    <SupervisedUserCircleIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={t("users")} />
+                                </ListItem>
                             </>
                         }
-                        <ListItem button component={Link} to="/admin/users" onClick={toggleDrawer(anchorEl, false)}>
-                        <ListItemIcon>
-                            <SupervisedUserCircleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={t("users")} />
-                        </ListItem>
+                        
 
                     </List>
                 </>
