@@ -390,7 +390,6 @@ async function createThreshold(action, threshold) {
  */
 async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId, companyId) {
     const result = await db.query("CALL update_logical_device_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
-    logEvent(`Sensor ${deviceUid} setup is finished`, companyId);
     return result;
 }
 
