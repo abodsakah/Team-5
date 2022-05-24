@@ -216,7 +216,8 @@ async function getNodeStatus(nodeId, companyId) {
  */
 async function setNodeToBeDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_to_be_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Sensor ${nodeId} set to deleted`, companyId);
+    const nodeInfo = await getNodeInfo(nodeId, companyId);
+    logEvent(`Sensor ${nodeInfo.name} has been deleted`, companyId);
     return result;
 }
 
@@ -227,7 +228,6 @@ async function setNodeToBeDeleted(nodeId, companyId) {
  */
 async function setNodeASDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_as_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Sensor ${nodeId} has been deleted`, companyId);
     return result;
 }
 
@@ -390,7 +390,6 @@ async function createThreshold(action, threshold) {
  */
 async function updateLogicalDeviceWithThreshold(deviceUid, thresholdId, companyId) {
     const result = await db.query("CALL update_logical_device_threshold(?, ?)", {type: QueryTypes.UPDATE, replacements: [deviceUid, thresholdId]});
-    logEvent(`Sensor ${deviceUid} setup is finished`, companyId);
     return result;
 }
 
