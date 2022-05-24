@@ -216,7 +216,8 @@ async function getNodeStatus(nodeId, companyId) {
  */
 async function setNodeToBeDeleted(nodeId, companyId) {
     const result = await db.query("CALL set_device_to_be_deleted(?,?)", {type: QueryTypes.UPDATE, replacements: [nodeId, companyId]});
-    logEvent(`Sensor ${nodeId} has been deleted`, companyId);
+    const nodeInfo = await getNodeInfo(nodeId, companyId);
+    logEvent(`Sensor ${nodeInfo.name} has been deleted`, companyId);
     return result;
 }
 
