@@ -132,3 +132,5 @@ yarn-error.log*
 /database
 
 /yarn.lock
+
+.env
