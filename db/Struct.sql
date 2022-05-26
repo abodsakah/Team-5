@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: db
--- Tid vid skapande: 23 maj 2022 kl 13:35
+-- Tid vid skapande: 26 maj 2022 kl 09:11
 -- Serverversion: 5.7.38
 -- PHP-version: 8.0.19
 
@@ -20,19 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Databas: `tract`
 --
-
-CREATE DATABASE IF NOT EXISTS tract;
-
-USE tract
+DROP DATABASE IF EXISTS `tract`;
+CREATE DATABASE IF NOT EXISTS `tract` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `tract`;
 
 DELIMITER $$
 --
 -- Procedurer
 --
-CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node` (IN `n_uid` VARCHAR(255), IN `n_name` VARCHAR(255), IN `n_trigger_action` INT(11), IN `n_is_part_of` INT(11), IN `n_type` INT(11), IN `n_status` VARCHAR(255))  MODIFIES  DATA BEGIN
+DROP PROCEDURE IF EXISTS `add_node`$$
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node` (IN `n_uid` VARCHAR(255), IN `n_name` VARCHAR(255), IN `n_trigger_action` INT(11), IN `n_is_part_of` INT(11), IN `n_type` INT(11), IN `n_status` VARCHAR(255))   BEGIN
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `comp_id`, `install_date`, `is_part_of`, `type`, `status`) VALUES (NULL, `n_uid`, `n_name`, `n_trigger_action`, CURRENT_DATE(), `n_is_part_of`, `n_type`, `n_status`);
 END$$
 
+DROP PROCEDURE IF EXISTS `add_node_no_trigger_action`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_node_no_trigger_action` (IN `n_node_uid` VARCHAR(255), IN `n_node_name` VARCHAR(255), IN `n_asset_id` INT(11), IN `n_node_type` INT(11), IN `n_node_status` VARCHAR(255))   BEGIN
 SELECT @is_part_of := located_in FROM assets WHERE id = n_asset_id;
 
@@ -44,10 +45,12 @@ SELECT @device_id := id FROM logical_devices WHERE uid = n_node_uid;
 CALL set_asset_hosts(n_asset_id, @device_id);
 END$$
 
+DROP PROCEDURE IF EXISTS `add_styling`$$
 CREATE DEFINER=`tractteam`@`localhost` PROCEDURE `add_styling` (IN `n_comp_id` INT, IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))   BEGIN
   INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES (n_comp_id, n_color, n_logo);
 END$$
 
+DROP PROCEDURE IF EXISTS `add_test_logical_device_base`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_test_logical_device_base` ()   BEGIN
 -- node threshold
 INSERT INTO `node_thresholds` (`id`, `action`, `trigger_action`) VALUES (NULL, 'test action', 'test trigger action');
@@ -59,24 +62,29 @@ INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_d
 VALUES (NULL, '123456', 'test logical device', '1', CURRENT_DATE(), '1', 'ACTIVE');
 END$$
 
+DROP PROCEDURE IF EXISTS `add_to_log`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `add_to_log` (IN `n_msg` VARCHAR(255), IN `n_company_id` INT)   BEGIN
   INSERT INTO `company_log` (`msg`, `company_id`, `report_date`) VALUES (n_msg, n_company_id, NOW());
 END$$
 
+DROP PROCEDURE IF EXISTS `create_company`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `create_company` (IN `n_name` VARCHAR(255), IN `n_email` VARCHAR(255), IN `n_phone` VARCHAR(255))   BEGIN
   INSERT INTO `companies` (`name`, `support_email`, `support_phone`) VALUES (n_name, n_email, n_phone);
     SELECT LAST_INSERT_ID() AS id;
 END$$
 
+DROP PROCEDURE IF EXISTS `create_threshold`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `create_threshold` (IN `n_action` VARCHAR(10), IN `n_treshold` INT(255))   begin
   INSERT INTO node_thresholds (action, threshold) VALUES (n_action, n_treshold);
   -- select the id of the last inserted row
   SELECT LAST_INSERT_ID() as id;
 end$$
 
+DROP PROCEDURE IF EXISTS `delete_logical_device_from_uid`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `delete_logical_device_from_uid` (IN `p_uid` VARCHAR(255))  NO SQL DELETE FROM `logical_devices`
 WHERE `logical_devices`.`uid` = p_uid$$
 
+DROP PROCEDURE IF EXISTS `delete_node`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `delete_node` (IN `p_id` INT, IN `p_company_id` INT)  NO SQL BEGIN
 DELETE l
   FROM logical_devices l
@@ -88,28 +96,34 @@ DELETE l
  ;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_all_buildings`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_all_buildings` (IN `company_id` INT)   begin
   SELECT * FROM spaces WHERE is_part_of IS NULL AND agent = company_id;
 end$$
 
+DROP PROCEDURE IF EXISTS `get_amount_type_of_sensor`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_amount_type_of_sensor` (IN `n_sensor_type` VARCHAR(255), IN `n_company_id` INT)   BEGIN
   SELECT COUNT(*) AS amount FROM `logical_devices_all` WHERE `type_name` = n_sensor_type AND `company_id` = n_company_id AND `status` != "DELETED" AND `status` != "TBD";
 END$$
 
+DROP PROCEDURE IF EXISTS `get_assets_in_space`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_assets_in_space` (IN `space_id` INT)   BEGIN
   SELECT * FROM assets
   WHERE located_in = space_id
   AND `hosts` IS null;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_asset_from_id`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_asset_from_id` (IN `p_id` INT(11))  NO SQL BEGIN
   SELECT * FROM assets WHERE p_id = `id`;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_asset_from_logical_device_id`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_asset_from_logical_device_id` (IN `p_id` INT(11))  NO SQL BEGIN
   SELECT * FROM assets WHERE p_id = `hosts`;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_company_log`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_company_log` (IN `p_company_id` INT(11))  NO SQL BEGIN
   SELECT
   *
@@ -119,30 +133,35 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_company_log` (IN `p_company_id` IN
   LIMIT 15;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_company_settings`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_company_settings` (IN `company_id` INT)   BEGIN
     SELECT 
       *
     FROM `company_settings`;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_logical_device_all`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_logical_device_all` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL BEGIN
 SELECT *
 FROM logical_devices_all
 WHERE p_id=id AND p_company_id=company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_logical_device_status`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_logical_device_status` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL BEGIN
 SELECT `status`
 FROM `logical_devices_with_company_id`
 WHERE p_id=id AND p_company_id=company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_logical_device_type`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_logical_device_type` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL BEGIN
 SELECT type
 FROM logical_devices_all
 WHERE p_id=id AND p_company_id=company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_nodes_for_type`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_nodes_for_type` (IN `n_company_id` INT, IN `n_sensor_type` INT)   BEGIN
   SELECT *
   FROM `logical_devices_all`
@@ -152,34 +171,42 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_nodes_for_type` (IN `n_company_id`
   AND `status` != "TBD";
 END$$
 
+DROP PROCEDURE IF EXISTS `get_node_from_uid`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_node_from_uid` (IN `p_uid` VARCHAR(20) CHARSET utf8mb4)  NO SQL COMMENT 'get all logical_device info for a certain UID' BEGIN
 SELECT *
 FROM logical_devices_all
 WHERE p_uid=uid;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_preloaded_node`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_preloaded_node` (IN `n_uid` VARCHAR(255), IN `n_company_id` INT(11))  NO SQL SELECT * FROM node_preloaded WHERE uid = n_uid AND company_id = n_company_id$$
 
+DROP PROCEDURE IF EXISTS `get_spaces_for_building`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_spaces_for_building` (IN `space_id` INT)   BEGIN
   SELECT * FROM spaces WHERE is_part_of = space_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_space_from_id`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_space_from_id` (IN `p_id` INT)  NO SQL BEGIN
   SELECT * FROM spaces WHERE id = p_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_threshold`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_threshold` (IN `thresholdId` INT(11))  NO SQL BEGIN
 	SELECT * FROM node_thresholds WHERE id = thresholdId;
 END$$
 
+DROP PROCEDURE IF EXISTS `get_users_for_company`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `get_users_for_company` (IN `company_id` INT)   begin
   SELECT * FROM `user_login` WHERE `company_id` = company_id;
 end$$
 
+DROP PROCEDURE IF EXISTS `logical_devices_for_company`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `logical_devices_for_company` (IN `company_id` INT)   BEGIN
   SELECT * FROM `logical_devices_all` WHERE `company_id` = company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `reported_logical_devices_for_company`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `reported_logical_devices_for_company` (IN `company_id` INT)  NO SQL BEGIN
   SELECT
   *
@@ -187,11 +214,13 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `reported_logical_devices_for_company` 
   WHERE `company_id` = company_id AND `status` = "REPORTED";
 END$$
 
+DROP PROCEDURE IF EXISTS `set_asset_hosts`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_asset_hosts` (IN `p_id` INT(11), IN `hosts_id` INT(11))  NO SQL BEGIN
   UPDATE `assets` SET `hosts` = hosts_id
   WHERE `id` = p_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `set_device_as_active`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_active` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL BEGIN
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
@@ -200,6 +229,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_active` (IN `p_id` INT(1
     WHERE l.id = p_id AND s.agent = p_company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `set_device_as_deleted`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_deleted` (IN `p_id` INT(11), IN `p_company_id` INT(11))   BEGIN
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
@@ -208,6 +238,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_deleted` (IN `p_id` INT(
     WHERE l.id = p_id AND s.agent = p_company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `set_device_as_reported`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_reported` (IN `p_id` INT(11), IN `P_company_id` INT(11))  NO SQL BEGIN
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
@@ -216,6 +247,7 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_as_reported` (IN `p_id` INT
     WHERE l.id = p_id AND s.agent = p_company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `set_device_to_be_deleted`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_to_be_deleted` (IN `p_id` INT(11), IN `p_company_id` INT(11))  NO SQL BEGIN
     UPDATE logical_devices l
     LEFT OUTER JOIN spaces s
@@ -224,15 +256,18 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_to_be_deleted` (IN `p_id` I
     WHERE l.id = p_id AND s.agent = p_company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `set_node_as_active`$$
 CREATE DEFINER=`tractteam`@`localhost` PROCEDURE `set_node_as_active` (IN `node_id` INT)   BEGIN
   UPDATE `logical_devices` SET `status` = 'ACTIVE' WHERE `logical_devices`.`id` = node_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `update_company_info`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_info` (IN `n_comp_id` INT, IN `n_name` VARCHAR(255), IN `n_email` VARCHAR(255), IN `n_phone` VARCHAR(255), IN `n_color` VARCHAR(255), IN `n_logo` VARCHAR(255))   BEGIN
   UPDATE `companies` SET `name` = n_name, `support_email` = n_email, `support_phone` = n_phone WHERE `id` = n_comp_id;
   UPDATE `website_settings` SET `color` = n_color, `logo` = n_logo WHERE `comp_id` = n_comp_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `update_company_settings`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_settings` (IN `company_id` INT, IN `color` VARCHAR(255), IN `logo` VARCHAR(255))   BEGIN
     UPDATE `website_settings`
     SET `color` = color,
@@ -240,11 +275,13 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_company_settings` (IN `company_
     WHERE `comp_id` = company_id;
 END$$
 
+DROP PROCEDURE IF EXISTS `update_logical_device_threshold`$$
 CREATE DEFINER=`tractteam`@`localhost` PROCEDURE `update_logical_device_threshold` (IN `n_uid` VARCHAR(255), IN `n_threshold` INT)   BEGIN
   UPDATE `logical_devices` SET `trigger_action` = n_threshold WHERE uid = n_uid;
   UPDATE `logical_devices` SET `status` = 'ACTIVE' WHERE `logical_devices`.`uid` = n_uid;
 END$$
 
+DROP PROCEDURE IF EXISTS `update_threshold`$$
 CREATE DEFINER=`tractteam`@`%` PROCEDURE `update_threshold` (IN `n_id` INT, IN `n_action` VARCHAR(255), IN `n_value` INT)   BEGIN
   UPDATE `node_thresholds` SET `action` = n_action, `threshold` = n_value WHERE `id` = n_id;
 END$$
@@ -257,6 +294,7 @@ DELIMITER ;
 -- Tabellstruktur `acess`
 --
 
+DROP TABLE IF EXISTS `acess`;
 CREATE TABLE `acess` (
   `node_id` int(11) NOT NULL,
   `comp_id` int(11) NOT NULL,
@@ -270,6 +308,7 @@ CREATE TABLE `acess` (
 -- Tabellstruktur `api_keys`
 --
 
+DROP TABLE IF EXISTS `api_keys`;
 CREATE TABLE `api_keys` (
   `id` int(11) NOT NULL,
   `key` varchar(255) NOT NULL
@@ -288,6 +327,7 @@ INSERT INTO `api_keys` (`id`, `key`) VALUES
 -- Tabellstruktur `assets`
 --
 
+DROP TABLE IF EXISTS `assets`;
 CREATE TABLE `assets` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -313,6 +353,7 @@ INSERT INTO `assets` (`id`, `name`, `artic_num`, `located_in`, `hosts`) VALUES
 -- Tabellstruktur `companies`
 --
 
+DROP TABLE IF EXISTS `companies`;
 CREATE TABLE `companies` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -336,6 +377,7 @@ INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 -- Tabellstruktur `company_log`
 --
 
+DROP TABLE IF EXISTS `company_log`;
 CREATE TABLE `company_log` (
   `id` int(11) NOT NULL,
   `report_date` varchar(255) NOT NULL,
@@ -484,8 +526,7 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (161, '2022-05-23 13:27:21', 'Threshold of sensor 108 has been updated', 1),
 (162, '2022-05-23 13:27:57', 'Threshold of sensor 112 has been updated', 1),
 (163, '2022-05-23 13:28:16', 'Threshold of sensor 10 has been updated', 1),
-(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1),
-(165, '2022-05-23 13:33:37', 'User 29 created', 1);
+(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1);
 
 -- --------------------------------------------------------
 
@@ -493,6 +534,7 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 -- Ersättningsstruktur för vy `company_settings`
 -- (See below for the actual view)
 --
+DROP VIEW IF EXISTS `company_settings`;
 CREATE TABLE `company_settings` (
 `color` varchar(255)
 ,`logo` varchar(255)
@@ -506,6 +548,7 @@ CREATE TABLE `company_settings` (
 -- Ersättningsstruktur för vy `company_website_settings`
 -- (See below for the actual view)
 --
+DROP VIEW IF EXISTS `company_website_settings`;
 CREATE TABLE `company_website_settings` (
 `id` int(11)
 ,`name` varchar(255)
@@ -521,6 +564,7 @@ CREATE TABLE `company_website_settings` (
 -- Tabellstruktur `logical_devices`
 --
 
+DROP TABLE IF EXISTS `logical_devices`;
 CREATE TABLE `logical_devices` (
   `id` int(11) NOT NULL,
   `uid` varchar(20) DEFAULT NULL,
@@ -549,6 +593,7 @@ INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_d
 -- Ersättningsstruktur för vy `logical_devices_all`
 -- (See below for the actual view)
 --
+DROP VIEW IF EXISTS `logical_devices_all`;
 CREATE TABLE `logical_devices_all` (
 `id` int(11)
 ,`uid` varchar(20)
@@ -569,6 +614,7 @@ CREATE TABLE `logical_devices_all` (
 -- Ersättningsstruktur för vy `logical_devices_with_company_id`
 -- (See below for the actual view)
 --
+DROP VIEW IF EXISTS `logical_devices_with_company_id`;
 CREATE TABLE `logical_devices_with_company_id` (
 `id` int(11)
 ,`uid` varchar(20)
@@ -587,6 +633,7 @@ CREATE TABLE `logical_devices_with_company_id` (
 -- Tabellstruktur `nc_evolutions`
 --
 
+DROP TABLE IF EXISTS `nc_evolutions`;
 CREATE TABLE `nc_evolutions` (
   `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL,
@@ -622,6 +669,7 @@ INSERT INTO `nc_evolutions` (`id`, `title`, `titleDown`, `description`, `batch`,
 -- Tabellstruktur `node_preloaded`
 --
 
+DROP TABLE IF EXISTS `node_preloaded`;
 CREATE TABLE `node_preloaded` (
   `uid` varchar(100) NOT NULL,
   `type` int(20) NOT NULL,
@@ -645,6 +693,7 @@ INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES
 -- Tabellstruktur `node_thresholds`
 --
 
+DROP TABLE IF EXISTS `node_thresholds`;
 CREATE TABLE `node_thresholds` (
   `id` int(11) NOT NULL,
   `action` varchar(255) NOT NULL,
@@ -687,6 +736,7 @@ INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
 -- Tabellstruktur `node_types`
 --
 
+DROP TABLE IF EXISTS `node_types`;
 CREATE TABLE `node_types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -708,6 +758,7 @@ INSERT INTO `node_types` (`id`, `name`, `app_settings`) VALUES
 -- Tabellstruktur `shared_log`
 --
 
+DROP TABLE IF EXISTS `shared_log`;
 CREATE TABLE `shared_log` (
   `id` int(11) NOT NULL,
   `prod_name` varchar(255) NOT NULL,
@@ -723,6 +774,7 @@ CREATE TABLE `shared_log` (
 -- Tabellstruktur `spaces`
 --
 
+DROP TABLE IF EXISTS `spaces`;
 CREATE TABLE `spaces` (
   `id` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
@@ -748,6 +800,7 @@ INSERT INTO `spaces` (`id`, `type`, `name`, `agent`, `has_capability`, `is_part_
 -- Tabellstruktur `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `user_id` varchar(255) NOT NULL,
@@ -769,6 +822,7 @@ INSERT INTO `users` (`id`, `user_id`, `role`, `company_id`) VALUES
 -- Tabellstruktur `user_log`
 --
 
+DROP TABLE IF EXISTS `user_log`;
 CREATE TABLE `user_log` (
   `id` int(11) NOT NULL,
   `from_device` int(11) DEFAULT NULL,
@@ -783,6 +837,7 @@ CREATE TABLE `user_log` (
 -- Tabellstruktur `user_login`
 --
 
+DROP TABLE IF EXISTS `user_login`;
 CREATE TABLE `user_login` (
   `id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -804,8 +859,7 @@ INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, 
 (3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
 (4, 'info@tractteam.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
 (27, 'tester@email.com', '$2a$12$wLaXfuCMOh1C0oG.e.5p.eJCW6gTggU46HAtKzQtsH5aGoJA6Swpy', 'Test', 'user', 'testerUser', 0, 2, 1),
-(28, 'tract@allbin.se', '$2a$12$nEVRPmmK.JnrKPYVGntvrevzlWanxBgTAIJSDseEtY4jA4BkihruW', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1),
-(29, 'dennis@gmail.com', '$2b$12$kuGYfVQYe.9FOs5veFYZT.MOhUBXtHAyFlutPSwdTh1nDpTI3.fbe', 'dennis', 'andersson', 'dennisA', 1, 0, 1);
+(28, 'tract@allbin.se', '$2a$12$nEVRPmmK.JnrKPYVGntvrevzlWanxBgTAIJSDseEtY4jA4BkihruW', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -813,6 +867,7 @@ INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, 
 -- Tabellstruktur `website_settings`
 --
 
+DROP TABLE IF EXISTS `website_settings`;
 CREATE TABLE `website_settings` (
   `comp_id` int(11) NOT NULL,
   `color` varchar(255) NOT NULL,
@@ -836,6 +891,7 @@ INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
 --
 DROP TABLE IF EXISTS `company_settings`;
 
+DROP VIEW IF EXISTS `company_settings`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`localhost` SQL SECURITY DEFINER VIEW `company_settings`  AS SELECT `ws`.`color` AS `color`, `ws`.`logo` AS `logo`, `ws`.`comp_id` AS `comp_id`, `c`.`name` AS `name` FROM (`website_settings` `ws` join `companies` `c` on((`ws`.`comp_id` = `c`.`id`)))  ;
 
 -- --------------------------------------------------------
@@ -845,6 +901,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`localhost` SQL SECURITY DEFINER 
 --
 DROP TABLE IF EXISTS `company_website_settings`;
 
+DROP VIEW IF EXISTS `company_website_settings`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`localhost` SQL SECURITY DEFINER VIEW `company_website_settings`  AS SELECT `companies`.`id` AS `id`, `companies`.`name` AS `name`, `companies`.`support_email` AS `support_email`, `companies`.`support_phone` AS `support_phone`, `website_settings`.`color` AS `color`, `website_settings`.`logo` AS `logo` FROM (`companies` left join `website_settings` on((`companies`.`id` = `website_settings`.`comp_id`)))  ;
 
 -- --------------------------------------------------------
@@ -854,6 +911,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`localhost` SQL SECURITY DEFINER 
 --
 DROP TABLE IF EXISTS `logical_devices_all`;
 
+DROP VIEW IF EXISTS `logical_devices_all`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`%` SQL SECURITY DEFINER VIEW `logical_devices_all`  AS SELECT `l`.`id` AS `id`, `l`.`uid` AS `uid`, `l`.`name` AS `name`, `l`.`trigger_action` AS `trigger_action`, `l`.`install_date` AS `install_date`, `l`.`is_part_of` AS `is_part_of`, `l`.`type` AS `type`, `l`.`status` AS `status`, `s`.`agent` AS `company_id`, `t`.`name` AS `type_name`, `t`.`app_settings` AS `app_settings` FROM ((`logical_devices` `l` join `spaces` `s` on((`s`.`id` = `l`.`is_part_of`))) join `node_types` `t` on((`t`.`id` = `l`.`type`)))  ;
 
 -- --------------------------------------------------------
@@ -863,6 +921,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`%` SQL SECURITY DEFINER VIEW `lo
 --
 DROP TABLE IF EXISTS `logical_devices_with_company_id`;
 
+DROP VIEW IF EXISTS `logical_devices_with_company_id`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`tractteam`@`%` SQL SECURITY DEFINER VIEW `logical_devices_with_company_id`  AS SELECT `l`.`id` AS `id`, `l`.`uid` AS `uid`, `l`.`name` AS `name`, `l`.`trigger_action` AS `trigger_action`, `l`.`install_date` AS `install_date`, `l`.`is_part_of` AS `is_part_of`, `l`.`type` AS `type`, `l`.`status` AS `status`, `s`.`agent` AS `company_id` FROM (`logical_devices` `l` join `spaces` `s` on((`s`.`id` = `l`.`is_part_of`)))  ;
 
 --
@@ -1004,7 +1063,7 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
 
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
@@ -1052,7 +1111,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Restriktioner för dumpade tabeller
