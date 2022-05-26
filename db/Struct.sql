@@ -21,6 +21,10 @@ SET time_zone = "+00:00";
 -- Databas: `tract`
 --
 
+CREATE DATABASE IF NOT EXISTS tract;
+
+USE tract
+
 DELIMITER $$
 --
 -- Procedurer
