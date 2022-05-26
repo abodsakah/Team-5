@@ -767,6 +767,9 @@ router.post("/addLogicalDevice", async (req, res) => {
       let node = await dbConnection.getPreloadedNode(deviceUid, companyId);
       node = node[0][0]
 
+      // Async call to startWesServer to gateway incase it's not running for some reason.
+      neoNodeMsgSender.sendWesServerStart(companyId);
+      
       if (keyValid) {
           if (node) {
               try {
