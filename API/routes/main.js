@@ -774,8 +774,6 @@ router.post("/addLogicalDevice", async (req, res) => {
                   res.status(200).send(node);
               } catch (e) {
                   console.log(e);
-                  // TODO: getting error when adding device
-                  console.log(e);
                   res.status(500).send("Error adding device");
               }
           } else {
