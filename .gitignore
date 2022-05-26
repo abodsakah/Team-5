@@ -132,3 +132,6 @@ yarn-error.log*
 /database
 
 /yarn.lock
+
+.env
+docker-compose.yml
