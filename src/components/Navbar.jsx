@@ -288,7 +288,6 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
                 <>
                     <Divider />
                     <br />
-                    <Typography variant="h6" sx={{textAlign: 'center'}}>{t("admin")}</Typography>
                     <List>
                         <ListItem button component={Link} to="/admin/companies" onClick={toggleDrawer(anchorEl, false)}>
                             <ListItemIcon>
