@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: db
--- Tid vid skapande: 26 maj 2022 kl 09:11
+-- Tid vid skapande: 28 maj 2022 kl 12:12
 -- Serverversion: 5.7.38
 -- PHP-version: 8.0.19
 
@@ -207,11 +207,8 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `logical_devices_for_company` (IN `comp
 END$$
 
 DROP PROCEDURE IF EXISTS `reported_logical_devices_for_company`$$
-CREATE DEFINER=`tractteam`@`%` PROCEDURE `reported_logical_devices_for_company` (IN `company_id` INT)  NO SQL BEGIN
-  SELECT
-  *
-  FROM `logical_devices_all`
-  WHERE `company_id` = company_id AND `status` = "REPORTED";
+CREATE DEFINER=`tractteam`@`%` PROCEDURE `reported_logical_devices_for_company` (IN `n_company_id` INT)  NO SQL BEGIN
+  SELECT * FROM `logical_devices_all` WHERE `company_id` = n_company_id AND `status` = "REPORTED";
 END$$
 
 DROP PROCEDURE IF EXISTS `set_asset_hosts`$$
@@ -367,9 +364,8 @@ CREATE TABLE `companies` (
 
 INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 (1, 'Tract', 'info@tractteam.xyz', '0721282737'),
-(24, 'Test old', 'test@new.com', '12345678'),
-(25, 'Hello world', 'hello@world.com', '0232312312'),
-(26, 'gustaf vasa', 'test@gmail.com', '0767853696');
+(28, 'testTest', 'testi@test.se', '0503285746'),
+(31, 'fwefewf', 'ewfwef@ewfew.com', 'efwefwef');
 
 -- --------------------------------------------------------
 
@@ -526,7 +522,19 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (161, '2022-05-23 13:27:21', 'Threshold of sensor 108 has been updated', 1),
 (162, '2022-05-23 13:27:57', 'Threshold of sensor 112 has been updated', 1),
 (163, '2022-05-23 13:28:16', 'Threshold of sensor 10 has been updated', 1),
-(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1);
+(164, '2022-05-23 13:28:34', 'Threshold of sensor 10 has been updated', 1),
+(165, '2022-05-26 09:18:05', 'User 29 created', 1),
+(166, '2022-05-28 11:18:01', 'User 30 created', 27),
+(167, '2022-05-28 11:20:43', 'Company information and/or styling updated', 27),
+(168, '2022-05-28 11:21:49', 'Company information and/or styling updated', 27),
+(169, '2022-05-28 11:29:07', 'User 31 created', 27),
+(170, '2022-05-28 11:46:47', 'User 32 created', 28),
+(171, '2022-05-28 11:47:32', 'Company information and/or styling updated', 28),
+(172, '2022-05-28 11:49:00', 'User 33 created', 29),
+(173, '2022-05-28 11:51:17', 'Company information and/or styling updated', 27),
+(174, '2022-05-28 12:01:10', 'User 34 created', 30),
+(175, '2022-05-28 12:02:19', 'User 35 created', 31),
+(176, '2022-05-28 12:03:36', 'User 36 created', 31);
 
 -- --------------------------------------------------------
 
@@ -859,7 +867,15 @@ INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, 
 (3, 'hloarab@gmail.com', '$2b$12$roLpC2B0FCur/o6t1mosOurbsxJ9nVJl8Hb1M3V5VjVfS82r9E3ai', 'abod', 'sakah', 'abodsakah', 0, 2, 3),
 (4, 'info@tractteam.xyz', '$2a$12$Xgnx3FpzmTxIg5LDm81zvO7WSdZwk/Z6LuplnNyGtGuyev6VCeM02', 'Tract', 'Builders', 'TractBuilders', 1, 0, 1),
 (27, 'tester@email.com', '$2a$12$wLaXfuCMOh1C0oG.e.5p.eJCW6gTggU46HAtKzQtsH5aGoJA6Swpy', 'Test', 'user', 'testerUser', 0, 2, 1),
-(28, 'tract@allbin.se', '$2a$12$nEVRPmmK.JnrKPYVGntvrevzlWanxBgTAIJSDseEtY4jA4BkihruW', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1);
+(28, 'tract@allbin.se', '$2y$10$MqZ.z6IzqDaR8/jAiax2G.iHEFP.tkWpQTJT78PS/trH4WTM1F6C.', 'Tract', 'Admin', 'tractAdmin', 0, 0, 1),
+(29, 'abodsakka2001@gmail.com', '$2b$12$rU1lc19EHxI8On1SdMOHL.ksFR1EahunwYi61LLl/7a.HhwsH0utO', 'Abdulrahman', 'Sakah', 'abodsakka', 1, 0, 1),
+(30, 'test@test.test', '$2b$12$uA.SM4QzPdklsHW/MD/Nsule.I5BXsYUQOBfyKoBCvBnpRDJ.bFUW', 'test', 'test', 'test', 1, 1, 27),
+(31, 'testAdmin@test.se', '$2b$12$4okCvv5aT9nNcJs3Hlufq..1E/cnaIW06PVgEOEWPu2O8MB4GuKE6', 'testAdmin', 'adminTest', 'test', 1, 1, 27),
+(32, 'testi@test.se', '$2b$12$mC/bfdp6Du34TrvG4oeUje4fZr1WmoB3X5HQvw6mQhF/PM/IneEsa', 'testi', 'testtest', 'testiAdmin', 1, 1, 28),
+(33, 'abodefdw@grwegr.com', '$2b$12$ESQPo2ORewNHQseiR.gRj.PIWNbwmSjMp0rdXOVNqTqy7HE6j8Du2', 'ewfwefwef', 'dwfewfefw', 'efwfwefewfwef', 1, 1, 29),
+(34, 'fwefewf@wfwef.com', '$2b$12$EVOGSIt3YNrPZcdkgxrLLubGKk9px./Bum5AVBT.Uk.XM3mpRQZ8m', 'efwefe', 'ewfwef', 'ewfwef', 1, 1, 30),
+(35, 'fwef@refewf.com', '$2b$12$CpRWLebFF9WWl.39Q.SEXeVnLabBUg1DGBiJyn8oetogBTYFyTOia', 'wefwefwef', 'qwefwefew', 'ewfwefewfewf', 1, 1, 31),
+(36, 'abodsakka2021@gmail.com', '$2b$12$bJ94IohCKpxF8E4EOvayRO1JeSNqwPCoXWLIv5gP32xQK14Y1wQgq', 'test32', 'user', 'abodsasdasd', 1, 2, 31);
 
 -- --------------------------------------------------------
 
@@ -880,9 +896,8 @@ CREATE TABLE `website_settings` (
 
 INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
 (1, '00aaff', 'Asset 1.png'),
-(24, '7bb15d', 'ICA-logotyp.png'),
-(25, '448bc9', 'tract_icon_1024.png'),
-(26, 'ffb700', '');
+(28, '00f028', 'Kalmar_Omsorg_stöd.png'),
+(31, '26a697', 'Asset 1.png');
 
 -- --------------------------------------------------------
 
@@ -1057,13 +1072,13 @@ ALTER TABLE `assets`
 -- AUTO_INCREMENT för tabell `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
 
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
@@ -1087,7 +1102,7 @@ ALTER TABLE `node_thresholds`
 -- AUTO_INCREMENT för tabell `node_types`
 --
 ALTER TABLE `node_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT för tabell `spaces`
@@ -1111,7 +1126,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Restriktioner för dumpade tabeller
