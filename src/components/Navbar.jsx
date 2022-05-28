@@ -82,8 +82,14 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
         setAnchorEl(null);
     };
 
+    const getCompanyLog = () => {
+        fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
+            setCompaniesLog([res]);
+          });
+        };
 
     const handleNotification = (event) => {
+        getCompanyLog();
         setAnchorEls(event.currentTarget);
     };
 
@@ -91,11 +97,7 @@ const Navbar = ({setOpen, open, logout, image, cookies, t, companyLogo, companyN
         setAnchorEls(null);
     };
 
-    const getCompanyLog = () => {
-        fetch(`${apiURL}/getCompanyLog?key=${process.env.REACT_APP_TRACT_API_KEY}&companyid=${user.company_id}`).then(res => res.json()).then(res => {
-            setCompaniesLog([res]);
-          });
-        };
+    
     
       useEffect(() => {
         getCompanyLog();
