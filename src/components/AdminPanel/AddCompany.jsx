@@ -20,7 +20,8 @@ function AddCompany({t, color, apiURL}) {
   const [fileData, setFileData] = React.useState(null);
   const [newCompanyId, setNewCompanyId] = React.useState('');
   const [currStep, setCurrStep] = React.useState(0);
-  
+  const [inputValid, setInputValid] = React.useState(false);
+
   const ColorSample = styled('div')`
       background-color: ${mainColorInput};
       width: 1rem;
@@ -81,13 +82,12 @@ function AddCompany({t, color, apiURL}) {
     } else {
       setLoading(true);
       createAPI();
-      setCurrStep(1);
     }
   }
 
   const handleColorChange = (color) => {
     if (color) {
-        setMainColorInput(color);
+        setMainColorInput(color.replace('#', ''));
     }
   }
 
@@ -216,14 +216,7 @@ function AddCompany({t, color, apiURL}) {
         <br />
         <Typography variant="h5">{t("mainColor")}</Typography>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-        <ColorPicker
-            name="mainColor"
-            defaultValue={`#448bc9`}
-            onChange={(color) => {
-                handleColorChange(color);
-            }}
-            />
-            <ColorSample />
+          <input type="color" name="mainColor" value={`#${mainColorInput}`} onChange={(e) => {handleColorChange(e.target.value)}}/>
         </Box>
         <br />
         <Button variant="contained" color="primary" onClick={() => {

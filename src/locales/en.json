@@ -104,5 +104,6 @@
     "password": "Password",
     "confirmPassword": "Confirm password",
     "passwordNotMatch": "Passwords don't match",
-    "installedSensors": "Installed sensors"
+    "installedSensors": "Installed sensors",
+    "companyId": "Company id"
 }

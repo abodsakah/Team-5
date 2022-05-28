@@ -104,5 +104,6 @@
     "Password": "Lösenord",
     "confirmPassword": "Bekräfta lösenord",
     "passwordNotMatch": "Lösenorden matchar inte",
-    "installedSensors": "Antal installerade sensorer"
+    "installedSensors": "Antal installerade sensorer",
+    "companyId": "Företags-ID"
 }

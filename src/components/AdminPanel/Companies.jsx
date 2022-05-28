@@ -61,6 +61,9 @@ const Companies = ({cookies, t, apiURL, color}) => {
                     <Typography gutterBottom variant="h5" component="h2">
                       {company.name}
                     </Typography>
+                    <Typography gutterBottom variant="h6" component="h4">
+                      {t("companyId")}: {company.id}
+                    </Typography>
                   </CardContent>
                 </Card>
 
