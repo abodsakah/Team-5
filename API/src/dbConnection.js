@@ -130,6 +130,7 @@ async function addLogicalDevice(uid, name, is_part_of, type, status, companyId) 
     const result = await db.query("CALL add_node_no_trigger_action(?, ?, ?, ?, ?)",
         {type: QueryTypes.INSERT, replacements: [uid, name, is_part_of, type, status]});
     logEvent(`Sensor ${name} added`, companyId);
+
     return result;
 }
 

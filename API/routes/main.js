@@ -767,14 +767,15 @@ router.post("/addLogicalDevice", async (req, res) => {
       let node = await dbConnection.getPreloadedNode(deviceUid, companyId);
       node = node[0][0]
 
+      // Async call to startWesServer to gateway incase it's not running for some reason.
+      neoNodeMsgSender.sendWesServerStart(companyId);
+      
       if (keyValid) {
           if (node) {
               try {
                   let device = await dbConnection.addLogicalDevice(deviceUid, deviceName, is_part_of, node.type, "SETUP", companyId);
                   res.status(200).send(node);
               } catch (e) {
-                  console.log(e);
-                  // TODO: getting error when adding device
                   console.log(e);
                   res.status(500).send("Error adding device");
               }
