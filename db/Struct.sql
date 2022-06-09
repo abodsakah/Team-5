@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: db
--- Tid vid skapande: 28 maj 2022 kl 12:12
+-- Tid vid skapande: 09 jun 2022 kl 07:30
 -- Serverversion: 5.7.38
 -- PHP-version: 8.0.19
 
@@ -251,6 +251,10 @@ CREATE DEFINER=`tractteam`@`%` PROCEDURE `set_device_to_be_deleted` (IN `p_id` I
     ON l.is_part_of = s.id
     SET l.status = "TBD"
     WHERE l.id = p_id AND s.agent = p_company_id;
+    
+    UPDATE assets a
+    SET a.hosts = null
+    WHERE a.hosts = p_id;
 END$$
 
 DROP PROCEDURE IF EXISTS `set_node_as_active`$$
@@ -338,11 +342,19 @@ CREATE TABLE `assets` (
 --
 
 INSERT INTO `assets` (`id`, `name`, `artic_num`, `located_in`, `hosts`) VALUES
-(1, 'Chair 1', '1234567', 1, 16),
-(3, 'Chair 2', '231242', 4, 108),
-(16, 'test asset', '123123123', 2, 109),
-(17, 'test-hiss', '0000000', 2, 112),
-(18, 'test_asset', '123543', 3, NULL);
+(1, 'Dörr', '1234567', 1, NULL),
+(3, 'Chair 2', '231242', 4, 22),
+(16, 'test asset', '123123123', 2, 20),
+(17, 'test-hiss', '0000000', 2, 40),
+(18, 'test_asset', '123543', 3, 25),
+(19, 'ICA elevator', '123-123-123', 5, NULL),
+(20, 'Entré dörr', '123123', 3, NULL),
+(21, 'Taklampa 1', '183283', 6, NULL),
+(22, 'Taklampa 2', '183845', 2, 44),
+(23, 'Dörrkarm', '412341', 1, NULL),
+(24, 'Taklampa 4', '123542', 5, NULL),
+(25, 'Dörr', '31634', 8, NULL),
+(26, 'Taklampa 3', '734567', 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -365,7 +377,8 @@ CREATE TABLE `companies` (
 INSERT INTO `companies` (`id`, `name`, `support_email`, `support_phone`) VALUES
 (1, 'Tract', 'info@tractteam.xyz', '0721282737'),
 (28, 'testTest', 'testi@test.se', '0503285746'),
-(31, 'fwefewf', 'ewfwef@ewfew.com', 'efwefwef');
+(31, 'fwefewf', 'ewfwef@ewfew.com', 'efwefwef'),
+(32, 'ica', 'ica@gmail.com', '123456789');
 
 -- --------------------------------------------------------
 
@@ -534,7 +547,72 @@ INSERT INTO `company_log` (`id`, `report_date`, `msg`, `company_id`) VALUES
 (173, '2022-05-28 11:51:17', 'Company information and/or styling updated', 27),
 (174, '2022-05-28 12:01:10', 'User 34 created', 30),
 (175, '2022-05-28 12:02:19', 'User 35 created', 31),
-(176, '2022-05-28 12:03:36', 'User 36 created', 31);
+(176, '2022-05-28 12:03:36', 'User 36 created', 31),
+(177, '2022-05-28 12:16:23', 'User 37 created', 28),
+(178, '2022-05-28 12:17:24', 'Company information and/or styling updated', 28),
+(179, '2022-05-28 12:19:27', 'Company information and/or styling updated', 28),
+(180, '2022-05-28 12:19:53', 'Sensor test-name has been deleted', 1),
+(181, '2022-05-28 12:22:13', 'User 38 created', 32),
+(182, '2022-05-28 12:22:52', 'Company information and/or styling updated', 32),
+(183, '2022-05-28 12:23:30', 'User 39 created', 32),
+(184, '2022-05-28 12:33:54', 'Sensor analog wheel added', 32),
+(185, '2022-05-28 12:42:17', 'Sensor 118 set to reported', 32),
+(186, '2022-05-28 12:42:57', 'Sensor analog wheel has been deleted', 32),
+(187, '2022-05-28 12:45:30', 'Sensor analog wheel added', 1),
+(188, '2022-05-28 12:47:46', 'Sensor 119 set to reported', 1),
+(189, '2022-05-28 12:52:56', 'Sensor 119 work order has been resolved, sensor now set to active.', 1),
+(190, '2022-05-28 12:54:59', 'Sensor 119 set to reported', 1),
+(191, '2022-05-28 12:56:43', 'Sensor analog wheel has been deleted', 1),
+(192, '2022-05-30 13:19:11', 'Sensor another_name has been deleted', 1),
+(193, '2022-05-30 13:19:36', 'Sensor test has been deleted', 1),
+(194, '2022-06-03 16:45:11', 'Sensor test-name has been deleted', 1),
+(195, '2022-06-03 16:51:53', 'Sensor Test added', 1),
+(196, '2022-06-07 14:15:54', 'Sensor 16 set to reported', 1),
+(197, '2022-06-07 14:15:54', 'Sensor 16 set to reported', 1),
+(198, '2022-06-07 14:15:54', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(199, '2022-06-07 14:20:25', 'Sensor 16 set to reported', 1),
+(200, '2022-06-07 14:21:33', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(201, '2022-06-07 14:24:02', 'Sensor 25 set to reported', 1),
+(202, '2022-06-07 14:26:13', 'Sensor analog 12 added', 1),
+(203, '2022-06-07 14:40:48', 'Sensor analog 12 has been deleted', 1),
+(204, '2022-06-07 14:40:50', 'Sensor analog 12 has been deleted', 1),
+(205, '2022-06-07 14:49:14', 'Sensor 16 set to reported', 1),
+(206, '2022-06-07 14:52:37', 'Sensor analog 12 has been deleted', 1),
+(207, '2022-06-07 14:56:38', 'Sensor test temp added', 1),
+(208, '2022-06-07 14:57:32', 'Threshold of sensor 30 has been updated', 1),
+(209, '2022-06-07 14:57:53', 'Threshold of sensor 30 has been updated', 1),
+(210, '2022-06-07 14:58:07', 'Threshold of sensor 30 has been updated', 1),
+(211, '2022-06-07 14:58:17', 'Sensor test temp has been deleted', 1),
+(212, '2022-06-07 15:00:54', 'Sensor test temp added', 1),
+(213, '2022-06-07 15:02:19', 'Sensor test temp has been deleted', 1),
+(214, '2022-06-07 15:02:57', 'Sensor test temp added', 1),
+(215, '2022-06-07 15:03:20', 'Sensor test temp has been deleted', 1),
+(216, '2022-06-07 15:03:47', 'Sensor walla habib test added', 1),
+(217, '2022-06-07 15:05:19', 'Sensor walla habib test has been deleted', 1),
+(218, '2022-06-07 15:08:56', 'Sensor test temp added', 1),
+(219, '2022-06-07 15:10:27', 'Sensor test temp has been deleted', 1),
+(220, '2022-06-07 15:11:21', 'Sensor temp test added', 1),
+(221, '2022-06-07 15:11:35', 'Sensor temp test has been deleted', 1),
+(222, '2022-06-07 15:12:11', 'Sensor temperatur sensor added', 1),
+(223, '2022-06-07 15:12:23', 'Sensor temperatur sensor has been deleted', 1),
+(224, '2022-06-07 15:13:16', 'Sensor temperatur node added', 1),
+(225, '2022-06-07 15:13:32', 'Threshold of sensor 40 has been updated', 1),
+(226, '2022-06-07 15:13:54', 'Sensor 40 set to reported', 1),
+(227, '2022-06-07 15:15:48', 'Threshold of sensor 40 has been updated', 1),
+(228, '2022-06-07 15:15:55', 'Threshold of sensor 40 has been updated', 1),
+(229, '2022-06-07 23:05:53', 'Sensor 25 work order has been resolved, sensor now set to active.', 1),
+(230, '2022-06-08 08:50:52', 'User 40 created', 1),
+(231, '2022-06-08 08:53:48', 'Sensor 16 work order has been resolved, sensor now set to active.', 1),
+(232, '2022-06-08 08:56:30', 'Sensor 16 set to reported', 1),
+(233, '2022-06-08 08:58:21', 'Sensor switch-sensor has been deleted', 1),
+(234, '2022-06-08 08:58:24', 'Sensor switch-sensor has been deleted', 1),
+(235, '2022-06-08 09:01:37', 'Sensor switch-sensor has been deleted', 1),
+(236, '2022-06-08 09:04:02', 'Sensor switch-sensor has been deleted', 1),
+(237, '2022-06-08 09:06:05', 'Sensor switch-sensor has been deleted', 1),
+(238, '2022-06-08 09:08:02', 'Sensor Switch 1 added', 1),
+(239, '2022-06-08 09:10:46', 'Threshold of sensor 44 has been updated', 1),
+(240, '2022-06-08 09:10:51', 'Sensor 44 set to reported', 1),
+(241, '2022-06-08 09:17:15', 'Company information and/or styling updated', 1);
 
 -- --------------------------------------------------------
 
@@ -589,11 +667,12 @@ CREATE TABLE `logical_devices` (
 --
 
 INSERT INTO `logical_devices` (`id`, `uid`, `name`, `trigger_action`, `install_date`, `is_part_of`, `type`, `status`) VALUES
-(10, '123456', 'another_name', 1, '2022-05-17', 2, 2, 'SETUP'),
-(16, '89390484BD', 'switch-sensor', 4, '2022-04-07', 1, 2, 'DELETED'),
-(108, '22222222', 'test-name', 1, '2022-05-19', 4, 1, 'SETUP'),
-(109, 'ACB914A4BD', 'analog test', 39, '2022-05-19', 2, 3, 'REPORTED'),
-(112, '88A904A4BD', 'test', 42, '2022-05-23', 2, 3, 'ACTIVE');
+(10, '123456', 'another_name', 1, '2022-05-17', 2, 2, 'ACTIVE'),
+(20, 'ACB914A4BD', 'analog wheel', 44, '2022-05-28', 2, 3, 'ACTIVE'),
+(22, '22222222', 'test-name', 1, '2022-05-19', 4, 1, 'TBD'),
+(25, '88A904A4BD', 'Test', 45, '2022-06-03', 3, 3, 'ACTIVE'),
+(40, 'ACB904843D', 'temperatur node', 1, '2022-06-07', 2, 1, 'REPORTED'),
+(44, '89390484BD', 'Switch 1', 49, '2022-06-08', 2, 2, 'REPORTED');
 
 -- --------------------------------------------------------
 
@@ -693,7 +772,8 @@ INSERT INTO `node_preloaded` (`uid`, `type`, `company_id`) VALUES
 ('88A904A4BD', 3, 1),
 ('89390484BD', 2, 1),
 ('A83910B471', 2, 1),
-('ACB904843D', 1, 1);
+('ACB904843D', 1, 1),
+('ACB914A4BD', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -713,7 +793,7 @@ CREATE TABLE `node_thresholds` (
 --
 
 INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
-(1, 'SAME', 1),
+(1, 'SAME', 22),
 (3, 'UNDER', 37),
 (4, 'SAME', 0),
 (21, 'UNDER', 0),
@@ -736,7 +816,14 @@ INSERT INTO `node_thresholds` (`id`, `action`, `threshold`) VALUES
 (39, 'UP', 10000),
 (40, 'UP', 121000),
 (41, 'UP', 100012),
-(42, 'SAME', 100012);
+(42, 'SAME', 100012),
+(43, 'UP', 15000),
+(44, 'DOWN', 10000),
+(45, 'DOWN', 25000),
+(46, 'UP', 20000),
+(47, 'UP', 1),
+(48, 'UP', 1),
+(49, 'SAME', 0);
 
 -- --------------------------------------------------------
 
@@ -797,10 +884,14 @@ CREATE TABLE `spaces` (
 --
 
 INSERT INTO `spaces` (`id`, `type`, `name`, `agent`, `has_capability`, `is_part_of`) VALUES
-(1, 'test', 'test space 1', 1, 123, NULL),
-(2, 'test', 'test space 2', 1, 123, NULL),
-(3, 'test', 'test space 3', 1, 123, NULL),
-(4, 'allbinary', 'test', 1, 123, 2);
+(1, 'office', 'Kontor 1', 1, 123, 7),
+(2, 'food-court', 'Matsal', 1, 123, 7),
+(3, 'entrance', 'Entré', 1, 123, 7),
+(4, 'allbinary', 'test', 1, 123, 2),
+(5, 'main-building', 'ICA Kontor', 32, 123, NULL),
+(6, 'Cleaning closet', 'Städskrubb', 32, 123, 5),
+(7, 'main-building', 'Huvudbyggnad', 1, 123, NULL),
+(8, 'office', 'Kontor 12', 32, 123, 5);
 
 -- --------------------------------------------------------
 
@@ -875,7 +966,11 @@ INSERT INTO `user_login` (`id`, `email`, `password`, `first_name`, `last_name`, 
 (33, 'abodefdw@grwegr.com', '$2b$12$ESQPo2ORewNHQseiR.gRj.PIWNbwmSjMp0rdXOVNqTqy7HE6j8Du2', 'ewfwefwef', 'dwfewfefw', 'efwfwefewfwef', 1, 1, 29),
 (34, 'fwefewf@wfwef.com', '$2b$12$EVOGSIt3YNrPZcdkgxrLLubGKk9px./Bum5AVBT.Uk.XM3mpRQZ8m', 'efwefe', 'ewfwef', 'ewfwef', 1, 1, 30),
 (35, 'fwef@refewf.com', '$2b$12$CpRWLebFF9WWl.39Q.SEXeVnLabBUg1DGBiJyn8oetogBTYFyTOia', 'wefwefwef', 'qwefwefew', 'ewfwefewfewf', 1, 1, 31),
-(36, 'abodsakka2021@gmail.com', '$2b$12$bJ94IohCKpxF8E4EOvayRO1JeSNqwPCoXWLIv5gP32xQK14Y1wQgq', 'test32', 'user', 'abodsasdasd', 1, 2, 31);
+(36, 'abodsakka2021@gmail.com', '$2b$12$bJ94IohCKpxF8E4EOvayRO1JeSNqwPCoXWLIv5gP32xQK14Y1wQgq', 'test32', 'user', 'abodsasdasd', 1, 2, 31),
+(37, 'wfewfewfwef@gwefwef.com', '$2b$12$99dllEvTCRP4z9aFzVQL4.i1IJYfr.iPwXGNmj2Hxuu0BMdpz3NQ.', 'fwefewfe', 'efewfef', 'wfweewffe', 1, 0, 28),
+(38, 'icaadmin@gmail.com', '$2b$12$qVNiTAr8jx1mWqsl.gxsI.PC09a4PmUAvsh69vMsKlhHkttoNqbVO', 'icadmin', 'admin', 'adminica', 1, 1, 32),
+(39, 'icatest@gmail.com', '$2b$12$SsZUKOukWh255kCKsqW07OrGiCrm5GzLwjnGCYnIYbUQE4Og44i/q', 'ica', 'admin', 'icatest', 1, 1, 32),
+(40, 'tomas.sareklint@allbinary.se', '$2b$12$GNJAzHNwpTFSYsrnOYNmB.RLWzMknfOZL1uVRVRsqcHuKceNVkKJG', 'Tomas', 'Sareklint', 'Tomas', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -895,9 +990,10 @@ CREATE TABLE `website_settings` (
 --
 
 INSERT INTO `website_settings` (`comp_id`, `color`, `logo`) VALUES
-(1, '00aaff', 'Asset 1.png'),
-(28, '00f028', 'Kalmar_Omsorg_stöd.png'),
-(31, '26a697', 'Asset 1.png');
+(1, '00ff11', 'Asset 1.png'),
+(28, '0074f0', 'Kalmar_Omsorg_stöd.png'),
+(31, '26a697', 'Asset 1.png'),
+(32, 'f11313', 'download.png');
 
 -- --------------------------------------------------------
 
@@ -1066,25 +1162,25 @@ ALTER TABLE `api_keys`
 -- AUTO_INCREMENT för tabell `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT för tabell `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT för tabell `company_log`
 --
 ALTER TABLE `company_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=242;
 
 --
 -- AUTO_INCREMENT för tabell `logical_devices`
 --
 ALTER TABLE `logical_devices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT för tabell `nc_evolutions`
@@ -1096,7 +1192,7 @@ ALTER TABLE `nc_evolutions`
 -- AUTO_INCREMENT för tabell `node_thresholds`
 --
 ALTER TABLE `node_thresholds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT för tabell `node_types`
@@ -1108,7 +1204,7 @@ ALTER TABLE `node_types`
 -- AUTO_INCREMENT för tabell `spaces`
 --
 ALTER TABLE `spaces`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT för tabell `users`
@@ -1126,7 +1222,7 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT för tabell `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- Restriktioner för dumpade tabeller
